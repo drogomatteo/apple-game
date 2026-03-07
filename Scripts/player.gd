@@ -11,6 +11,8 @@ func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _unhandled_input(event: InputEvent) -> void:
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
+		return
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * sensivity)
 		camera.rotate_x(-event.relative.y * sensivity)
@@ -20,8 +22,20 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("escape"):
 		get_tree().quit()
 
+func _input(event):
+
+	if event.is_action_pressed("toggle_mouse"):
+
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
 
 func _physics_process(delta: float) -> void:
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
+		return
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -29,7 +43,7 @@ func _physics_process(delta: float) -> void:
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
-
+	
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")

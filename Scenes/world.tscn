@@ -2,13 +2,15 @@
 
 [ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scenes/world.gd" id="1_5v1tr"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="1_a02cp"]
-[ext_resource type="ArrayMesh" uid="uid://wl6dveetj6c2" path="res://Objets/herbe.res" id="1_k7acu"]
+[ext_resource type="ArrayMesh" uid="uid://dw1yojgfbk0vv" path="res://Objets/herbe.res" id="1_k7acu"]
 [ext_resource type="PackedScene" uid="uid://bvjnnw0sotibc" path="res://Objets/cliffProps1.glb" id="2_fo5ed"]
 [ext_resource type="PackedScene" uid="uid://3wn0tk03bw4v" path="res://Objets/cliffProps2.glb" id="3_5ukr8"]
 [ext_resource type="PackedScene" uid="uid://ypuhcjiul624" path="res://Objets/cliffProps4.glb" id="4_o06y3"]
 [ext_resource type="PackedScene" uid="uid://dd4in2v7g5qeo" path="res://Objets/cliffProps5.glb" id="5_k7acu"]
 [ext_resource type="PackedScene" uid="uid://b1cdlersim6o6" path="res://Objets/tavern.glb" id="6_5ukr8"]
-[ext_resource type="PackedScene" uid="uid://c6xjwaoy6ym7v" path="res://Objets/pinetree.glb" id="7_o06y3"]
+[ext_resource type="PackedScene" uid="uid://cpohnu3o761rg" path="res://Objets/Picnic Basket.glb" id="9_ikia7"]
+[ext_resource type="PackedScene" uid="uid://bsww2dylcnwu3" path="res://Objets/Apple.glb" id="10_7yui6"]
+[ext_resource type="PackedScene" uid="uid://b37sqmsoi66f0" path="res://Objets/Tree.glb" id="11_c5t2i"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_go701"]
 size = Vector3(50, 1, 50)
@@ -42,17 +44,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_go701")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1059276709]
-transform = Transform3D(0.9978568, 0, 0, 0, 0.9978568, 0, 0, 0, 0.9978568, 0, 0, 0)
+transform = Transform3D(3.2290568, 0, 0, 0, 3.2290568, 0, 0, 0, 3.2290568, -0.030636787, 0.052398205, -0.07222366)
 material_override = SubResource("StandardMaterial3D_5a7ea")
 mesh = SubResource("QuadMesh_8j60k")
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="Floor" unique_id=1364523655]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2234497, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2234497, 1.7591882)
 material_override = SubResource("StandardMaterial3D_5v1tr")
 multimesh = SubResource("MultiMesh_0fj1v")
 
-[node name="player" parent="." unique_id=506067122 instance=ExtResource("1_a02cp")]
+[node name="Player" parent="." unique_id=506067122 instance=ExtResource("1_a02cp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9564209, 0)
+visible = false
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
 transform = Transform3D(1, 0, 0, 0, 0.1058302, 0.9943842, 0, -0.9943842, 0.1058302, 0, 20.851868, 0)
@@ -100,12 +103,47 @@ shape = SubResource("BoxShape3D_5ukr8")
 [node name="tavern" parent="StaticBody3D" unique_id=653652793 instance=ExtResource("6_5ukr8")]
 transform = Transform3D(-0.5655717, 0, 0.82469916, 0, 1, 0, -0.82469916, 0, -0.5655717, -18.564575, 0, -0.5050049)
 
-[node name="Arbres" type="StaticBody3D" parent="StaticBody3D" unique_id=1540053623]
+[node name="MessageLabel" type="Label" parent="." unique_id=825985541]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -15.5
+offset_right = 20.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 36
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D/Arbres" unique_id=1945510445]
+[node name="ValidateButton" type="Button" parent="." unique_id=922594922]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 40
+text = "Confirmer la position du panier"
 
-[node name="pinetree" parent="StaticBody3D/Arbres/MeshInstance3D" unique_id=1398097426 instance=ExtResource("7_o06y3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.768799, 0, 5.4437256)
+[node name="Basket" type="MeshInstance3D" parent="." unique_id=145562989]
 
-[node name="pinetree2" parent="StaticBody3D/Arbres/MeshInstance3D" unique_id=1616649691 instance=ExtResource("7_o06y3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8118896, 0, -10.320862)
+[node name="Picnic Basket" parent="Basket" unique_id=2030495706 instance=ExtResource("9_ikia7")]
+transform = Transform3D(0.2, 0, 0, 0, 0.3, 0, 0, 0, 0.4, 0, 0, 0)
+
+[node name="TreeApple" type="MeshInstance3D" parent="." unique_id=1357461094]
+
+[node name="Apple2" parent="TreeApple" unique_id=658332242 instance=ExtResource("10_7yui6")]
+transform = Transform3D(0.004, 0, 0, 0, 0.004, 0, 0, 0, 0.004, 0, 0, 0.884)
+
+[node name="Tree" parent="TreeApple" unique_id=1643508658 instance=ExtResource("11_c5t2i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+
+[node name="Apple" parent="TreeApple" unique_id=1478291913 instance=ExtResource("10_7yui6")]
+transform = Transform3D(0.004, 0, 0, 0, 0.004, 0, 0, 0, 0.004, 0.96652997, 0, 0.2219665)
+
+[connection signal="pressed" from="ValidateButton" to="." method="_on_validate_button_pressed"]
