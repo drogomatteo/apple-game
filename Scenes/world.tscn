@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bwu06rcvqqifa"]
 
-[ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scenes/world.gd" id="1_5v1tr"]
+[ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_5v1tr"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="1_a02cp"]
 [ext_resource type="ArrayMesh" uid="uid://dw1yojgfbk0vv" path="res://Objets/herbe.res" id="1_k7acu"]
 [ext_resource type="PackedScene" uid="uid://bvjnnw0sotibc" path="res://Objets/cliffProps1.glb" id="2_fo5ed"]
