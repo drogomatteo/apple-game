@@ -2,15 +2,15 @@
 
 [ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_5v1tr"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="1_a02cp"]
-[ext_resource type="ArrayMesh" uid="uid://dw1yojgfbk0vv" path="res://Objets/herbe.res" id="1_k7acu"]
-[ext_resource type="PackedScene" uid="uid://bvjnnw0sotibc" path="res://Objets/cliffProps1.glb" id="2_fo5ed"]
-[ext_resource type="PackedScene" uid="uid://3wn0tk03bw4v" path="res://Objets/cliffProps2.glb" id="3_5ukr8"]
-[ext_resource type="PackedScene" uid="uid://ypuhcjiul624" path="res://Objets/cliffProps4.glb" id="4_o06y3"]
-[ext_resource type="PackedScene" uid="uid://dd4in2v7g5qeo" path="res://Objets/cliffProps5.glb" id="5_k7acu"]
-[ext_resource type="PackedScene" uid="uid://b1cdlersim6o6" path="res://Objets/tavern.glb" id="6_5ukr8"]
-[ext_resource type="PackedScene" uid="uid://cpohnu3o761rg" path="res://Objets/Picnic Basket.glb" id="9_ikia7"]
-[ext_resource type="PackedScene" uid="uid://bsww2dylcnwu3" path="res://Objets/Apple.glb" id="10_7yui6"]
-[ext_resource type="PackedScene" uid="uid://b37sqmsoi66f0" path="res://Objets/Tree.glb" id="11_c5t2i"]
+[ext_resource type="ArrayMesh" uid="uid://dw1yojgfbk0vv" path="res://Assets/Models/herbe.res" id="1_k7acu"]
+[ext_resource type="PackedScene" uid="uid://bvjnnw0sotibc" path="res://Assets/Models/cliffProps1.glb" id="2_fo5ed"]
+[ext_resource type="PackedScene" uid="uid://3wn0tk03bw4v" path="res://Assets/Models/cliffProps2.glb" id="3_5ukr8"]
+[ext_resource type="PackedScene" uid="uid://ypuhcjiul624" path="res://Assets/Models/cliffProps4.glb" id="4_o06y3"]
+[ext_resource type="PackedScene" uid="uid://dd4in2v7g5qeo" path="res://Assets/Models/cliffProps5.glb" id="5_k7acu"]
+[ext_resource type="PackedScene" uid="uid://b1cdlersim6o6" path="res://Assets/Models/tavern.glb" id="6_5ukr8"]
+[ext_resource type="PackedScene" uid="uid://cpohnu3o761rg" path="res://Assets/Models/Picnic Basket.glb" id="9_ikia7"]
+[ext_resource type="PackedScene" uid="uid://bsww2dylcnwu3" path="res://Assets/Models/Apple.glb" id="10_7yui6"]
+[ext_resource type="PackedScene" uid="uid://b37sqmsoi66f0" path="res://Assets/Models/Tree.glb" id="11_c5t2i"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_go701"]
 size = Vector3(50, 1, 50)
@@ -63,19 +63,19 @@ light_energy = 0.8
 
 [node name="Pierres" type="StaticBody3D" parent="." unique_id=1321700980]
 
-[node name="cliffProps1" parent="Pierres" unique_id=1221369985 instance=ExtResource("2_fo5ed")]
+[node name="cliffProps1" parent="Pierres" unique_id=1213705200 instance=ExtResource("2_fo5ed")]
 transform = Transform3D(1.444839, 0, 0, 0, 1, 0, 0, 0, 1, 9.93573, 0, 14.1154785)
 
-[node name="cliffProps2" parent="Pierres" unique_id=1846199877 instance=ExtResource("3_5ukr8")]
+[node name="cliffProps2" parent="Pierres" unique_id=636026066 instance=ExtResource("3_5ukr8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.812195, 1, 10.035278)
 
-[node name="cliffProps4" parent="Pierres" unique_id=2016597776 instance=ExtResource("4_o06y3")]
+[node name="cliffProps4" parent="Pierres" unique_id=127285596 instance=ExtResource("4_o06y3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.079895, 1.7842013, -3.604004)
 
-[node name="cliffProps5" parent="Pierres" unique_id=1918936810 instance=ExtResource("5_k7acu")]
+[node name="cliffProps5" parent="Pierres" unique_id=1969697986 instance=ExtResource("5_k7acu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.493591, 2, -10.479858)
 
-[node name="cliffProps6" parent="Pierres" unique_id=1259865277 instance=ExtResource("4_o06y3")]
+[node name="cliffProps6" parent="Pierres" unique_id=11886699 instance=ExtResource("4_o06y3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.612671, 1.7840792, -14.139893)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Pierres" unique_id=676857117]
@@ -100,7 +100,7 @@ shape = SubResource("BoxShape3D_5ukr8")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=273603569]
 
-[node name="tavern" parent="StaticBody3D" unique_id=653652793 instance=ExtResource("6_5ukr8")]
+[node name="tavern" parent="StaticBody3D" unique_id=1599956268 instance=ExtResource("6_5ukr8")]
 transform = Transform3D(-0.5655717, 0, 0.82469916, 0, 1, 0, -0.82469916, 0, -0.5655717, -18.564575, 0, -0.5050049)
 
 [node name="MessageLabel" type="Label" parent="." unique_id=825985541]
@@ -132,18 +132,18 @@ text = "Confirmer la position du panier"
 
 [node name="Basket" type="MeshInstance3D" parent="." unique_id=145562989]
 
-[node name="Picnic Basket" parent="Basket" unique_id=2030495706 instance=ExtResource("9_ikia7")]
+[node name="Picnic Basket" parent="Basket" unique_id=1214407638 instance=ExtResource("9_ikia7")]
 transform = Transform3D(0.2, 0, 0, 0, 0.3, 0, 0, 0, 0.4, 0, 0, 0)
 
 [node name="TreeApple" type="MeshInstance3D" parent="." unique_id=1357461094]
 
-[node name="Apple2" parent="TreeApple" unique_id=658332242 instance=ExtResource("10_7yui6")]
+[node name="Apple2" parent="TreeApple" unique_id=141996053 instance=ExtResource("10_7yui6")]
 transform = Transform3D(0.004, 0, 0, 0, 0.004, 0, 0, 0, 0.004, 0, 0, 0.884)
 
-[node name="Tree" parent="TreeApple" unique_id=1643508658 instance=ExtResource("11_c5t2i")]
+[node name="Tree" parent="TreeApple" unique_id=295075266 instance=ExtResource("11_c5t2i")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 
-[node name="Apple" parent="TreeApple" unique_id=1478291913 instance=ExtResource("10_7yui6")]
+[node name="Apple" parent="TreeApple" unique_id=1195665356 instance=ExtResource("10_7yui6")]
 transform = Transform3D(0.004, 0, 0, 0, 0.004, 0, 0, 0, 0.004, 0.96652997, 0, 0.2219665)
 
 [connection signal="pressed" from="ValidateButton" to="." method="_on_validate_button_pressed"]

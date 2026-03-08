@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ugkvwkrxm655"
-path.s3tc="res://.godot/imported/Picnic Basket_PicnicBasket_BaseColor.png-06c2f9f08e84ebffd30f83c9cf18d6cb.s3tc.ctex"
+uid="uid://ca64q203xqsws"
+path.s3tc="res://.godot/imported/Tree_Bark_NormalTree.png-f865f60e2f030bf096881694d47fd623.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "b73d5ab44b42b4125110762ac4c91185"
+"md5": "949bc03b138bfd71cc8da40076381612"
 }
 
 [deps]
 
-source_file="res://Objets/Picnic Basket_PicnicBasket_BaseColor.png"
-dest_files=["res://.godot/imported/Picnic Basket_PicnicBasket_BaseColor.png-06c2f9f08e84ebffd30f83c9cf18d6cb.s3tc.ctex"]
+source_file="res://Assets/Textures/Tree_Bark_NormalTree.png"
+dest_files=["res://.godot/imported/Tree_Bark_NormalTree.png-f865f60e2f030bf096881694d47fd623.s3tc.ctex"]
 
 [params]
 

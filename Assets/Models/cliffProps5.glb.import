@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c6xjwaoy6ym7v"
-path="res://.godot/imported/pinetree.glb-f1834d7091ff1193eb3734e4223bb339.scn"
+uid="uid://dd4in2v7g5qeo"
+path="res://.godot/imported/cliffProps5.glb-edc39c7ea9545a192501dc9bc6abe707.scn"
 
 [deps]
 
-source_file="res://Objets/pinetree.glb"
-dest_files=["res://.godot/imported/pinetree.glb-f1834d7091ff1193eb3734e4223bb339.scn"]
+source_file="res://Assets/Models/cliffProps5.glb"
+dest_files=["res://.godot/imported/cliffProps5.glb-edc39c7ea9545a192501dc9bc6abe707.scn"]
 
 [params]
 

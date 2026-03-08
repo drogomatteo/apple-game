@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://c2ks0fdrefybe"
-path="res://.godot/imported/grass.glb-5f7d824a289bc77418654e17b64c85ef.scn"
+path="res://.godot/imported/grass.glb-03cb64c50d7ae0c32527d793938c5a7e.scn"
 
 [deps]
 
-source_file="res://Objets/grass.glb"
-dest_files=["res://.godot/imported/grass.glb-5f7d824a289bc77418654e17b64c85ef.scn"]
+source_file="res://Assets/Models/grass.glb"
+dest_files=["res://.godot/imported/grass.glb-03cb64c50d7ae0c32527d793938c5a7e.scn"]
 
 [params]
 
@@ -45,7 +45,7 @@ _subresources={
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Objets/herbe.res",
+"save_to_file/fallback_path": "res://Assets/Models/herbe.res",
 "save_to_file/path": "uid://dw1yojgfbk0vv"
 }
 }

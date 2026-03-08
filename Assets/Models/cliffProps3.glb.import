@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://b1cdlersim6o6"
-path="res://.godot/imported/tavern.glb-587d81f94aeb58781f23dabcca2370ad.scn"
+uid="uid://bto5lhx877fau"
+path="res://.godot/imported/cliffProps3.glb-d0f018e34c56f463c36118fe34ab70f9.scn"
 
 [deps]
 
-source_file="res://Objets/tavern.glb"
-dest_files=["res://.godot/imported/tavern.glb-587d81f94aeb58781f23dabcca2370ad.scn"]
+source_file="res://Assets/Models/cliffProps3.glb"
+dest_files=["res://.godot/imported/cliffProps3.glb-d0f018e34c56f463c36118fe34ab70f9.scn"]
 
 [params]
 

@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://3wn0tk03bw4v"
-path="res://.godot/imported/cliffProps2.glb-49a9b1ec8d23ec564848cbecb3689bd8.scn"
+path="res://.godot/imported/cliffProps2.glb-d0ba5599121817a77f22a3ba130a3b29.scn"
 
 [deps]
 
-source_file="res://Objets/cliffProps2.glb"
-dest_files=["res://.godot/imported/cliffProps2.glb-49a9b1ec8d23ec564848cbecb3689bd8.scn"]
+source_file="res://Assets/Models/cliffProps2.glb"
+dest_files=["res://.godot/imported/cliffProps2.glb-d0ba5599121817a77f22a3ba130a3b29.scn"]
 
 [params]
 

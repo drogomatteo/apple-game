@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cpohnu3o761rg"
-path="res://.godot/imported/Picnic Basket.glb-6c1a7952f3d6f7d6c8b909cea558ff27.scn"
+uid="uid://b1cdlersim6o6"
+path="res://.godot/imported/tavern.glb-457457951281e27d0609ae97095e20d6.scn"
 
 [deps]
 
-source_file="res://Objets/Picnic Basket.glb"
-dest_files=["res://.godot/imported/Picnic Basket.glb-6c1a7952f3d6f7d6c8b909cea558ff27.scn"]
+source_file="res://Assets/Models/tavern.glb"
+dest_files=["res://.godot/imported/tavern.glb-457457951281e27d0609ae97095e20d6.scn"]
 
 [params]
 
