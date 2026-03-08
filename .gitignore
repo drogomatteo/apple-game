@@ -1,3 +1,96 @@
-# Godot 4+ specific ignores
+# =========================
+# GODOT
+# =========================
+
+# Godot cache
 .godot/
-/android/
+
+# Import cache
+.import/
+
+# Export builds
+export/
+build/
+bin/
+
+# Godot mono builds
+.mono/
+data_*/
+
+# Temporary editor files
+*.tmp
+*.temp
+*.log
+
+# Godot editor files
+.editorconfig
+.editor_settings-*
+
+# =========================
+# OS FILES
+# =========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# =========================
+# IDE
+# =========================
+
+# VSCode
+.vscode/
+
+# JetBrains
+.idea/
+
+# =========================
+# BUILD / EXPORT
+# =========================
+
+# Export templates output
+*.apk
+*.aab
+*.ipa
+*.exe
+*.app
+*.x86_64
+*.pck
+*.zip
+
+# =========================
+# USER SETTINGS
+# =========================
+
+# Local editor layouts
+editor_layout.cfg
+
+# Godot local settings
+*.translation
+
+# =========================
+# CACHE
+# =========================
+
+# Asset import cache
+*.import
+
+# Temporary assets
+*.blend1
+*.blend2
+
+# =========================
+# BACKUPS
+# =========================
+
+*.bak
+*.backup
+*.old
