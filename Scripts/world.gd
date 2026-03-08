@@ -37,7 +37,7 @@ func _process(delta: float) -> void:
 		phase += 1
 		spawn_tree_apple()
 	
-	if phase == 1 and close_enough(pos, tree_apple_pos,0.2) :
+	if phase == 1 and close_enough(pos, tree_apple_pos) :
 		tree_apple.visible = false
 		phase += 1
 		validate_button.visible = true
