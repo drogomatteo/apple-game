@@ -1,3 +1,55 @@
 [gd_scene format=3 uid="uid://ddrom61vk22oy"]
 
-[node name="Main" type="Node2D" unique_id=797530377]
+[ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="3_fdnlq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5a7ea"]
+albedo_color = Color(0.40975842, 0.50363976, 0.19977424, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_8j60k"]
+size = Vector2(16, 16)
+orientation = 1
+
+[node name="World" type="Node3D" unique_id=1297503563]
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=990780771]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1059276709]
+transform = Transform3D(3.2290568, 0, 0, 0, 3.2290568, 0, 0, 0, 3.2290568, -0.030636787, 0.052398205, -0.07222366)
+material_override = SubResource("StandardMaterial3D_5a7ea")
+mesh = SubResource("QuadMesh_8j60k")
+
+[node name="Player" parent="." unique_id=506067122 instance=ExtResource("3_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9564209, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
+transform = Transform3D(0.861939, 0.053657178, 0.5041647, -0.50701195, 0.09121918, 0.8570986, 0, -0.9943842, 0.1058302, 14.420837, 20.851868, 0)
+light_energy = 0.8
+
+[node name="MessageLabel" type="Label" parent="." unique_id=825985541]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -15.5
+offset_right = 20.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 36
+
+[node name="ValidateButton" type="Button" parent="." unique_id=922594922]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 40
+text = "Confirmer la position du panier"
+
+[connection signal="pressed" from="ValidateButton" to="." method="_on_validate_button_pressed"]

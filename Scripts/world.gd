@@ -2,42 +2,40 @@ extends Node3D
 
 #onready wait the function_ready() is completed
 @onready var player  = $Player
-@onready var basket = $Basket
-@onready var tree_apple = $TreeApple
 @onready var validate_button = $ValidateButton
 @onready var validation_label = $MessageLabel
 
-var grid_size = 8 #based on the these 
+var grid_size = 8
 var cell_size = 2 
-var basket_pos : Vector2 #give coordonates
+var start_pos : Vector2
+var basket_pos : Vector2
+var tree_pos : Array
 var tree_apple_pos : Vector2
 var phase = 0 
 #0 : find basket
-#1 : find tree with apple
-#2 : refind basket 
-
-
+#1 : find tree
+#2 : find tree with apple
+#3 : refind basket 
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#randomize()    to be used if you want random numbers each time; otherwise, it is random but the same each time you try.
 	validate_button.visible = false
 	validation_label.visible = false
-	tree_apple.visible = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	spawn_basket()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
+# Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
 func _process(delta: float) -> void:
 	var pos  = player_cell()
-	
-	if phase == 0 and close_enough(pos, basket_pos,) :
+
+	if phase == 0:
 		basket.visible = false
 		phase += 1
 		spawn_tree_apple()
-	
-	if phase == 1 and close_enough(pos, tree_apple_pos) :
+
+	if phase == 1:
 		tree_apple.visible = false
 		phase += 1
 		validate_button.visible = true
@@ -57,9 +55,6 @@ func random_cell():
 		randi() % grid_size
 	)
 
-# add position tolerance
-func close_enough(a: Vector2, b: Vector2, tolerance := 1.2) -> bool:
-	return abs(a.x - b.x) <= tolerance and abs(a.y - b.y) <= tolerance
 
 # basket appearance 
 func spawn_basket():

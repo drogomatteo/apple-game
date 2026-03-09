@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://c1t1p06i8i56u"]
+
+[ext_resource type="PackedScene" uid="uid://b1cdlersim6o6" path="res://Assets/Models/tavern.glb" id="1_utchl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_www31"]
+size = Vector3(7.065674, 7.554199, 6.8957825)
+
+[node name="Tavern" type="StaticBody3D" unique_id=2114715904]
+
+[node name="tavern" parent="." unique_id=47728013 instance=ExtResource("1_utchl")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2052975860]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9864502, 3.2770996, 1.0048065)
+shape = SubResource("BoxShape3D_www31")

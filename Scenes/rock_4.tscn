@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cde4hcdthg3r2"]
+
+[ext_resource type="PackedScene" uid="uid://ypuhcjiul624" path="res://Assets/Models/cliffProps4.glb" id="1_vrmco"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_by7c8"]
+size = Vector3(4.029972, 4.670517, 2.5272808)
+
+[node name="Rock4" type="StaticBody3D" unique_id=972339469]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=703835133]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008451462, 0.23613739, 0)
+shape = SubResource("BoxShape3D_by7c8")
+
+[node name="cliffProps" parent="." unique_id=935306496 instance=ExtResource("1_vrmco")]
