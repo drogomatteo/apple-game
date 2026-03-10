@@ -121,29 +121,29 @@ func _ready() -> void:
 		break
 	
 	# Placer les objets sur la carte (avec leur position)
-	CreateNode(Player, player, "player")
-	CreateNode(Basket, basket, "basket")
-	CreateNode(Arbre, tree, "tree")
-	CreateNode(Apple_tree, apple_tree, "apple_tree")
-	CreateNode(Visual, visual, "visual")
+	Player = CreateNode(player, "player")
+	Basket = CreateNode(basket, "basket")
+	Arbre = CreateNode(tree, "tree")
+	Apple_tree = CreateNode(apple_tree, "apple_tree")
+	Visual = CreateNode(visual, "visual")
 	
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
-#func _physics_process(delta: float) -> void:
-#	
-#	#incrémentation du temps écoulé pour retracer la position du joueur
-#	total = total + delta
-#	if total >= Fs:
-#		position_joueur.append(player_cell())
-#	
-#	
-#	if Input.is_action_pressed("escape"):
-#		print(position_joueur)
+func _physics_process(delta: float) -> void:
+	
+	#incrémentation du temps écoulé pour retracer la position du joueur
+	total = total + delta
+	if total >= Fs:
+		position_joueur.append(player_cell())
+	
+	
+	if Input.is_action_pressed("escape"):
+		print(position_joueur)
 
 
 # retrieve la position du joueur
-#func player_cell():
-#	return Convertisseur2D_3D(Player.get_position().x, Player.get_position().z)
+func player_cell():
+	return Convertisseur2D_3D(Player.get_position().x, Player.get_position().z)
 
 # generate random position
 func random_cell():
@@ -164,7 +164,8 @@ func occupeAdj(x,z):
 func cellNotFree(x,z):
 	return map[x][z] == 1
 
-func CreateNode(node: Node, scene: PackedScene, string: String):
-	node = scene.instantiate()
-	add_child(node)
-	node.set_position(Vector3(Objet[string].x, 0, Objet[string].z))
+func CreateNode(scene: PackedScene, string: String):
+	var new_node = scene.instantiate()
+	add_child(new_node)
+	new_node.set_position(Vector3(Objet[string].x, 0, Objet[string].z))
+	return new_node
