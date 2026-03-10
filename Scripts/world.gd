@@ -1,93 +1,179 @@
 extends Node3D
 
-#onready wait the function_ready() is completed
-@onready var player  = $Player
-@onready var validate_button = $ValidateButton
-@onready var validation_label = $MessageLabel
+var validate_button : Node
+var message_label : Node
 
-var grid_size = 8
-var cell_size = 2 
-var start_pos : Vector2
-var basket_pos : Vector2
-var tree_pos : Array
-var tree_apple_pos : Vector2
-var phase = 0 
+#Scène
+var player : PackedScene
+var basket : PackedScene
+var tree : PackedScene
+var apple_tree : PackedScene
+var visual : PackedScene
+#Noeud
+var Player : Node
+var Basket : Node
+var Arbre : Node
+var Apple_tree : Node
+var Visual : Node
+
+# Donnée pour retracer la position du joueur
+var Fs : float = 0.2
+var total : float = 0
+var position_joueur : Array
+
+#Grille 16mX16m, coupé en 8 carré de longueur 2m
+var grid_size : int = 8
+var cell_size : int = 2
+var map : Array
+var Objet : Dictionary
+
+#Pour compter les niveaux du joueur (1-5 : tuto, 6-25 : test)
+var niveau : int = 1
+var niveau_max : int = 25
+var phase : int = 0 
 #0 : find basket
 #1 : find tree
 #2 : find tree with apple
 #3 : refind basket 
 
-
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	#Choix de la graîne de génération
+	seed(randi() % 10^7) # Limite à 10^7 mondes
+	
+	# Chargement des scènes existantes dans le main ou non
+	validate_button = $ValidateButton
+	message_label = $MessageLabel
+	
+	player = load("res://Scenes/player.tscn")
+	basket = load("res://Scenes/basket.tscn")
+	tree = load("res://Scenes/tree.tscn")
+	apple_tree = load("res://Scenes/apple_tree.tscn")
+	
+	# Pour le repère visuel, on fait un choix aléatoire entre les 6 repères visuels possibles (pour l'instant, implémentation un peu brut)
+	var possibilite = ["res://Scenes/rock_1.tscn","res://Scenes/rock_2.tscn","res://Scenes/rock_3.tscn","res://Scenes/rock_4.tscn","res://Scenes/rock_5.tscn","res://Scenes/tavern.tscn"]
+	visual = load(possibilite[randi()%possibilite.size()])
+	
 	validate_button.visible = false
-	validation_label.visible = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	spawn_basket()
+	message_label.visible = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) #à changer avec mobile
+	
+	#Algorithme de remplissage type Démineur
+	#Initialisation, remplissage de la map (0: libre, 1: occupé)
+	for i in range(grid_size):
+		var temp = []
+		for j in range(grid_size):
+			temp.append(0)
+		map.append(temp)
+	var pos : Vector3
+	#Ajout des objets sur la carte (la position est stocké dans le dico)
+	#Logique de l'algo: on teste les positions jusqu'à trouver une position correcte
+	var maxIter = 10^6
+	var iter = 0
+	
+	while maxIter >= iter:
+		#Ajout du repère visuel
+		pos = random_cell()
+		if cellNotFree(pos.x, pos.z):
+			iter = iter + 1
+			continue
+		occupeAdj(pos.x, pos.z)
+		Objet["visual"] = pos*cell_size
+		break
+		
+	while maxIter >= iter:
+		#Ajout du panier
+		pos = random_cell()
+		if cellNotFree(pos.x, pos.z):
+			iter = iter + 1
+			continue
+		occupeAdj(pos.x, pos.z)
+		Objet["basket"] = pos*cell_size
+		break
+		
+	while maxIter >= iter:
+		#Ajout de l'arbre
+		pos = random_cell()
+		if cellNotFree(pos.x, pos.z):
+			iter = iter + 1
+			continue
+		occupeAdj(pos.x, pos.z)
+		Objet["tree"] = pos*cell_size
+		break
+		
+	while maxIter >= iter:
+		#Ajout du pommier
+		pos = random_cell()
+		if cellNotFree(pos.x, pos.z):
+			iter = iter + 1
+			continue
+		occupeAdj(pos.x, pos.z)
+		Objet["apple_tree"] = pos*cell_size
+		break
+		
+	while maxIter >= iter:
+		#Ajout du joueur
+		pos = random_cell()
+		if cellNotFree(pos.x, pos.z):
+			iter = iter + 1
+			continue
+		occupeAdj(pos.x, pos.z)
+		Objet["player"] = pos*cell_size
+		break
+	print(Objet)
+	# Placer les objets sur la carte (avec leur position)
+	Player = player.instantiate()
+	add_child(Player)
+	
+	Player.set_position(Vector3(Objet["player"].x, 0, Objet["player"].z)) 
+	
+	Basket = basket.instantiate()
+	add_child(Basket)
+	
+	Basket.set_position(Vector3(Objet["basket"].x, 0, Objet["basket"].z))
+	
+	Arbre = tree.instantiate() 
+	add_child(Arbre)
+	
+	Arbre.set_position(Vector3(Objet["tree"].x, 0, Objet["tree"].z))
+	
+	Apple_tree = apple_tree.instantiate()
+	add_child(Apple_tree)
+	
+	Apple_tree.set_position(Vector3(Objet["apple_tree"].x, 0, Objet["apple_tree"].z))
+	
+	Visual = visual.instantiate()
+	add_child(Visual)
+	
+	Visual.set_position(Vector3(Objet["visual"].x, 0, Objet["visual"].z))
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
-func _process(delta: float) -> void:
-	var pos  = player_cell()
-
-	if phase == 0:
-		basket.visible = false
-		phase += 1
-		spawn_tree_apple()
-
-	if phase == 1:
-		tree_apple.visible = false
-		phase += 1
-		validate_button.visible = true
+func _physics_process(delta: float) -> void:
+	
+	#incrémentation du temps écoulé pour retracer la position du joueur
+	total = total + delta
+	if total >= Fs:
+		position_joueur.append(player_cell())
 
 
 # retrieve la position du joueur
 func player_cell():
-	return Vector2(
-		int(player.position.x / cell_size),
-		int(player.position.z / cell_size)
-	)
+	return Convertisseur2D_3D(int(Player.position.x / cell_size), int(Player.position.z / cell_size))
 
 # generate random position
 func random_cell():
-	return Vector2(
-		randi() % grid_size, #random between 0 et 7 
-		randi() % grid_size
-	)
+	return Convertisseur2D_3D(randi()%(grid_size), randi()%(grid_size))
 
+#Transformation vecteur 2D en vecteur 3D
+func Convertisseur2D_3D(x,z):
+	return Vector3(x, 0, z)
 
-# basket appearance 
-func spawn_basket():
-	basket_pos = random_cell()
-	while basket_pos == player_cell():
-		basket_pos = random_cell()
-	#convectir le 2D en 3D
-	basket.position = Vector3(
-		basket_pos.x *cell_size,
-		0,
-		basket_pos.y *cell_size
-	)
-	basket.visible = true
+#Occupé les cases adjacentes (pour pas trop de proximité)
+func occupeAdj(x,z):
+	for i in range(-1,2):
+		for j in range(-1,2):
+			#Vérification si on est bien dans la map
+			if x+i >= 0 and x+i <= grid_size-1 and z+j >= 0 and z+j <= grid_size-1:
+				map[x+i][z+j] = 1
 
-# appearance of tree with apple
-func spawn_tree_apple():
-	tree_apple_pos = random_cell()
-	while tree_apple_pos == player_cell() or tree_apple_pos == basket_pos:
-		tree_apple_pos = random_cell()
-		
-	tree_apple.position = Vector3(
-		tree_apple_pos.x *cell_size,
-		0,
-		tree_apple_pos.y *cell_size,
-	)
-	tree_apple.visible  = true
-
-func _on_validate_button_pressed() -> void:
-	var pos = player_cell()
-	if close_enough(pos,basket_pos) :
-		validation_label.text = "Gagné, bonne position !"
-		validation_label.add_theme_color_override("font_color", Color.GREEN)
-	else : 
-		validation_label.text = "Perdu, mauvaise position !"
-		validation_label.add_theme_color_override("font_color", Color.RED)
-	validation_label.visible = true
+func cellNotFree(x,z):
+	return map[x][z] == 1

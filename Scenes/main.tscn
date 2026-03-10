@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ddrom61vk22oy"]
 
-[ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="3_fdnlq"]
+[ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_jjgbg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5a7ea"]
 albedo_color = Color(0.40975842, 0.50363976, 0.19977424, 1)
@@ -10,16 +10,14 @@ size = Vector2(16, 16)
 orientation = 1
 
 [node name="World" type="Node3D" unique_id=1297503563]
+script = ExtResource("1_jjgbg")
 
 [node name="Floor" type="StaticBody3D" parent="." unique_id=990780771]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1059276709]
-transform = Transform3D(3.2290568, 0, 0, 0, 3.2290568, 0, 0, 0, 3.2290568, -0.030636787, 0.052398205, -0.07222366)
+transform = Transform3D(3.2290568, 0, 0, 0, 3.2290568, 0, 0, 0, 3.2290568, 13, 0.052, 13)
 material_override = SubResource("StandardMaterial3D_5a7ea")
 mesh = SubResource("QuadMesh_8j60k")
-
-[node name="Player" parent="." unique_id=506067122 instance=ExtResource("3_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9564209, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
 transform = Transform3D(0.861939, 0.053657178, 0.5041647, -0.50701195, 0.09121918, 0.8570986, 0, -0.9943842, 0.1058302, 14.420837, 20.851868, 0)
