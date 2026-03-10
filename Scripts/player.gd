@@ -1,9 +1,9 @@
 extends CharacterBody3D
 
 
-const SPEED = 10
+const SPEED = 2
 
-var sensivity = 0.8
+var sensivity = 1
 @onready var camera = $Camera3D
 
 # à changer pour mobile

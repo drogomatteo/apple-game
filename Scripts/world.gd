@@ -119,45 +119,31 @@ func _ready() -> void:
 		occupeAdj(pos.x, pos.z)
 		Objet["player"] = pos*cell_size
 		break
-	print(Objet)
+	
 	# Placer les objets sur la carte (avec leur position)
-	Player = player.instantiate()
-	add_child(Player)
+	CreateNode(Player, player, "player")
+	CreateNode(Basket, basket, "basket")
+	CreateNode(Arbre, tree, "tree")
+	CreateNode(Apple_tree, apple_tree, "apple_tree")
+	CreateNode(Visual, visual, "visual")
 	
-	Player.set_position(Vector3(Objet["player"].x, 0, Objet["player"].z)) 
-	
-	Basket = basket.instantiate()
-	add_child(Basket)
-	
-	Basket.set_position(Vector3(Objet["basket"].x, 0, Objet["basket"].z))
-	
-	Arbre = tree.instantiate() 
-	add_child(Arbre)
-	
-	Arbre.set_position(Vector3(Objet["tree"].x, 0, Objet["tree"].z))
-	
-	Apple_tree = apple_tree.instantiate()
-	add_child(Apple_tree)
-	
-	Apple_tree.set_position(Vector3(Objet["apple_tree"].x, 0, Objet["apple_tree"].z))
-	
-	Visual = visual.instantiate()
-	add_child(Visual)
-	
-	Visual.set_position(Vector3(Objet["visual"].x, 0, Objet["visual"].z))
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
-func _physics_process(delta: float) -> void:
-	
-	#incrémentation du temps écoulé pour retracer la position du joueur
-	total = total + delta
-	if total >= Fs:
-		position_joueur.append(player_cell())
+#func _physics_process(delta: float) -> void:
+#	
+#	#incrémentation du temps écoulé pour retracer la position du joueur
+#	total = total + delta
+#	if total >= Fs:
+#		position_joueur.append(player_cell())
+#	
+#	
+#	if Input.is_action_pressed("escape"):
+#		print(position_joueur)
 
 
 # retrieve la position du joueur
-func player_cell():
-	return Convertisseur2D_3D(int(Player.position.x / cell_size), int(Player.position.z / cell_size))
+#func player_cell():
+#	return Convertisseur2D_3D(Player.get_position().x, Player.get_position().z)
 
 # generate random position
 func random_cell():
@@ -177,3 +163,8 @@ func occupeAdj(x,z):
 
 func cellNotFree(x,z):
 	return map[x][z] == 1
+
+func CreateNode(node: Node, scene: PackedScene, string: String):
+	node = scene.instantiate()
+	add_child(node)
+	node.set_position(Vector3(Objet[string].x, 0, Objet[string].z))
