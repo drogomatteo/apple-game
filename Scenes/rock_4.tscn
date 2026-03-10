@@ -7,6 +7,7 @@ size = Vector3(4.029972, 4.670517, 2.5272808)
 
 [node name="Rock4" type="StaticBody3D" unique_id=972339469]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.7, 0)
+collision_layer = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=703835133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.008451462, 0.23613739, 0)

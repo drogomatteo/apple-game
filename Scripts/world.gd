@@ -4,13 +4,12 @@ var validate_button : Node
 var message_label : Node
 
 #Scène
-var player : PackedScene
 var basket : PackedScene
 var tree : PackedScene
 var apple_tree : PackedScene
 var visual : PackedScene
 #Noeud
-var Player : Node
+@onready var Player = $Player
 var Basket : Node
 var Arbre : Node
 var Apple_tree : Node
@@ -35,8 +34,11 @@ var phase : int = 0
 #1 : find tree
 #2 : find tree with apple
 #3 : refind basket 
-
 func _ready() -> void:
+	Initialisation()
+
+
+func Initialisation() -> void:
 	#Choix de la graîne de génération
 	seed(randi() % 10^7) # Limite à 10^7 mondes
 	
@@ -44,7 +46,6 @@ func _ready() -> void:
 	validate_button = $ValidateButton
 	message_label = $MessageLabel
 	
-	player = load("res://Scenes/player.tscn")
 	basket = load("res://Scenes/basket.tscn")
 	tree = load("res://Scenes/tree.tscn")
 	apple_tree = load("res://Scenes/apple_tree.tscn")
@@ -53,9 +54,6 @@ func _ready() -> void:
 	var possibilite = ["res://Scenes/rock_1.tscn","res://Scenes/rock_2.tscn","res://Scenes/rock_3.tscn","res://Scenes/rock_4.tscn","res://Scenes/rock_5.tscn","res://Scenes/tavern.tscn"]
 	visual = load(possibilite[randi()%possibilite.size()])
 	
-	validate_button.visible = false
-	message_label.visible = false
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED) #à changer avec mobile
 	
 	#Algorithme de remplissage type Démineur
 	#Initialisation, remplissage de la map (0: libre, 1: occupé)
@@ -67,7 +65,7 @@ func _ready() -> void:
 	var pos : Vector3
 	#Ajout des objets sur la carte (la position est stocké dans le dico)
 	#Logique de l'algo: on teste les positions jusqu'à trouver une position correcte
-	var maxIter = 10^6
+	var maxIter = 10^4
 	var iter = 0
 	
 	while maxIter >= iter:
@@ -120,13 +118,13 @@ func _ready() -> void:
 		Objet["player"] = pos*cell_size
 		break
 	
-	# Placer les objets sur la carte (avec leur position)
-	Player = CreateNode(player, "player")
+	# Placer les objets sur la carte (avec leur position) SAUF le joueur
 	Basket = CreateNode(basket, "basket")
 	Arbre = CreateNode(tree, "tree")
 	Apple_tree = CreateNode(apple_tree, "apple_tree")
 	Visual = CreateNode(visual, "visual")
-	
+	# Déplacer le joueur sur la carte
+	Player.set_position(Vector3(Objet["player"].x, 0, Objet["player"].z))
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
 func _physics_process(delta: float) -> void:
@@ -135,10 +133,6 @@ func _physics_process(delta: float) -> void:
 	total = total + delta
 	if total >= Fs:
 		position_joueur.append(player_cell())
-	
-	
-	if Input.is_action_pressed("escape"):
-		print(position_joueur)
 
 
 # retrieve la position du joueur

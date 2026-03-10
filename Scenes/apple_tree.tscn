@@ -7,7 +7,7 @@
 size = Vector3(3.968872, 7.415161, 4.1519775)
 
 [node name="AppleTree" type="StaticBody3D" unique_id=1176812865]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
 
 [node name="Apple2" parent="." unique_id=393320851 instance=ExtResource("1_ld5qe")]
 transform = Transform3D(0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002, 0, 0, 0.884)

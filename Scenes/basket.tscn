@@ -6,7 +6,8 @@
 size = Vector3(1.4024048, 1.5574951, 1.317627)
 
 [node name="Basket" type="StaticBody3D" unique_id=1088006378]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+collision_layer = 0
 
 [node name="Picnic Basket" parent="." unique_id=222601479 instance=ExtResource("1_n26is")]
 transform = Transform3D(0.2, 0, 0, 0, 0.3, 0, 0, 0, 0.4, 0, 0, 0)

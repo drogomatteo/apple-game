@@ -1,14 +1,14 @@
 extends CharacterBody3D
 
-
 const SPEED = 2
+const sensivity = PI/2
 
-var sensivity = 1
-@onready var camera = $Camera3D
+@onready var Left = $Left
+@onready var Right = $Right
+@onready var Forward = $Forward
 
-# à changer pour mobile
-func _ready():
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+func _ready() -> void:
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 # Peut-être inclure ça dans le script du main.
 #func _process(delta: float) -> void:
@@ -16,31 +16,16 @@ func _ready():
 #		get_tree().quit()
 
 
-# à changer pour mobile
-func _input(event):
-
-	if event.is_action_pressed("toggle_mouse"):
-
-		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
-
 func _physics_process(delta: float) -> void:
-	if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
-		return
-
 	var direction := Vector3.ZERO
 	
-	if Input.is_action_pressed("Go_forward"):
+	if Forward.is_pressed():
 		direction.z -= 1
 
-	if Input.is_action_pressed("Camera_Left"):
+	if Left.is_pressed():
 		rotate_y(delta*sensivity)
 	
-	if Input.is_action_pressed("Camera_Right"):
+	if Right.is_pressed():
 		rotate_y(-delta*sensivity)
 
 	velocity = (transform.basis * Vector3(0,0,direction.z)).normalized() * SPEED

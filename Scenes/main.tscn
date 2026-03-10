@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ddrom61vk22oy"]
 
 [ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_jjgbg"]
+[ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5a7ea"]
 albedo_color = Color(0.40975842, 0.50363976, 0.19977424, 1)
@@ -22,6 +23,7 @@ mesh = SubResource("QuadMesh_8j60k")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
 transform = Transform3D(0.861939, 0.053657178, 0.5041647, -0.50701195, 0.09121918, 0.8570986, 0, -0.9943842, 0.1058302, 14.420837, 20.851868, 0)
 light_energy = 0.8
+shadow_enabled = true
 
 [node name="MessageLabel" type="Label" parent="." unique_id=825985541]
 anchors_preset = 8
@@ -49,5 +51,7 @@ grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 40
 text = "Confirmer la position du panier"
+
+[node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
 
 [connection signal="pressed" from="ValidateButton" to="." method="_on_validate_button_pressed"]

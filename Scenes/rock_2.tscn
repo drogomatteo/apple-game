@@ -7,6 +7,7 @@ size = Vector3(2.4188879, 2.3012543, 2.5272808)
 
 [node name="Rock2" type="StaticBody3D" unique_id=1331765187]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.36314982, 0)
+collision_layer = 0
 
 [node name="cliffProps" parent="." unique_id=891392703 instance=ExtResource("1_p2sd6")]
 
