@@ -10,11 +10,6 @@ const sensivity = PI/2
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-# Peut-être inclure ça dans le script du main.
-#func _process(delta: float) -> void:
-#	if Input.is_action_just_pressed("escape"):
-#		get_tree().quit()
-
 
 func _physics_process(delta: float) -> void:
 	var direction := Vector3.ZERO

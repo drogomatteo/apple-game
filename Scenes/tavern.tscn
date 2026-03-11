@@ -3,14 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://b1cdlersim6o6" path="res://Assets/Models/tavern.glb" id="1_utchl"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_www31"]
-size = Vector3(7.065674, 7.554199, 6.8957825)
+size = Vector3(6.705261, 7.554199, 6.740486)
 
 [node name="Tavern" type="StaticBody3D" unique_id=2114715904]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-collision_layer = 0
+collision_layer = 2
+collision_mask = 0
 
 [node name="tavern" parent="." unique_id=47728013 instance=ExtResource("1_utchl")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2052975860]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9864502, 3.2770996, 1.0048065)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0592957, 3.2770996, 0.9986992)
 shape = SubResource("BoxShape3D_www31")

@@ -3,14 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://dd4in2v7g5qeo" path="res://Assets/Models/cliffProps5.glb" id="1_apob2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_46qiv"]
-size = Vector3(2.8331335, 4.856186, 2.1249232)
+size = Vector3(2.608674, 4.856186, 1.9560355)
 
 [node name="Rock3" type="StaticBody3D" unique_id=206226227]
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.7407086, 0)
-collision_layer = 0
+collision_layer = 2
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1928360473]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.23602474, 0.31188202, -0.0674665)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24125814, 0.31188214, -0.07968313)
 shape = SubResource("BoxShape3D_46qiv")
 
 [node name="cliffProps" parent="." unique_id=2092636122 instance=ExtResource("1_apob2")]

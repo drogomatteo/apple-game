@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="AppleGame"
-run/main_scene="uid://bwu06rcvqqifa"
+run/main_scene="uid://ddrom61vk22oy"
 config/features=PackedStringArray("4.6", "Mobile")
 
 [autoload]
@@ -46,6 +46,14 @@ Go_forward={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Joueur"
+3d_physics/layer_2="Repère_Visuel"
+3d_physics/layer_3="Panier"
+3d_physics/layer_4="Arbre"
+3d_physics/layer_5="Pommier"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
@@ -53,3 +61,4 @@ Go_forward={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+textures/vram_compression/import_etc2_astc=true

@@ -3,14 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://b37sqmsoi66f0" path="res://Assets/Models/Tree.glb" id="1_0vwjc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rsuno"]
-size = Vector3(3.968872, 7.415161, 4.1519775)
+size = Vector3(1.7551575, 6.4902954, 1.7709656)
 
-[node name="Tree" type="StaticBody3D" unique_id=187056187]
+[node name="Tree" type="StaticBody3D" unique_id=187056187 groups=["Tree"]]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
-collision_layer = 0
+collision_layer = 8
+collision_mask = 0
 
 [node name="Tree" parent="." unique_id=386988797 instance=ExtResource("1_0vwjc")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1722628734]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06097412, 3.2075806, 0.045715332)
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.0054473667, 2.745147, -0.048629634)
 shape = SubResource("BoxShape3D_rsuno")

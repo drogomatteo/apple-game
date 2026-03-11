@@ -53,5 +53,3 @@ theme_override_font_sizes/font_size = 40
 text = "Confirmer la position du panier"
 
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
-
-[connection signal="pressed" from="ValidateButton" to="." method="_on_validate_button_pressed"]
