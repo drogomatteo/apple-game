@@ -1,7 +1,9 @@
 extends Node3D
 
-var validate_button : Node
-var message_label : Node
+#Bouton
+@onready var validate_button = $ValidateButton
+@onready var message_label = $MessageLabel
+@onready var next_level = $NextLevel
 
 #Scène
 var basket : PackedScene
@@ -17,7 +19,7 @@ var Visual : Node
 
 # Donnée pour retracer la position du joueur
 var Fs : float = 0.2
-var total : float = 0
+var sampling : float = 0
 var position_joueur : Array
 
 #Grille 16mX16m, coupé en 8 carré de longueur 2m
@@ -26,9 +28,13 @@ var cell_size : int = 2
 var map : Array
 var Objet : Dictionary
 
-#Pour compter les niveaux du joueur (1-5 : tuto, 6-25 : test)
+#Données pour la dernière phase
+var position_Finale : Vector3
+var distance : float
+
+#Pour compter les niveaux du joueur (1-5 : tuto, 6-20 : test)
 var niveau : int = 1
-var niveau_max : int = 25
+var niveau_max : int = 20
 var phase : int = 0 
 #0 : find basket
 #1 : find tree
@@ -42,12 +48,48 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	
 	#incrémentation du temps écoulé pour retracer la position du joueur
-	total = total + delta
-	if total >= Fs:
-		position_joueur.append(player_cell())
+	if phase != 4:
+		sampling = sampling + delta
+		if sampling >= Fs:
+			position_joueur.append(player_cell())
+			sampling = 0
+	else:
+		if next_level.is_pressed():
+			# On retire les 4 derniers noeuds rajoutés
+			Basket.free()
+			Visual.free()
+			Arbre.free()
+			Apple_tree.free()
+			#Puis après on les rajoutes
+			Initialisation()
+			phase = 0
+			
+			
+
 	
 	if Input.is_action_just_pressed("escape"):
 		get_tree().quit()
+	
+	
+	if validate_button.is_pressed() and phase == 3:
+		phase = phase + 1
+		validate_button.set_visible(false)
+		Player.get_child(2).set_visible(false)
+		Player.get_child(3).set_visible(false)
+		Player.get_child(4).set_visible(false)
+		next_level.set_visible(true)
+		
+		position_Finale = player_cell()
+		
+		distance = sqrt((position_Finale.x-Objet["basket"].x)**2+(position_Finale.z-Objet["basket"].z)**2)
+		
+		if distance <= 3:
+			message_label.set_text("Vous avez 3 étoiles")
+		elif 3 < distance and distance <= 7:
+			message_label.set_text("Vous avez 2 étoiles")
+		else:
+			message_label.set_text("Vous avez 1 étoile")
+		message_label.set_visible(true)
 	
 	#Gestion des collisions avec le joueur
 	for index in range(Player.get_slide_collision_count()):
@@ -73,14 +115,25 @@ func _physics_process(delta: float) -> void:
 			phase = phase + 1
 			Apple_tree.set_visible(false)
 			Player.set_collision_mask(2)
+			validate_button.set_visible(true)
 
 func Initialisation() -> void:
 	#Choix de la graîne de génération
-	seed(42) # Limite à 10^7 mondes (pour l'instant une constante car on test)
+	seed(randi()%10000000) # Limite à 10^7 mondes (pour l'instant une constante car on test)
 	
-	# Chargement des scènes existantes dans le main ou non
-	validate_button = $ValidateButton
-	message_label = $MessageLabel
+	#On vide la liste (dans le cas où on recommence une partie)
+	position_joueur = []
+	
+	#Réinitialisation de la couche mask
+	Player.set_collision_mask(6)
+	
+	# Initialisation de l'affichage
+	Player.get_child(2).set_visible(true)
+	Player.get_child(3).set_visible(true)
+	Player.get_child(4).set_visible(true)
+	validate_button.set_visible(false)
+	next_level.set_visible(false)
+	message_label.set_visible(false)
 	
 	basket = load("res://Scenes/basket.tscn")
 	tree = load("res://Scenes/tree.tscn")
@@ -90,6 +143,7 @@ func Initialisation() -> void:
 	var possibilite = ["res://Scenes/rock_1.tscn","res://Scenes/rock_2.tscn","res://Scenes/rock_3.tscn","res://Scenes/rock_4.tscn","res://Scenes/rock_5.tscn","res://Scenes/tavern.tscn"]
 	visual = load(possibilite[randi()%possibilite.size()])
 	
+	map = []
 	
 	#Algorithme de remplissage type Démineur
 	#Initialisation, remplissage de la map (0: libre, 1: occupé)
@@ -162,12 +216,11 @@ func Initialisation() -> void:
 	# Déplacer le joueur sur la carte
 	Player.set_position(Vector3(Objet["player"].x, 0, Objet["player"].z))
 	
-	#Modification de la visibilité SAUF le panier (phase 0)
+	#Modification de la visibilité
+	Basket.set_visible(true)
 	Arbre.set_visible(false)
 	Apple_tree.set_visible(false)
-	
-	#Suppression des collisions SAUF pour le panier
-	
+
 
 # retrieve la position du joueur
 func player_cell():

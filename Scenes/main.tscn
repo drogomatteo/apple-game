@@ -53,3 +53,15 @@ theme_override_font_sizes/font_size = 40
 text = "Confirmer la position du panier"
 
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
+
+[node name="NextLevel" type="Button" parent="." unique_id=1237651726]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -148.0
+offset_top = 112.0
+offset_right = 148.0
+offset_bottom = 175.00003
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 40
+text = "Niveau suivant"
