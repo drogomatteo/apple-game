@@ -1,9 +1,10 @@
 extends Node3D
 
-#Bouton
+#Zone de texte
 @onready var validate_button = $ValidateButton
 @onready var message_label = $MessageLabel
 @onready var next_level = $NextLevel
+@onready var message_alerte = $AlertMessage
 
 #Scène
 var basket : PackedScene
@@ -40,44 +41,39 @@ var phase : int = 0
 #1 : find tree
 #2 : find tree with apple
 #3 : refind basket 
+#4 : feedback
+
+#Gestion du temps
+@onready var max_timer = $Timer
+var timeout : bool
 
 func _ready() -> void:
 	Initialisation()
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	
-	#incrémentation du temps écoulé pour retracer la position du joueur
-	if phase != 4:
-		sampling = sampling + delta
-		if sampling >= Fs:
-			position_joueur.append(player_cell())
-			sampling = 0
-	else:
-		if next_level.is_pressed():
-			# On retire les 4 derniers noeuds rajoutés
-			Basket.free()
-			Visual.free()
-			Arbre.free()
-			Apple_tree.free()
-			#Puis après on les rajoutes
-			Initialisation()
-			phase = 0
-			
-			
 
+	if next_level.is_pressed():
+		# On retire les 4 derniers noeuds rajoutés
+		Basket.free()
+		Visual.free()
+		Arbre.free()
+		Apple_tree.free()
+		#Puis après on les rajoutes
+		Initialisation()
+		phase = 0
 	
-	if Input.is_action_just_pressed("escape"):
-		get_tree().quit()
 	
-	
-	if validate_button.is_pressed() and phase == 3:
+	if (validate_button.is_pressed() and phase == 3) or timeout:
 		phase = phase + 1
 		validate_button.set_visible(false)
 		Player.get_child(2).set_visible(false)
 		Player.get_child(3).set_visible(false)
 		Player.get_child(4).set_visible(false)
 		next_level.set_visible(true)
+		if timeout:
+			message_alerte.set_visible(true)
 		
 		position_Finale = player_cell()
 		
@@ -120,6 +116,7 @@ func _physics_process(delta: float) -> void:
 func Initialisation() -> void:
 	#Choix de la graîne de génération
 	seed(randi()%10000000) # Limite à 10^7 mondes (pour l'instant une constante car on test)
+	timeout = false
 	
 	#On vide la liste (dans le cas où on recommence une partie)
 	position_joueur = []
@@ -134,6 +131,7 @@ func Initialisation() -> void:
 	validate_button.set_visible(false)
 	next_level.set_visible(false)
 	message_label.set_visible(false)
+	message_alerte.set_visible(false)
 	
 	basket = load("res://Scenes/basket.tscn")
 	tree = load("res://Scenes/tree.tscn")
@@ -220,6 +218,9 @@ func Initialisation() -> void:
 	Basket.set_visible(true)
 	Arbre.set_visible(false)
 	Apple_tree.set_visible(false)
+	
+	#On lance le timer seulement maintenant
+	max_timer.start()
 
 
 # retrieve la position du joueur
@@ -254,3 +255,11 @@ func CreateNode(scene: PackedScene, string: String):
 	add_child(new_node)
 	new_node.set_position(Vector3(Objet[string].x, 0, Objet[string].z))
 	return new_node
+
+
+func _on_timer_timeout() -> void:
+	timeout = true
+
+
+func _on_sampling_timeout() -> void:
+	position_joueur.append(player_cell())

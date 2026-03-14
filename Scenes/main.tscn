@@ -65,3 +65,30 @@ offset_bottom = 175.00003
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 40
 text = "Niveau suivant"
+
+[node name="Timer" type="Timer" parent="." unique_id=1724200824]
+wait_time = 60.0
+one_shot = true
+
+[node name="Sampling" type="Timer" parent="." unique_id=594617237]
+wait_time = 0.2
+autostart = true
+
+[node name="AlertMessage" type="Label" parent="." unique_id=10637415]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -132.5
+offset_top = -209.0
+offset_right = 132.5
+offset_bottom = -154.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
+theme_override_font_sizes/font_size = 40
+text = "Temps écoulé"
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="Sampling" to="." method="_on_sampling_timeout"]
