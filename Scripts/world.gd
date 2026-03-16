@@ -5,6 +5,7 @@ extends Node3D
 @onready var message_label = $MessageLabel
 @onready var next_level = $NextLevel
 @onready var message_alerte = $AlertMessage
+@onready var temps_restant = $TempsRestant
 
 #Scène
 var basket : PackedScene
@@ -52,7 +53,11 @@ func _ready() -> void:
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
 func _physics_process(_delta: float) -> void:
-	
+	if phase == 3:
+		if max_timer.get_time_left() >= 1:
+			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" secondes")
+		else:
+			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" seconde")
 
 	if next_level.is_pressed():
 		# On retire les 4 derniers noeuds rajoutés
@@ -64,8 +69,7 @@ func _physics_process(_delta: float) -> void:
 		Initialisation()
 		phase = 0
 	
-	
-	if (validate_button.is_pressed() and phase == 3) or timeout:
+	if (validate_button.is_pressed() and phase == 3) or timeout: #Possibilité de finir le niveau sans même bouger ???
 		phase = phase + 1
 		validate_button.set_visible(false)
 		Player.get_child(2).set_visible(false)
@@ -74,6 +78,9 @@ func _physics_process(_delta: float) -> void:
 		next_level.set_visible(true)
 		if timeout:
 			message_alerte.set_visible(true)
+		max_timer.stop()
+		temps_restant.set_visible(false)
+		
 		
 		position_Finale = player_cell()
 		
@@ -86,7 +93,7 @@ func _physics_process(_delta: float) -> void:
 		else:
 			message_label.set_text("Vous avez 1 étoile")
 		message_label.set_visible(true)
-	
+
 	#Gestion des collisions avec le joueur
 	for index in range(Player.get_slide_collision_count()):
 		
@@ -112,7 +119,9 @@ func _physics_process(_delta: float) -> void:
 			Apple_tree.set_visible(false)
 			Player.set_collision_mask(2)
 			validate_button.set_visible(true)
-
+			max_timer.start()
+			temps_restant.set_visible(true)
+		
 func Initialisation() -> void:
 	#Choix de la graîne de génération
 	seed(randi()%10000000) # Limite à 10^7 mondes (pour l'instant une constante car on test)
@@ -132,6 +141,7 @@ func Initialisation() -> void:
 	next_level.set_visible(false)
 	message_label.set_visible(false)
 	message_alerte.set_visible(false)
+	temps_restant.set_visible(false)
 	
 	basket = load("res://Scenes/basket.tscn")
 	tree = load("res://Scenes/tree.tscn")
@@ -218,9 +228,6 @@ func Initialisation() -> void:
 	Basket.set_visible(true)
 	Arbre.set_visible(false)
 	Apple_tree.set_visible(false)
-	
-	#On lance le timer seulement maintenant
-	max_timer.start()
 
 
 # retrieve la position du joueur
@@ -259,6 +266,7 @@ func CreateNode(scene: PackedScene, string: String):
 
 func _on_timer_timeout() -> void:
 	timeout = true
+	print("Les carottes sont cuites")
 
 
 func _on_sampling_timeout() -> void:

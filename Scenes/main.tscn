@@ -67,7 +67,7 @@ theme_override_font_sizes/font_size = 40
 text = "Niveau suivant"
 
 [node name="Timer" type="Timer" parent="." unique_id=1724200824]
-wait_time = 60.0
+wait_time = 30.0
 one_shot = true
 
 [node name="Sampling" type="Timer" parent="." unique_id=594617237]
@@ -89,6 +89,13 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
 theme_override_font_sizes/font_size = 40
 text = "Temps écoulé"
+
+[node name="TempsRestant" type="Label" parent="." unique_id=151437164]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 50.0
+offset_bottom = 65.0
+theme_override_font_sizes/font_size = 40
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Sampling" to="." method="_on_sampling_timeout"]
