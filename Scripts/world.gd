@@ -15,9 +15,13 @@ var visual : PackedScene
 #Noeud
 @onready var Player = $Player
 var Basket : Node
-var Arbre : Node
 var Apple_tree : Node
 var Visual : Node
+
+#Gestion des arbres (dans le cas difficile)
+var Arbre : Array
+var index_Tree : int
+var max_tree : int
 
 # Donnée pour retracer la position du joueur
 var Fs : float = 0.2
@@ -48,6 +52,14 @@ var phase : int = 0
 @onready var max_timer = $Timer
 var timeout : bool
 
+#Score et difficulté
+#0 <= Facile <= 10 < Normal <= 20 < Difficile 
+var score = 15
+var Normal = 10
+var Difficile = 20
+var Difficulté_actuel : Array
+
+
 func _ready() -> void:
 	Initialisation()
 
@@ -60,16 +72,19 @@ func _physics_process(_delta: float) -> void:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" seconde")
 
 	if next_level.is_pressed():
-		# On retire les 4 derniers noeuds rajoutés
+		# On retire noeuds rajoutés
 		Basket.free()
-		Visual.free()
-		Arbre.free()
+		if Difficulté_actuel[0]:
+			Visual.free()
+		
+		for child in Arbre:
+			child.free()
 		Apple_tree.free()
 		#Puis après on les rajoutes
 		Initialisation()
 		phase = 0
 	
-	if (validate_button.is_pressed() and phase == 3) or timeout: #Possibilité de finir le niveau sans même bouger ???
+	if (validate_button.is_pressed() and phase == 3) or timeout:
 		phase = phase + 1
 		validate_button.set_visible(false)
 		Player.get_child(2).set_visible(false)
@@ -84,14 +99,16 @@ func _physics_process(_delta: float) -> void:
 		
 		position_Finale = player_cell()
 		
-		distance = sqrt((position_Finale.x-Objet["basket"].x)**2+(position_Finale.z-Objet["basket"].z)**2)
+		distance = sqrt((position_Finale.x-Objet["basket0"].x)**2+(position_Finale.z-Objet["basket0"].z)**2)
 		
 		if distance <= 3:
 			message_label.set_text("Vous avez 3 étoiles")
+			score = score + 1
 		elif 3 < distance and distance <= 7:
 			message_label.set_text("Vous avez 2 étoiles")
 		else:
 			message_label.set_text("Vous avez 1 étoile")
+			score = max(score - 1, 0) #On ne veut pas un score négatif
 		message_label.set_visible(true)
 
 	#Gestion des collisions avec le joueur
@@ -105,14 +122,25 @@ func _physics_process(_delta: float) -> void:
 		elif collision.get_collider().is_in_group("Basket") and phase == 0:
 			phase = phase + 1
 			Basket.set_visible(false)
-			Arbre.set_visible(true)
+			Arbre[0].set_visible(true)
+			index_Tree = 0
 			Player.set_collision_mask(10)
+			break
 		
-		elif collision.get_collider().is_in_group("Tree") and phase == 1:
-			phase = phase + 1
-			Arbre.set_visible(false)
-			Apple_tree.set_visible(true)
-			Player.set_collision_mask(18)
+		
+		elif collision.get_collider() == Arbre[index_Tree] and phase == 1:
+			if index_Tree == Arbre.size()-1:
+				phase = phase + 1
+				Arbre[-1].set_visible(false)
+				Apple_tree.set_visible(true)
+				Player.set_collision_mask(18)
+			else:
+				var Arbre_actuel = collision.get_collider()
+				Arbre_actuel.set_visible(false)
+				Arbre_actuel.get_child(1).set_disabled(true)
+				index_Tree = index_Tree + 1
+				Arbre[index_Tree].set_visible(true)
+			break
 		
 		elif collision.get_collider().is_in_group("Apple Tree") and phase == 2:
 			phase = phase + 1
@@ -121,14 +149,19 @@ func _physics_process(_delta: float) -> void:
 			validate_button.set_visible(true)
 			max_timer.start()
 			temps_restant.set_visible(true)
-		
+			break
+
 func Initialisation() -> void:
 	#Choix de la graîne de génération
 	seed(randi()%10000000) # Limite à 10^7 mondes (pour l'instant une constante car on test)
+	#On doit pouvoir le nombre de monde différents possibles
 	timeout = false
 	
 	#On vide la liste (dans le cas où on recommence une partie)
 	position_joueur = []
+	
+	#On récupère la difficulté
+	Difficulté_actuel = Gestion_Difficulté()
 	
 	#Réinitialisation de la couche mask
 	Player.set_collision_mask(6)
@@ -146,12 +179,11 @@ func Initialisation() -> void:
 	basket = load("res://Scenes/basket.tscn")
 	tree = load("res://Scenes/tree.tscn")
 	apple_tree = load("res://Scenes/apple_tree.tscn")
-	
-	# Pour le repère visuel, on fait un choix aléatoire entre les 6 repères visuels possibles (pour l'instant, implémentation un peu brut)
-	var possibilite = ["res://Scenes/rock_1.tscn","res://Scenes/rock_2.tscn","res://Scenes/rock_3.tscn","res://Scenes/rock_4.tscn","res://Scenes/rock_5.tscn","res://Scenes/tavern.tscn"]
-	visual = load(possibilite[randi()%possibilite.size()])
+	if Difficulté_actuel[0]:
+		visual = load("res://Scenes/tavern.tscn")
 	
 	map = []
+	Arbre = []
 	
 	#Algorithme de remplissage type Démineur
 	#Initialisation, remplissage de la map (0: libre, 1: occupé)
@@ -160,73 +192,38 @@ func Initialisation() -> void:
 		for j in range(grid_size):
 			temp.append(0)
 		map.append(temp)
-	var pos : Vector3
 	#Ajout des objets sur la carte (la position est stocké dans le dico)
 	#Logique de l'algo: on teste les positions jusqu'à trouver une position correcte
-	var maxIter = 1000000000000
-	var iter = 0
+	if Difficulté_actuel[0]:
+		Placer_Objet_sur_map("visual")
 	
-	while maxIter >= iter:
-		#Ajout du repère visuel
-		pos = random_cell()
-		if cellNotFree(pos.x, pos.z):
-			iter = iter + 1
-			continue
-		occupeAdj(pos.x, pos.z)
-		Objet["visual"] = pos*cell_size
-		break
-		
-	while maxIter >= iter:
-		#Ajout du panier
-		pos = random_cell()
-		if cellNotFree(pos.x, pos.z):
-			iter = iter + 1
-			continue
-		occupeAdj(pos.x, pos.z)
-		Objet["basket"] = pos*cell_size
-		break
-		
-	while maxIter >= iter:
-		#Ajout de l'arbre
-		pos = random_cell()
-		if cellNotFree(pos.x, pos.z):
-			iter = iter + 1
-			continue
-		occupeAdj(pos.x, pos.z)
-		Objet["tree"] = pos*cell_size
-		break
-		
-	while maxIter >= iter:
-		#Ajout du pommier
-		pos = random_cell()
-		if cellNotFree(pos.x, pos.z):
-			iter = iter + 1
-			continue
-		occupeAdj(pos.x, pos.z)
-		Objet["apple_tree"] = pos*cell_size
-		break
-		
-	while maxIter >= iter:
-		#Ajout du joueur
-		pos = random_cell()
-		if cellNotFree(pos.x, pos.z):
-			iter = iter + 1
-			continue
-		occupeAdj(pos.x, pos.z)
-		Objet["player"] = pos*cell_size
-		break
+	Placer_Objet_sur_map("basket")
+	
+	# On rajoute 1 arbre pour chaque palier de 5 au dessus de 21 (avec un minimum de 1 arbres)
+	max_tree = max(1, int(ceil((score-20)/5)))
+	
+	for i in range(max_tree):
+		Placer_Objet_sur_map("tree", str(i))
+	
+	Placer_Objet_sur_map("apple_tree")
+	
+	Placer_Objet_sur_map("player")
 	
 	# Placer les objets sur la carte (avec leur position) SAUF le joueur
 	Basket = CreateNode(basket, "basket")
-	Arbre = CreateNode(tree, "tree")
+	for i in range(max_tree):
+		Arbre.append(CreateNode(tree, "tree", str(i)))
 	Apple_tree = CreateNode(apple_tree, "apple_tree")
-	Visual = CreateNode(visual, "visual")
-	# Déplacer le joueur sur la carte
-	Player.set_position(Vector3(Objet["player"].x, 0, Objet["player"].z))
 	
+	if Difficulté_actuel[0]:
+		Visual = CreateNode(visual, "visual")
+	# Déplacer le joueur sur la carte
+	Player.set_position(Vector3(Objet["player0"].x, 0, Objet["player0"].z))
+
 	#Modification de la visibilité
 	Basket.set_visible(true)
-	Arbre.set_visible(false)
+	for child in Arbre:
+		child.set_visible(false)
 	Apple_tree.set_visible(false)
 
 
@@ -257,16 +254,39 @@ func cellNotFree(x, z):
 	return map[int(x)][int(z)] == 1
 
 #instancier un noeurd et l'ajouter comme enfant (et le return)
-func CreateNode(scene: PackedScene, string: String):
+func CreateNode(scene: PackedScene, string: String, indice : String = "0"):
 	var new_node = scene.instantiate()
 	add_child(new_node)
-	new_node.set_position(Vector3(Objet[string].x, 0, Objet[string].z))
+	new_node.set_position(Vector3(Objet[string+indice].x, 0, Objet[string+indice].z))
 	return new_node
 
+func Gestion_Difficulté():
+	#Principe du bitmask : on met True à l'indice qui nous intéresse
+	#0 : Facile
+	#1 : Normal
+	#2 : Difficile
+	if score < Normal:
+		return [true, false, false]
+	elif score >= Normal and score < Difficile:
+		return [false, true, false]
+	elif score >= Difficile:
+		return [false, false, true]
+
+func Placer_Objet_sur_map(mot : String, indice : String = "0"):
+	var pos : Vector3
+	var maxiter = 100000
+	var iter = 0
+	while iter < maxiter:
+		pos = random_cell()
+		if cellNotFree(pos.x, pos.z):
+			iter = iter + 1
+			continue
+		occupeAdj(pos.x, pos.z)
+		Objet[mot+indice] = pos*cell_size
+		break
 
 func _on_timer_timeout() -> void:
 	timeout = true
-	print("Les carottes sont cuites")
 
 
 func _on_sampling_timeout() -> void:

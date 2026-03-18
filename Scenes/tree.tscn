@@ -5,7 +5,7 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_rsuno"]
 size = Vector3(1.7551575, 6.4902954, 1.7709656)
 
-[node name="Tree" type="StaticBody3D" unique_id=187056187 groups=["Tree"]]
+[node name="Tree" type="StaticBody3D" unique_id=187056187]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
 collision_layer = 8
 collision_mask = 0

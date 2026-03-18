@@ -2,28 +2,34 @@
 
 [ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
+[ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="3_8gbba"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5a7ea"]
 albedo_color = Color(0.40975842, 0.50363976, 0.19977424, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_8j60k"]
-size = Vector2(16, 16)
+size = Vector2(20, 20)
 orientation = 1
 
 [node name="World" type="Node3D" unique_id=1297503563]
 script = ExtResource("1_jjgbg")
 
-[node name="Floor" type="StaticBody3D" parent="." unique_id=990780771]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1059276709]
-transform = Transform3D(3.2290568, 0, 0, 0, 3.2290568, 0, 0, 0, 3.2290568, 13, 0.052, 13)
-material_override = SubResource("StandardMaterial3D_5a7ea")
-mesh = SubResource("QuadMesh_8j60k")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
-transform = Transform3D(0.861939, 0.053657178, 0.5041647, -0.50701195, 0.09121918, 0.8570986, 0, -0.9943842, 0.1058302, 14.420837, 20.851868, 0)
+transform = Transform3D(0.49999994, 0.70710677, -0.4999999, 0.7071067, -3.090862e-08, 0.7071067, 0.49999988, -0.70710677, -0.4999999, -3.3849945, 20.851868, 0)
+light_color = Color(1, 1, 0.627451, 1)
 light_energy = 0.8
 shadow_enabled = true
+shadow_opacity = 0.5
+directional_shadow_max_distance = 50.0
+sky_mode = 1
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="." unique_id=1231939112]
+transform = Transform3D(-0.5, -0.70710677, 0.49999997, 0.70710677, -3.090862e-08, 0.70710677, -0.49999994, 0.70710677, 0.49999997, 6.8855686, 20.851868, 20.706642)
+light_color = Color(1, 1, 0.627451, 1)
+light_energy = 0.16
+shadow_opacity = 0.5
+directional_shadow_max_distance = 50.0
+sky_mode = 1
 
 [node name="MessageLabel" type="Label" parent="." unique_id=825985541]
 anchors_preset = 8
@@ -53,6 +59,7 @@ theme_override_font_sizes/font_size = 40
 text = "Confirmer la position du panier"
 
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
+transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, 0, 0, 0)
 
 [node name="NextLevel" type="Button" parent="." unique_id=1237651726]
 anchors_preset = 5
@@ -96,6 +103,58 @@ offset_top = 10.0
 offset_right = 50.0
 offset_bottom = 65.0
 theme_override_font_sizes/font_size = 40
+
+[node name="Floor" type="Node3D" parent="." unique_id=1406393240]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1059276709]
+transform = Transform3D(3.2290568, 0, 0, 0, 3.2290568, 0, 0, 0, 3.2290568, 13, 0.052, 13)
+material_override = SubResource("StandardMaterial3D_5a7ea")
+mesh = SubResource("QuadMesh_8j60k")
+
+[node name="Wall" type="Node3D" parent="." unique_id=1500650431]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.884678, 0, -4.896121)
+
+[node name="Mountain" parent="Wall" unique_id=2012156666 instance=ExtResource("3_8gbba")]
+transform = Transform3D(0.9559673, 0, 0.2934731, 0, 1, 0, -0.2934731, 0, 0.9559673, 2.1876879, 0, -7.1130476)
+
+[node name="Mountain2" parent="Wall" unique_id=1653966 instance=ExtResource("3_8gbba")]
+transform = Transform3D(0.9504018, 0, -0.3110248, 0, 1, 0, 0.3110248, 0, 0.9504018, 14.751402, 0, -8.126259)
+
+[node name="Mountain3" parent="Wall" unique_id=1133381620 instance=ExtResource("3_8gbba")]
+transform = Transform3D(0.9971851, 0, -0.07497874, 0, 1, 0, 0.07497874, 0, 0.9971851, 27.203718, 0, -4.872098)
+
+[node name="Mountain14" parent="Wall" unique_id=854986941 instance=ExtResource("3_8gbba")]
+transform = Transform3D(0.32601374, 0, -0.94536513, 0, 1, 0, 0.94536513, 0, 0.32601374, 35.183136, 0, -1.0616136)
+
+[node name="Mountain4" parent="Wall" unique_id=1271127932 instance=ExtResource("3_8gbba")]
+transform = Transform3D(-0.10445908, 0, -0.99452925, 0, 1, 0, 0.99452925, 0, -0.10445908, 37.881847, 0, 12.577494)
+
+[node name="Mountain5" parent="Wall" unique_id=733077354 instance=ExtResource("3_8gbba")]
+transform = Transform3D(0.28893155, 0, 0.9573498, 0, 1, 0, -0.9573498, 0, 0.28893155, -13.068638, 0, 10.925043)
+
+[node name="Mountain7" parent="Wall" unique_id=1868078056 instance=ExtResource("3_8gbba")]
+transform = Transform3D(-0.38553566, 0, 0.92269295, 0, 1, 0, -0.92269295, 0, -0.38553566, -11.464748, 0, 24.369156)
+
+[node name="Mountain8" parent="Wall" unique_id=979490760 instance=ExtResource("3_8gbba")]
+transform = Transform3D(-0.011885406, 0, 0.99992937, 0, 1, 0, -0.99992937, 0, -0.011885406, -10.460726, 0, 38.485306)
+
+[node name="Mountain9" parent="Wall" unique_id=185064622 instance=ExtResource("3_8gbba")]
+transform = Transform3D(-0.997876, 0, -0.06514186, 0, 1, 0, 0.06514186, 0, -0.997876, -2.0574245, 0, 41.642303)
+
+[node name="Mountain10" parent="Wall" unique_id=1737698611 instance=ExtResource("3_8gbba")]
+transform = Transform3D(-0.9056503, 0, 0.4240256, 0, 1, 0, -0.4240256, 0, -0.9056503, 10.123371, 0, 46.65432)
+
+[node name="Mountain11" parent="Wall" unique_id=1179017120 instance=ExtResource("3_8gbba")]
+transform = Transform3D(-0.99847955, 0, -0.05512449, 0, 1, 0, 0.05512449, 0, -0.99847955, 23.435102, 0, 48.083733)
+
+[node name="Mountain12" parent="Wall" unique_id=1334792979 instance=ExtResource("3_8gbba")]
+transform = Transform3D(-0.0023037791, 0, -0.9999975, 0, 1, 0, 0.9999975, 0, -0.0023037791, 35.77207, 0, 27.099556)
+
+[node name="Mountain13" parent="Wall" unique_id=1402757315 instance=ExtResource("3_8gbba")]
+transform = Transform3D(-0.6510127, 0, -0.7590669, 0, 1, 0, 0.7590669, 0, -0.6510127, 33.54235, 0, 40.843887)
+
+[node name="Mountain6" parent="Wall" unique_id=2088842505 instance=ExtResource("3_8gbba")]
+transform = Transform3D(0.66038185, 0, 0.75092995, 0, 1, 0, -0.75092995, 0, 0.66038185, -7.2576046, 0, -1.3050156)
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Sampling" to="." method="_on_sampling_timeout"]
