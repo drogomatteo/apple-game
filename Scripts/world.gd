@@ -206,7 +206,7 @@ func Initialisation() -> void:
 	Placer_Objet_sur_map("basket")
 	
 	# On rajoute 1 arbre pour chaque palier de 5 au dessus de 21 (avec un minimum de 1 arbres)
-	max_tree = max(1, int(ceil((score-20)/5)))
+	max_tree = max(1, int(ceil((score-15)/5)))
 	
 	for i in range(max_tree):
 		Placer_Objet_sur_map("tree", str(i))
