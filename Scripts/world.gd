@@ -72,16 +72,20 @@ func _physics_process(_delta: float) -> void:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" seconde")
 
 	if next_level.is_pressed():
+		#Si c'était le dernier niveau, alors on arrête
+		if niveau == niveau_max:
+			get_tree().quit()
 		# On retire noeuds rajoutés
-		Basket.free()
+		Basket.queue_free()
 		if Difficulté_actuel[0]:
-			Visual.free()
+			Visual.queue_free()
 		
 		for child in Arbre:
-			child.free()
-		Apple_tree.free()
+			child.queue_free()
+		Apple_tree.queue_free()
 		#Puis après on les rajoutes
 		Initialisation()
+		niveau += 1
 		phase = 0
 	
 	if (validate_button.is_pressed() and phase == 3) or timeout:
@@ -91,6 +95,8 @@ func _physics_process(_delta: float) -> void:
 		Player.get_child(3).set_visible(false)
 		Player.get_child(4).set_visible(false)
 		next_level.set_visible(true)
+		if niveau == niveau_max:
+			next_level.set_text("Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour quitter")
 		if timeout:
 			message_alerte.set_visible(true)
 		max_timer.stop()
