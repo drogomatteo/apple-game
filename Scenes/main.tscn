@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="3_8gbba"]
-[ext_resource type="Script" uid="uid://bly8dk40xc1vw" path="res://Scenes/api.gd" id="4_jjvhh"]
-[ext_resource type="Script" uid="uid://beit4kg2yergf" path="res://Scenes/ui_api.gd" id="5_kry3j"]
+[ext_resource type="Script" uid="uid://bly8dk40xc1vw" path="res://Scripts/api.gd" id="4_jjvhh"]
+[ext_resource type="Script" uid="uid://beit4kg2yergf" path="res://Scripts/ui_api.gd" id="5_kry3j"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5a7ea"]
 albedo_color = Color(0.40975842, 0.50363976, 0.19977424, 1)
