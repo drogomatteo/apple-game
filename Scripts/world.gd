@@ -8,10 +8,11 @@ extends Node3D
 @onready var temps_restant = $TempsRestant
 
 #Scène
-var basket : PackedScene
-var tree : PackedScene
-var apple_tree : PackedScene
-var visual : PackedScene
+@export_group("Scènes")
+@export var basket : PackedScene
+@export var tree : PackedScene
+@export var apple_tree : PackedScene
+@export var visual : PackedScene
 #Noeud
 @onready var Player = $Player
 var Basket : Node
@@ -176,11 +177,7 @@ func Initialisation() -> void:
 	message_alerte.set_visible(false)
 	temps_restant.set_visible(false)
 	
-	basket = load("res://Scenes/basket.tscn")
-	tree = load("res://Scenes/tree.tscn")
-	apple_tree = load("res://Scenes/apple_tree.tscn")
-	if Difficulté_actuel[0]:
-		visual = load("res://Scenes/tavern.tscn")
+
 	
 	map = []
 	Arbre = []
