@@ -161,7 +161,7 @@ void fragment() {
     albedo_col *= 1.0 + random_tint * color_variation_strength;
 
     vec3 painted = mix(albedo_col * 0.9, albedo_col * 1.1, noise);
-    ALBEDO = painted * tex.rgb;
+    ALBEDO = painted;
 
     ROUGHNESS = roughness;
     SPECULAR = specular;

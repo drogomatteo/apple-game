@@ -3,6 +3,16 @@ color vriation 1:
 herb bottom: 797E37
 herb top: B4BB54
 
+HERBE COULEUR FINALE:
+	___Foncé___
+	667d37
+	8f9542
+	a6994b
+	ba9d54
+	b7ad4c
+	d1b560
+	_____Clair_____
+
 
 <palette>
   <color name="Charcoal Blue" hex="325269" r="50" g="82" b="105" />
