@@ -8,15 +8,18 @@ extends Node3D
 @onready var temps_restant = $TempsRestant
 
 #Scène
-var basket : PackedScene
-var tree : PackedScene
-var apple_tree : PackedScene
-var visual : PackedScene
+@export_group("Scènes")
+@export var basket : PackedScene
+@export var tree : PackedScene
+@export var apple_tree : PackedScene
+@export var visual : PackedScene
 #Noeud
 @onready var Player = $Player
 var Basket : Node
 var Apple_tree : Node
 var Visual : Node
+#Gravité
+@export var spawn_height := 3.0
 
 #Gestion des arbres (dans le cas difficile)
 var Arbre : Array
@@ -58,7 +61,7 @@ var score = 15
 var Normal = 10
 var Difficile = 20
 var Difficulté_actuel : Array
-
+@export var use_generated_spawn := true
 
 func _ready() -> void:
 	Initialisation()
@@ -190,11 +193,7 @@ func Initialisation() -> void:
 	message_alerte.set_visible(false)
 	temps_restant.set_visible(false)
 	
-	basket = load("res://Scenes/basket.tscn")
-	tree = load("res://Scenes/tree.tscn")
-	apple_tree = load("res://Scenes/apple_tree.tscn")
-	if Difficulté_actuel[0]:
-		visual = load("res://Scenes/tavern.tscn")
+
 	
 	map = []
 	Arbre = []
@@ -232,7 +231,12 @@ func Initialisation() -> void:
 	if Difficulté_actuel[0]:
 		Visual = CreateNode(visual, "visual")
 	# Déplacer le joueur sur la carte
-	Player.set_position(Vector3(Objet["player0"].x, 0, Objet["player0"].z))
+	
+
+	if use_generated_spawn:
+		Player.set_position(Vector3(Objet["player0"].x,spawn_height,Objet["player0"].z))
+		print("Spawn joueur :", Objet["player0"])
+
 
 	#Modification de la visibilité
 	Basket.set_visible(true)

@@ -1,35 +1,68 @@
 [gd_scene format=3 uid="uid://ddrom61vk22oy"]
 
 [ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_jjgbg"]
+[ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_6bp64"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="3_8gbba"]
+[ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="3_344ge"]
+[ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
+[ext_resource type="Script" uid="uid://bly8dk40xc1vw" path="res://Scripts/api.gd" id="4_jjvhh"]
+[ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
+[ext_resource type="Script" uid="uid://beit4kg2yergf" path="res://Scripts/ui_api.gd" id="5_kry3j"]
+[ext_resource type="PackedScene" uid="uid://bsxg8vbm2rc2a" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
+[ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="8_344ge"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5a7ea"]
-albedo_color = Color(0.40975842, 0.50363976, 0.19977424, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
+size = Vector3(70, 1, 70)
 
-[sub_resource type="QuadMesh" id="QuadMesh_8j60k"]
-size = Vector2(20, 20)
-orientation = 1
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ynf5e"]
+shader = ExtResource("8_344ge")
+shader_parameter/sun_direction = Vector3(0, 1, 0)
+shader_parameter/day_top_color = Color(0.33437, 0.60982406, 0.84853494, 1)
+shader_parameter/day_bottom_color = Color(0.58431375, 0.8, 0.8901961, 1)
+shader_parameter/sunset_top_color = Color(0.7, 0.75, 1, 1)
+shader_parameter/sunset_bottom_color = Color(1, 0.5, 0.7, 1)
+shader_parameter/night_top_color = Color(0.02, 0, 0.04, 1)
+shader_parameter/night_bottom_color = Color(0.1, 0, 0.2, 1)
+shader_parameter/horizon_color = Color(0, 0.7, 0.8, 1)
+shader_parameter/horizon_blur = 0.05
+shader_parameter/sun_color = Color(10, 8, 1, 1)
+shader_parameter/sun_sunset_color = Color(10, 0, 0, 1)
+shader_parameter/sun_size = 0.2
+shader_parameter/sun_blur = 10.0
+shader_parameter/moon_color = Color(1, 0.95, 0.7, 1)
+shader_parameter/moon_size = 0.06
+shader_parameter/moon_blur = 0.1
+shader_parameter/clouds_edge_color = Color(0.8, 0.8, 0.98, 1)
+shader_parameter/clouds_top_color = Color(1, 1, 1, 1)
+shader_parameter/clouds_middle_color = Color(0.92, 0.92, 0.98, 1)
+shader_parameter/clouds_bottom_color = Color(0.83, 0.83, 0.94, 1)
+shader_parameter/clouds_speed = 2.0
+shader_parameter/clouds_direction = 0.2
+shader_parameter/clouds_scale = 1.0
+shader_parameter/clouds_cutoff = 0.3
+shader_parameter/clouds_fuzziness = 0.5
+shader_parameter/clouds_weight = 0.0
+shader_parameter/clouds_blur = 0.25
+shader_parameter/stars_speed = 1.0
+shader_parameter/overwritten_time = 0.0
+
+[sub_resource type="Sky" id="Sky_hptm8"]
+sky_material = SubResource("ShaderMaterial_ynf5e")
+
+[sub_resource type="Environment" id="Environment_d1ilt"]
+background_mode = 2
+sky = SubResource("Sky_hptm8")
+ambient_light_source = 2
+ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
+ambient_light_energy = 0.3
 
 [node name="World" type="Node3D" unique_id=1297503563]
 script = ExtResource("1_jjgbg")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
-transform = Transform3D(0.49999994, 0.70710677, -0.4999999, 0.7071067, -3.090862e-08, 0.7071067, 0.49999988, -0.70710677, -0.4999999, -3.3849945, 20.851868, 0)
-light_color = Color(1, 1, 0.627451, 1)
-light_energy = 0.8
-shadow_enabled = true
-shadow_opacity = 0.5
-directional_shadow_max_distance = 50.0
-sky_mode = 1
-
-[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="." unique_id=1231939112]
-transform = Transform3D(-0.5, -0.70710677, 0.49999997, 0.70710677, -3.090862e-08, 0.70710677, -0.49999994, 0.70710677, 0.49999997, 6.8855686, 20.851868, 20.706642)
-light_color = Color(1, 1, 0.627451, 1)
-light_energy = 0.16
-shadow_opacity = 0.5
-directional_shadow_max_distance = 50.0
-sky_mode = 1
+basket = ExtResource("2_6bp64")
+tree = ExtResource("3_344ge")
+apple_tree = ExtResource("4_ynf5e")
+visual = ExtResource("5_hptm8")
 
 [node name="MessageLabel" type="Label" parent="." unique_id=825985541]
 anchors_preset = 8
@@ -59,7 +92,7 @@ theme_override_font_sizes/font_size = 40
 text = "Confirmer la position du panier"
 
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
-transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, 0, 0, 0)
+transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -4.78409, 1.88428, 11.871809)
 
 [node name="NextLevel" type="Button" parent="." unique_id=1237651726]
 anchors_preset = 5
@@ -106,13 +139,47 @@ theme_override_font_sizes/font_size = 40
 
 [node name="Floor" type="Node3D" parent="." unique_id=1406393240]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1059276709]
-transform = Transform3D(3.2290568, 0, 0, 0, 3.2290568, 0, 0, 0, 3.2290568, 13, 0.052, 13)
-material_override = SubResource("StandardMaterial3D_5a7ea")
-mesh = SubResource("QuadMesh_8j60k")
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=1466840344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+collision_layer = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=2104309237]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
+shape = SubResource("BoxShape3D_6bp64")
+debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
+
+[node name="Ensemble Sol" type="Node3D" parent="Floor" unique_id=426609364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
+
+[node name="Node3D" parent="Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ynf5e")]
+
+[node name="Node3D2" parent="Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+
+[node name="Node3D3" parent="Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+
+[node name="Node3D4" parent="Floor/Ensemble Sol" unique_id=1869510594 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
+
+[node name="Node3D5" parent="Floor/Ensemble Sol" unique_id=444045714 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 20)
+
+[node name="Node3D6" parent="Floor/Ensemble Sol" unique_id=406362351 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 40)
+
+[node name="Node3D7" parent="Floor/Ensemble Sol" unique_id=1998737162 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+
+[node name="Node3D8" parent="Floor/Ensemble Sol" unique_id=1992462546 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 20)
+
+[node name="Node3D9" parent="Floor/Ensemble Sol" unique_id=426418514 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 40)
 
 [node name="Wall" type="Node3D" parent="." unique_id=1500650431]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.884678, 0, -4.896121)
+visible = false
 
 [node name="Mountain" parent="Wall" unique_id=2012156666 instance=ExtResource("3_8gbba")]
 transform = Transform3D(0.9559673, 0, 0.2934731, 0, 1, 0, -0.2934731, 0, 0.9559673, 2.1876879, 0, -7.1130476)
@@ -155,6 +222,68 @@ transform = Transform3D(-0.6510127, 0, -0.7590669, 0, 1, 0, 0.7590669, 0, -0.651
 
 [node name="Mountain6" parent="Wall" unique_id=2088842505 instance=ExtResource("3_8gbba")]
 transform = Transform3D(0.66038185, 0, 0.75092995, 0, 1, 0, -0.75092995, 0, 0.66038185, -7.2576046, 0, -1.3050156)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1906453172]
+environment = SubResource("Environment_d1ilt")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=629879536]
+transform = Transform3D(-0.40055937, -0.7401756, -0.5400853, -0.6929114, -0.14097442, 0.70710677, -0.5995214, 0.6574695, -0.4564075, -1.0428352, 21.82301, 0.33849716)
+light_color = Color(1, 1, 0.627451, 1)
+light_energy = 1.79
+shadow_enabled = true
+shadow_opacity = 0.5
+directional_shadow_max_distance = 50.0
+sky_mode = 1
+
+[node name="API" type="Node" parent="." unique_id=1739315456]
+script = ExtResource("4_jjvhh")
+
+[node name="UI" type="Control" parent="." unique_id=1731553225]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_kry3j")
+
+[node name="NomInput" type="LineEdit" parent="UI" unique_id=310492886]
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
+
+[node name="PrenomInput" type="LineEdit" parent="UI" unique_id=1778869253]
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
+
+[node name="EmailInput" type="LineEdit" parent="UI" unique_id=666875394]
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
+
+[node name="AnneeInput" type="LineEdit" parent="UI" unique_id=1819874205]
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
+
+[node name="IdInput" type="LineEdit" parent="UI" unique_id=685321636]
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
+
+[node name="CreateButton" type="Button" parent="UI" unique_id=324293082]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="UpdateButton" type="Button" parent="UI" unique_id=67922705]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="ResultLabel" type="Label" parent="UI" unique_id=1069512147]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Sampling" to="." method="_on_sampling_timeout"]
