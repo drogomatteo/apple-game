@@ -14,10 +14,6 @@ config/name="AppleGame"
 run/main_scene="uid://ddrom61vk22oy"
 config/features=PackedStringArray("4.6", "Mobile")
 
-[autoload]
-
-GameManager="*uid://cquy1ltqdm4j5"
-
 [input]
 
 escape={
