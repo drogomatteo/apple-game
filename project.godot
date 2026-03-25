@@ -11,12 +11,17 @@ config_version=5
 [application]
 
 config/name="AppleGame"
-run/main_scene="uid://ddrom61vk22oy"
+run/main_scene="uid://chqtuqlcdi2qb"
 config/features=PackedStringArray("4.6", "Mobile")
 
 [autoload]
 
 GameManager="*uid://cquy1ltqdm4j5"
+PlayerData="*uid://cwrvjrtmo4u62"
+
+[editor]
+
+version_control/autoload_on_startup=true
 
 [input]
 

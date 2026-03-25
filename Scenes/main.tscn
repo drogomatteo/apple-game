@@ -3,8 +3,7 @@
 [ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="3_8gbba"]
-[ext_resource type="Script" uid="uid://bly8dk40xc1vw" path="res://Scripts/api.gd" id="4_jjvhh"]
-[ext_resource type="Script" uid="uid://beit4kg2yergf" path="res://Scripts/ui_api.gd" id="5_kry3j"]
+[ext_resource type="Script" path="res://Scripts/api.gd" id="4_jjvhh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5a7ea"]
 albedo_color = Color(0.40975842, 0.50363976, 0.19977424, 1)
@@ -160,53 +159,6 @@ transform = Transform3D(0.66038185, 0, 0.75092995, 0, 1, 0, -0.75092995, 0, 0.66
 
 [node name="API" type="Node" parent="." unique_id=1739315456]
 script = ExtResource("4_jjvhh")
-
-[node name="UI" type="Control" parent="." unique_id=1731553225]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("5_kry3j")
-
-[node name="NomInput" type="LineEdit" parent="UI" unique_id=310492886]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="PrenomInput" type="LineEdit" parent="UI" unique_id=1778869253]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="EmailInput" type="LineEdit" parent="UI" unique_id=666875394]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="AnneeInput" type="LineEdit" parent="UI" unique_id=1819874205]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="IdInput" type="LineEdit" parent="UI" unique_id=685321636]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="CreateButton" type="Button" parent="UI" unique_id=324293082]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="UpdateButton" type="Button" parent="UI" unique_id=67922705]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="ResultLabel" type="Label" parent="UI" unique_id=1069512147]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Sampling" to="." method="_on_sampling_timeout"]
