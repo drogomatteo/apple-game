@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c6l5lj6s2mx2m"]
 
 [ext_resource type="PackedScene" uid="uid://bsww2dylcnwu3" path="res://Assets/Models/Apple.glb" id="1_ld5qe"]
-[ext_resource type="PackedScene" uid="uid://b37sqmsoi66f0" path="res://Assets/Models/Tree.glb" id="2_74o8y"]
+[ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="2_ld5qe"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wbdcx"]
 size = Vector3(2.202179, 7.415161, 2.3556213)
@@ -14,11 +14,12 @@ collision_mask = 0
 [node name="Apple2" parent="." unique_id=393320851 instance=ExtResource("1_ld5qe")]
 transform = Transform3D(0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002, 0, 0, 0.884)
 
-[node name="Tree" parent="." unique_id=386988797 instance=ExtResource("2_74o8y")]
-
 [node name="Apple" parent="." unique_id=158596137 instance=ExtResource("1_ld5qe")]
 transform = Transform3D(0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002, 0.83055055, 0, 0.222)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=711884376]
 transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.009719876, 3.2075799, 0.0861664)
 shape = SubResource("BoxShape3D_wbdcx")
+
+[node name="Tree" parent="." unique_id=187056187 instance=ExtResource("2_ld5qe")]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)

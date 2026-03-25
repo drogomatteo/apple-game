@@ -17,7 +17,7 @@ transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0
 shape = SubResource("BoxShape3D_rsuno")
 
 [node name="CommonTree2" type="MeshInstance3D" parent="." unique_id=667216349]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.010799765, 0, 0.0030771887)
+transform = Transform3D(0.9999998, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0.016686715, -0.049753185, -0.010068018)
 mesh = ExtResource("2_l3oha")
 surface_material_override/0 = ExtResource("3_m36md")
 surface_material_override/1 = ExtResource("4_q8wpw")

@@ -82,7 +82,7 @@ void fragment() {
 		shape_value = texture(shape_atlas, atlas_uv).r;
 	}
 
-	float noise_value = texture(noise_texture, world_pos.xz * 0.1).r;
+	float noise_value = texture(noise_texture, world_pos.xz * 0.05).r;
 	if(randomf(id,1) < random_variation) noise_value += 0.4;
 	vec4 color = texture(color_gradient, vec2(noise_value, 0.0));
 

@@ -15,7 +15,7 @@ void vertex() {
 }
 
 void fragment() {
-	float noise_value = texture(noise_texture, world_pos.xz * 0.1).r;
+	float noise_value = texture(noise_texture, world_pos.xz * 0.05).r;
 	vec4 color = texture(color_gradient, vec2(noise_value, 0.0));
 
 	ALBEDO = color.rgb;
