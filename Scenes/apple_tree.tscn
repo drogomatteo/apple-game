@@ -12,10 +12,13 @@ collision_layer = 16
 collision_mask = 0
 
 [node name="Apple2" parent="." unique_id=393320851 instance=ExtResource("1_ld5qe")]
-transform = Transform3D(0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002, 0, 0, 0.884)
+transform = Transform3D(0.0029999996, 0, 0, 0, 0.0029999996, 0, 0, 0, 0.0029999996, 0, 0.10114937, 0.884)
+
+[node name="Apple3" parent="." unique_id=1535718848 instance=ExtResource("1_ld5qe")]
+transform = Transform3D(0.0029999996, 0, 0, 0, 0.0029999996, 0, 0, 0, 0.0029999996, 0.41757783, -0.023440572, 0.84566766)
 
 [node name="Apple" parent="." unique_id=158596137 instance=ExtResource("1_ld5qe")]
-transform = Transform3D(0.002, 0, 0, 0, 0.002, 0, 0, 0, 0.002, 0.83055055, 0, 0.222)
+transform = Transform3D(0.004, 0, 0, 0, 0.004, 0, 0, 0, 0.004, 0.83055055, 0, 0.222)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=711884376]
 transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.009719876, 3.2075799, 0.0861664)
