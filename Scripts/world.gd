@@ -26,10 +26,10 @@ var Arbre : Array
 var index_Tree : int
 var max_tree : int
 
-# Donnée pour retracer la position du joueur
-var Fs : float = 0.2
-var sampling : float = 0
+# Donnée pour retracer la position du joueur et pour le fichier
 var position_joueur : Array
+var graine : int
+var string_to_save : String
 
 #Grille 16mX16m, coupé en 8 carré de longueur 2m
 var grid_size : int = 8
@@ -75,16 +75,20 @@ func _physics_process(_delta: float) -> void:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" seconde")
 
 	if next_level.is_pressed():
+		#Si c'était le dernier niveau, alors on arrête
+		if niveau == niveau_max:
+			get_tree().quit()
 		# On retire noeuds rajoutés
-		Basket.free()
+		Basket.queue_free()
 		if Difficulté_actuel[0]:
-			Visual.free()
+			Visual.queue_free()
 		
 		for child in Arbre:
-			child.free()
-		Apple_tree.free()
+			child.queue_free()
+		Apple_tree.queue_free()
 		#Puis après on les rajoutes
 		Initialisation()
+		niveau += 1
 		phase = 0
 	
 	if (validate_button.is_pressed() and phase == 3) or timeout:
@@ -94,6 +98,8 @@ func _physics_process(_delta: float) -> void:
 		Player.get_child(3).set_visible(false)
 		Player.get_child(4).set_visible(false)
 		next_level.set_visible(true)
+		if niveau == niveau_max:
+			next_level.set_text("Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour quitter")
 		if timeout:
 			message_alerte.set_visible(true)
 		max_timer.stop()
@@ -113,6 +119,13 @@ func _physics_process(_delta: float) -> void:
 			message_label.set_text("Vous avez 1 étoile")
 			score = max(score - 1, 0) #On ne veut pas un score négatif
 		message_label.set_visible(true)
+		
+		
+		string_to_save += save_level(niveau)
+		if niveau == niveau_max:
+			var save_file = FileAccess.open("user://session.txt", FileAccess.WRITE)
+			save_file.store_string(string_to_save)
+			save_file.close()
 
 	#Gestion des collisions avec le joueur
 	for index in range(Player.get_slide_collision_count()):
@@ -156,7 +169,8 @@ func _physics_process(_delta: float) -> void:
 
 func Initialisation() -> void:
 	#Choix de la graîne de génération
-	seed(randi()%10000000) # Limite à 10^7 mondes (pour l'instant une constante car on test)
+	graine = randi()%10000000
+	seed(graine) # Limite à 10^7 mondes (pour l'instant une constante car on test)
 	#On doit pouvoir le nombre de monde différents possibles
 	timeout = false
 	
@@ -199,7 +213,7 @@ func Initialisation() -> void:
 	Placer_Objet_sur_map("basket")
 	
 	# On rajoute 1 arbre pour chaque palier de 5 au dessus de 21 (avec un minimum de 1 arbres)
-	max_tree = max(1, int(ceil((score-20)/5)))
+	max_tree = max(1, int(ceil((score-15)/5)))
 	
 	for i in range(max_tree):
 		Placer_Objet_sur_map("tree", str(i))
@@ -288,6 +302,29 @@ func Placer_Objet_sur_map(mot : String, indice : String = "0"):
 		occupeAdj(pos.x, pos.z)
 		Objet[mot+indice] = pos*cell_size
 		break
+
+func save_level(i):
+	var level = ""
+	level += "level"+str(i)+"\n"
+	
+	level += str(graine)+"\n"
+	
+	level += "Position du joueur :\n"
+	var k = 0
+	# On rajoute la position de départ
+	level += "0.0 "+str(Objet["player0"].x)+" "+str(Objet["player0"].z)+"\n"
+	k += 1
+	for vecteur in position_joueur:
+		level += str(k*0.2)+" "+str(vecteur.x)+" "+str(vecteur.z)+"\n"
+		k += 1
+	#On stocke la position finale
+	level += str(k*0.2)+" "+str(position_Finale.x)+" "+str(position_Finale.z)+"\n"
+	#On stocke la distance entre le joueur et le panier
+	level += "Résultats :\n"
+	level += str(distance)+"\n"
+	level += str(score)+"\n"
+	
+	return level
 
 func _on_timer_timeout() -> void:
 	timeout = true
