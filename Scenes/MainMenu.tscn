@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
 [ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="8_4qsgn"]
-[ext_resource type="FontFile" uid="uid://dxrhu03rxhj0k" path="res://Assets/UI-UX/Font/Showpop.otf" id="8_fn5mr"]
+[ext_resource type="FontFile" uid="uid://b2kjkkng2nqef" path="res://Assets/UI-UX/Font/Showpop.otf" id="8_fn5mr"]
 [ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="9_37v8m"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_fbs3s"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_0wxkg"]
@@ -309,6 +309,7 @@ transform = Transform3D(0.5946082, 0, -0.08025672, 0, 0.59999996, 0, 0.08025672,
 [node name="Camera3D" type="Camera3D" parent="ENvironment" unique_id=211906111]
 transform = Transform3D(0.7625035, -0.1539145, -0.6284097, -0.005938984, 0.96958476, -0.2446838, 0.64695674, 0.19030437, 0.7383977, 0.6706778, 1.0877607, 4.2089725)
 fov = 81.041435
+metadata/_edit_lock_ = true
 
 [node name="Interface" type="Node" parent="." unique_id=769587623]
 
