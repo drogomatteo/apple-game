@@ -1,8 +1,8 @@
 [gd_scene format=4 uid="uid://d113n3gul2i43"]
 
-[ext_resource type="PackedScene" uid="uid://pf8n1md86vbs" path="res://Assets/Fences/Utilisés/EA03_Fence_Cobble_End_01c.fbx" id="1_65tya"]
+[ext_resource type="PackedScene" uid="uid://bbr03gwgoau2" path="res://Assets/Fences/Utilisés/EA03_Fence_Cobble_End_01c.fbx" id="1_65tya"]
 [ext_resource type="Material" uid="uid://cxwc824vhgspx" path="res://Assets/Fences/EmaceMaterial.tres" id="1_vtu51"]
-[ext_resource type="PackedScene" uid="uid://djh0hhs5iftt0" path="res://Assets/Fences/Utilisés/EA03_Fence_Cobble_Seam_01b.fbx" id="2_vtu51"]
+[ext_resource type="PackedScene" uid="uid://busrnjdksdojs" path="res://Assets/Fences/Utilisés/EA03_Fence_Cobble_Seam_01b.fbx" id="2_vtu51"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6hsvb"]
 resource_name = "EmaceArt_Roadside"
@@ -135,29 +135,31 @@ surface_material_override/0 = ExtResource("1_vtu51")
 [node name="EA03_Fence_Cobble_End_01c" parent="." unique_id=1812276293 instance=ExtResource("1_65tya")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4954224, -0.08046651, 0.1091423)
 
-[node name="EA03_Fence_Cobble_End_01c_LOD0" parent="EA03_Fence_Cobble_End_01c" index="0" unique_id=2076792417]
+[node name="EA03_Fence_Cobble_End_01c_LOD0" parent="EA03_Fence_Cobble_End_01c" index="0"]
 skin = SubResource("Skin_eb6dy")
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_End_01c_LOD1" parent="EA03_Fence_Cobble_End_01c" index="1" unique_id=1618393810]
+[node name="EA03_Fence_Cobble_End_01c_LOD1" parent="EA03_Fence_Cobble_End_01c" index="1"]
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_End_01c_LOD2" parent="EA03_Fence_Cobble_End_01c" index="2" unique_id=581492046]
+[node name="EA03_Fence_Cobble_End_01c_LOD2" parent="EA03_Fence_Cobble_End_01c" index="2"]
 surface_material_override/0 = ExtResource("1_vtu51")
 
 [node name="EA03_Fence_Cobble_Seam_01b" parent="." unique_id=1968690976 instance=ExtResource("2_vtu51")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8891997, -0.09634739, 0.08181059)
 
-[node name="EA03_Fence_Cobble_Seam_01b_LOD0" parent="EA03_Fence_Cobble_Seam_01b" index="0" unique_id=1900099560]
+[node name="EA03_Fence_Cobble_Seam_01b_LOD0" parent="EA03_Fence_Cobble_Seam_01b" index="0"]
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_Seam_01b_LOD1" parent="EA03_Fence_Cobble_Seam_01b" index="1" unique_id=1552954972]
+[node name="EA03_Fence_Cobble_Seam_01b_LOD1" parent="EA03_Fence_Cobble_Seam_01b" index="1"]
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_Seam_01b_LOD2" parent="EA03_Fence_Cobble_Seam_01b" index="2" unique_id=2046958875]
+[node name="EA03_Fence_Cobble_Seam_01b_LOD2" parent="EA03_Fence_Cobble_Seam_01b" index="2"]
 surface_material_override/0 = ExtResource("1_vtu51")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=48745797]
+collision_layer = 7
+collision_mask = 7
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=411411004]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3263018, 0.3357365, 0.030098677)

@@ -210,7 +210,7 @@ transform = Transform3D(-0.40055937, -0.7401756, -0.5400853, -0.6929114, -0.1409
 light_color = Color(1, 0.8951667, 0.63, 1)
 light_energy = 0.875
 shadow_enabled = true
-shadow_opacity = 0.5
+shadow_opacity = 0.63
 directional_shadow_max_distance = 50.0
 sky_mode = 1
 
