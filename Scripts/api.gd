@@ -55,7 +55,6 @@ func update_user(id, nom, prenom, email, annee):
 func _on_request_completed(result, response_code, headers, body):
 	print("RESULT:", result)
 	print("Code:", response_code)
-
 	var response = body.get_string_from_utf8()
 	print("Réponse:", response)
 
