@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ob5imiystqoc"]
 
 [ext_resource type="Script" uid="uid://cl31bj3wv04u4" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_cvnsp"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v0iea"]
 radius = 0.4
@@ -52,3 +53,7 @@ offset_bottom = -58.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 40
 text = ">"
+
+[node name="Basket" parent="." unique_id=1088006378 instance=ExtResource("2_cvnsp")]
+transform = Transform3D(0.124859296, -0.022016067, -0.27189237, 0.05209446, 0.29544234, -1.8343476e-09, 0.2677617, -0.047213618, 0.12678546, 0.65732884, -0.15692094, -0.6272743)
+visible = false

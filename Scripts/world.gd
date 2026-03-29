@@ -97,6 +97,7 @@ func _physics_process(_delta: float) -> void:
 		Player.get_child(2).set_visible(false)
 		Player.get_child(3).set_visible(false)
 		Player.get_child(4).set_visible(false)
+		Player.get_child(5).set_visible(false)
 		next_level.set_visible(true)
 		if niveau == niveau_max:
 			next_level.set_text("Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour quitter")
@@ -141,6 +142,10 @@ func _physics_process(_delta: float) -> void:
 			Arbre[0].set_visible(true)
 			index_Tree = 0
 			Player.set_collision_mask(10)
+			
+			#On rajoute le panier à coté du joueur
+			Player.get_child(5).set_visible(true)
+			
 			break
 		
 		
