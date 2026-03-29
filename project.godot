@@ -14,6 +14,11 @@ config/name="AppleGame"
 run/main_scene="uid://jjyvhy1qlyy3"
 config/features=PackedStringArray("4.6", "Mobile")
 
+[autoload]
+
+GameManager="*uid://cquy1ltqdm4j5"
+PlayerData="*uid://cwrvjrtmo4u62"
+
 [editor]
 
 version_control/plugin_name="GitPlugin"
