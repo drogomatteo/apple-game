@@ -40,6 +40,7 @@ var Objet : Dictionary
 #Données pour la dernière phase
 var position_Finale : Vector3
 var distance : float
+var distanceAParcourir : float
 
 #Pour compter les niveaux du joueur (1-5 : tuto, 6-20 : test)
 var niveau : int = 1
@@ -110,11 +111,23 @@ func _physics_process(_delta: float) -> void:
 		position_Finale = player_cell()
 		
 		distance = sqrt((position_Finale.x-Objet["basket0"].x)**2+(position_Finale.z-Objet["basket0"].z)**2)
+		distanceAParcourir = sqrt((Objet["tree"+str(index_Tree)].x-Objet["basket0"].x)**2+(Objet["tree"+str(index_Tree)].z-Objet["basket0"].z)**2)
+		var seuil1 = PI/12
+		var seuil2 = PI/6
 		
-		if distance <= 3:
+		print("distance")
+		print(distance)
+		print("ditance entre le panier et le dernier arbre")
+		print(distanceAParcourir)
+		print("seuil n°1")
+		print(distanceAParcourir*sin(seuil1))
+		print("seuil n°2")
+		print(distanceAParcourir*sin(seuil2))
+		
+		if distance <= distanceAParcourir*sin(seuil1):
 			message_label.set_text("Vous avez 3 étoiles")
 			score = score + 1
-		elif 3 < distance and distance <= 7:
+		elif distanceAParcourir*sin(seuil1) < distance and distance <= distanceAParcourir*sin(seuil2):
 			message_label.set_text("Vous avez 2 étoiles")
 		else:
 			message_label.set_text("Vous avez 1 étoile")

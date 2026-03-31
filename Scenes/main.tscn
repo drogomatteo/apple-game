@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_6bp64"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="3_344ge"]
-[ext_resource type="Script" uid="uid://bly8dk40xc1vw" path="res://Scripts/api.gd" id="4_jjvhh"]
+[ext_resource type="Script" uid="uid://26ij6miojb1w" path="res://Scripts/api.gd" id="4_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
 [ext_resource type="Script" uid="uid://beit4kg2yergf" path="res://Scripts/ui_api.gd" id="5_kry3j"]
@@ -13,6 +13,10 @@
 [ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="8_344ge"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_6iyac"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_fdnlq"]
+font_size = 50
+font_color = Color(0.9019608, 0.078431375, 0.078431375, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(70, 1, 70)
@@ -159,7 +163,8 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
 theme_override_font_sizes/font_size = 40
-text = "Temps écoulé"
+text = "Temps ecoule"
+label_settings = SubResource("LabelSettings_fdnlq")
 
 [node name="TempsRestant" type="Label" parent="." unique_id=151437164]
 offset_left = 10.0
