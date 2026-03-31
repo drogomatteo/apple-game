@@ -10,6 +10,8 @@ const GRAVITY = 9.8
 @onready var Right = $Right
 @onready var Forward = $Forward
 
+@export var bruitPas : AudioStreamRandomizer
+
 var temp_vel : float = 0
 var temp_sens : float = 0
 var horizontal_velocity : Vector3
@@ -28,6 +30,9 @@ func _physics_process(delta: float) -> void:
 	
 	if avance:
 		direction.z -= 1
+		if not $AudioStreamPlayer2D.is_playing():
+			$AudioStreamPlayer2D.stream = bruitPas
+			$AudioStreamPlayer2D.play()
 	else:
 		direction.z += 1
 	
