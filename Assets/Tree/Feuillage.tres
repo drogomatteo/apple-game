@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://c6we64s4fjxp4"]
 
-[ext_resource type="Shader" path="res://Assets/Tree/Feuillage.gdshader" id="1_acuai"]
-[ext_resource type="Texture2D" uid="uid://byp2c57gpsuw0" path="res://Assets/Tree/Feuillage.PNG" id="2_bprul"]
+[ext_resource type="Shader" uid="uid://dblx2iuituycp" path="res://Assets/Tree/Feuillage.gdshader" id="1_acuai"]
+[ext_resource type="Texture2D" uid="uid://du8jcbcjaemm6" path="res://Assets/Tree/Feuillage.PNG" id="2_bprul"]
 
 [resource]
 render_priority = 0

@@ -6,9 +6,15 @@ const deceleration = 10
 const sensivity = PI/2
 const GRAVITY = 9.8
 
+const bobFreq = 4.5
+const bobAmp = 0.025
+var tBob = 0.0
+
 @onready var Left = $Left
 @onready var Right = $Right
 @onready var Forward = $Forward
+@onready var basket = $Basket
+@onready var camera = $Camera3D
 
 @export var bruitPas : AudioStreamRandomizer
 
@@ -30,9 +36,11 @@ func _physics_process(delta: float) -> void:
 	
 	if avance:
 		direction.z -= 1
+		#Gestion du son
 		if not $AudioStreamPlayer2D.is_playing():
 			$AudioStreamPlayer2D.stream = bruitPas
 			$AudioStreamPlayer2D.play()
+		#Animation du panier
 	else:
 		direction.z += 1
 	
@@ -80,5 +88,15 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= GRAVITY * delta
 	else:
 		velocity.y = 0
-
+	
 	move_and_slide()
+	_handle_head_bob(delta)
+
+func _handle_head_bob(delta):
+	tBob += delta * velocity.length() * float(is_on_floor())
+	
+	var pos = Vector3.ZERO
+	pos.y = sin(tBob * bobFreq) * bobAmp + 0.45
+	pos.x = cos(tBob * bobFreq / 2) * bobAmp 
+	
+	camera.transform.origin = pos

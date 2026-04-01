@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
 [ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="8_4qsgn"]
-[ext_resource type="FontFile" uid="uid://b2kjkkng2nqef" path="res://Assets/UI-UX/Font/Showpop.otf" id="8_fn5mr"]
+[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="8_cmrfp"]
 [ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="9_37v8m"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_fbs3s"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_0wxkg"]
@@ -79,10 +79,13 @@ shader_parameter/loop_radius = 1.0
 shader_parameter/loop_count = 0.5
 
 [sub_resource type="LabelSettings" id="LabelSettings_yygyf"]
-font = ExtResource("8_fn5mr")
+font = ExtResource("8_cmrfp")
 font_size = 100
-outline_size = 40
+outline_size = 30
 outline_color = Color(0.1974, 0.33370003, 0.47, 1)
+shadow_size = 32
+shadow_color = Color(0, 0, 0, 0.58431375)
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_2j32a"]
 
@@ -364,16 +367,16 @@ metadata/_edit_use_anchors_ = true
 [node name="StartButton" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/VBoxContainer" unique_id=555364924]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.071672834, 0.23090953, 0.35577714, 1)
-theme_override_fonts/font = ExtResource("8_fn5mr")
+theme_override_fonts/font = ExtResource("8_cmrfp")
 theme_override_font_sizes/font_size = 50
-text = "Start"
+text = "Jouer"
 metadata/_edit_use_anchors_ = true
 
 [node name="Quit Button" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/VBoxContainer" unique_id=1997243648]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("8_fn5mr")
+theme_override_fonts/font = ExtResource("8_cmrfp")
 theme_override_font_sizes/font_size = 50
-text = "Quit
+text = "Quitter
 "
 metadata/_edit_use_anchors_ = true
 

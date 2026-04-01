@@ -7,16 +7,12 @@
 [ext_resource type="Script" uid="uid://26ij6miojb1w" path="res://Scripts/api.gd" id="4_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
-[ext_resource type="Script" uid="uid://beit4kg2yergf" path="res://Scripts/ui_api.gd" id="5_kry3j"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
 [ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="8_344ge"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_6iyac"]
+[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_fdnlq"]
-font_size = 50
-font_color = Color(0.9019608, 0.078431375, 0.078431375, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(70, 1, 70)
@@ -87,6 +83,23 @@ shader_parameter/twist_frequency = 1.0
 shader_parameter/loop_radius = 1.0
 shader_parameter/loop_count = 0.5
 
+[sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
+font = ExtResource("12_fdnlq")
+font_size = 40
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_fdnlq"]
+font = ExtResource("12_fdnlq")
+font_size = 50
+font_color = Color(0.9019608, 0.078431375, 0.078431375, 1)
+shadow_size = 9
+shadow_color = Color(0, 0, 0, 0.48235294)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wsu2k"]
+font = ExtResource("12_fdnlq")
+font_size = 36
+font_color = Color(0, 0, 0, 1)
+
 [node name="World" type="Node3D" unique_id=1297503563]
 script = ExtResource("1_jjgbg")
 basket = ExtResource("2_6bp64")
@@ -94,52 +107,8 @@ tree = ExtResource("3_344ge")
 apple_tree = ExtResource("4_ynf5e")
 visual = ExtResource("5_hptm8")
 
-[node name="MessageLabel" type="Label" parent="." unique_id=825985541]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -15.5
-offset_right = 20.0
-offset_bottom = 15.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 36
-
-[node name="ValidateButton" type="Button" parent="." unique_id=922594922]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -152.0
-offset_top = -288.0
-offset_right = -32.0
-offset_bottom = -168.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 40
-theme_override_styles/normal = ExtResource("6_fdnlq")
-theme_override_styles/pressed = ExtResource("6_fdnlq")
-theme_override_styles/hover = ExtResource("6_fdnlq")
-text = "ˇ"
-
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -4.78409, 1.88428, 11.871809)
-
-[node name="NextLevel" type="Button" parent="." unique_id=1237651726]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -148.0
-offset_top = 112.0
-offset_right = 148.0
-offset_bottom = 175.00003
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 40
-text = "Niveau suivant"
 
 [node name="Timer" type="Timer" parent="." unique_id=1724200824]
 wait_time = 30.0
@@ -148,30 +117,6 @@ one_shot = true
 [node name="Sampling" type="Timer" parent="." unique_id=594617237]
 wait_time = 0.2
 autostart = true
-
-[node name="AlertMessage" type="Label" parent="." unique_id=10637415]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -132.5
-offset_top = -209.0
-offset_right = 132.5
-offset_bottom = -154.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
-theme_override_font_sizes/font_size = 40
-text = "Temps ecoule"
-label_settings = SubResource("LabelSettings_fdnlq")
-
-[node name="TempsRestant" type="Label" parent="." unique_id=151437164]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 50.0
-offset_bottom = 65.0
-theme_override_font_sizes/font_size = 40
 
 [node name="Floor" type="Node3D" parent="." unique_id=1406393240]
 
@@ -233,53 +178,6 @@ surface_material_override/0 = SubResource("ShaderMaterial_wsu2k")
 
 [node name="API" type="Node" parent="." unique_id=1739315456]
 script = ExtResource("4_jjvhh")
-
-[node name="UI" type="Control" parent="." unique_id=1731553225]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("5_kry3j")
-
-[node name="NomInput" type="LineEdit" parent="UI" unique_id=310492886]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="PrenomInput" type="LineEdit" parent="UI" unique_id=1778869253]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="EmailInput" type="LineEdit" parent="UI" unique_id=666875394]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="AnneeInput" type="LineEdit" parent="UI" unique_id=1819874205]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="IdInput" type="LineEdit" parent="UI" unique_id=685321636]
-layout_mode = 0
-offset_right = 68.5
-offset_bottom = 31.0
-
-[node name="CreateButton" type="Button" parent="UI" unique_id=324293082]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="UpdateButton" type="Button" parent="UI" unique_id=67922705]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-
-[node name="ResultLabel" type="Label" parent="UI" unique_id=1069512147]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
 
 [node name="Fences" parent="." unique_id=123485950 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.49749, 9.536743e-07, -13.549052)
@@ -388,13 +286,85 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.
 [node name="Fences6" parent="Fences/Mur4" unique_id=40612797 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=877071009]
-visible = false
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="TempsRestant" type="Label" parent="." unique_id=151437164]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 50.0
+offset_bottom = 65.0
+label_settings = SubResource("LabelSettings_jkdf5")
 
-[node name="Button" type="Button" parent="VBoxContainer" unique_id=851866003]
-layout_mode = 2
+[node name="AlertMessage" type="Label" parent="." unique_id=10637415]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -166.0
+offset_top = -223.0
+offset_right = 166.0
+offset_bottom = -154.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
+theme_override_font_sizes/font_size = 40
+text = "Temps écoulé !"
+label_settings = SubResource("LabelSettings_fdnlq")
+
+[node name="NextLevel" type="Button" parent="." unique_id=1237651726]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -148.0
+offset_top = 112.0
+offset_right = 148.0
+offset_bottom = 175.00003
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("12_fdnlq")
+theme_override_font_sizes/font_size = 40
+text = "Niveau suivant"
+
+[node name="ValidateButton" type="Button" parent="." unique_id=922594922]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -152.0
+offset_top = -288.0
+offset_right = -32.0
+offset_bottom = -168.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = ExtResource("6_fdnlq")
+theme_override_styles/pressed = ExtResource("6_fdnlq")
+theme_override_styles/hover = ExtResource("6_fdnlq")
+text = "ˇ"
+
+[node name="MessageLabel" type="Label" parent="." unique_id=825985541]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -25.0
+offset_right = 20.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_wsu2k")
+
+[node name="ToDo" type="Label" parent="." unique_id=1336770187]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 21.0
+offset_right = 20.0
+offset_bottom = 71.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_wsu2k")
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Sampling" to="." method="_on_sampling_timeout"]

@@ -6,6 +6,7 @@ extends Node3D
 @onready var next_level = $NextLevel
 @onready var message_alerte = $AlertMessage
 @onready var temps_restant = $TempsRestant
+@onready var textToDo = $ToDo
 
 #Scène
 @export_group("Scènes")
@@ -69,6 +70,8 @@ func _ready() -> void:
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
 func _physics_process(_delta: float) -> void:
+	textToDo.set_text(toDo(phase))
+	
 	if phase == 3:
 		if max_timer.get_time_left() >= 1:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" secondes")
@@ -76,23 +79,25 @@ func _physics_process(_delta: float) -> void:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" seconde")
 
 	if next_level.is_pressed():
-		#Si c'était le dernier niveau, alors on arrête
+		#Si c'était le dernier niveau, alors on arrête (Il faut renvoyer au menu principal et envoyer les données dans la BD)
 		if niveau == niveau_max:
 			get_tree().quit()
-		# On retire noeuds rajoutés
-		Basket.queue_free()
-		if Difficulté_actuel[0]:
-			Visual.queue_free()
+		#Sinon, on continue
+		else:
+			# On retire noeuds rajoutés
+			Basket.queue_free()
+			if Difficulté_actuel[0]:
+				Visual.queue_free()
 		
-		for child in Arbre:
-			child.queue_free()
-		Apple_tree.queue_free()
-		#Puis après on les rajoutes
-		Initialisation()
-		niveau += 1
-		phase = 0
+			for child in Arbre:
+				child.queue_free()
+			Apple_tree.queue_free()
+			#Puis après on les rajoutes
+			Initialisation()
+			niveau += 1
+			phase = 0
 	
-	if (validate_button.is_pressed() and phase == 3) or timeout:
+	if (validate_button.is_pressed() or timeout) and phase == 3:
 		phase = phase + 1
 		validate_button.set_visible(false)
 		Player.get_child(2).set_visible(false)
@@ -123,6 +128,8 @@ func _physics_process(_delta: float) -> void:
 		print(distanceAParcourir*sin(seuil1))
 		print("seuil n°2")
 		print(distanceAParcourir*sin(seuil2))
+		
+		
 		
 		if distance <= distanceAParcourir*sin(seuil1):
 			message_label.set_text("Vous avez 3 étoiles")
@@ -343,6 +350,20 @@ func save_level(i):
 	level += str(score)+"\n"
 	
 	return level
+
+func toDo(phase):
+	
+	#Phase 0: cherche Panier
+	if phase == 0:
+		return "Trouvez le panier"
+	elif phase == 1:
+		return "Trouvez un arbre"
+	elif phase == 2:
+		return "Trouvez le pommier"
+	elif phase == 3:
+		return "Déposez le panier" 
+	else:
+		return ""
 
 func _on_timer_timeout() -> void:
 	timeout = true
