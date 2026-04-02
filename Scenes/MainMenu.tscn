@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_hu60k"]
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
-[ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="8_4qsgn"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="8_cmrfp"]
 [ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="9_37v8m"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_fbs3s"]
@@ -134,52 +133,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 20)
 
 [node name="Node3D9" parent="ENvironment/Floor/Ensemble Sol" unique_id=426418514 instance=ExtResource("7_ysgxm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 40)
-
-[node name="Wall" type="Node3D" parent="ENvironment" unique_id=1500650431]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.884678, 0, -4.896121)
-visible = false
-
-[node name="Mountain" parent="ENvironment/Wall" unique_id=2012156666 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(0.9559673, 0, 0.2934731, 0, 1, 0, -0.2934731, 0, 0.9559673, 2.1876879, 0, -7.1130476)
-
-[node name="Mountain2" parent="ENvironment/Wall" unique_id=1653966 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(0.9504018, 0, -0.3110248, 0, 1, 0, 0.3110248, 0, 0.9504018, 14.751402, 0, -8.126259)
-
-[node name="Mountain3" parent="ENvironment/Wall" unique_id=1133381620 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(0.9971851, 0, -0.07497874, 0, 1, 0, 0.07497874, 0, 0.9971851, 27.203718, 0, -4.872098)
-
-[node name="Mountain14" parent="ENvironment/Wall" unique_id=854986941 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(0.32601374, 0, -0.94536513, 0, 1, 0, 0.94536513, 0, 0.32601374, 35.183136, 0, -1.0616136)
-
-[node name="Mountain4" parent="ENvironment/Wall" unique_id=1271127932 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(-0.10445908, 0, -0.99452925, 0, 1, 0, 0.99452925, 0, -0.10445908, 37.881847, 0, 12.577494)
-
-[node name="Mountain5" parent="ENvironment/Wall" unique_id=733077354 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(0.28893155, 0, 0.9573498, 0, 1, 0, -0.9573498, 0, 0.28893155, -13.068638, 0, 10.925043)
-
-[node name="Mountain7" parent="ENvironment/Wall" unique_id=1868078056 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(-0.38553566, 0, 0.92269295, 0, 1, 0, -0.92269295, 0, -0.38553566, -11.464748, 0, 24.369156)
-
-[node name="Mountain8" parent="ENvironment/Wall" unique_id=979490760 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(-0.011885406, 0, 0.99992937, 0, 1, 0, -0.99992937, 0, -0.011885406, -10.460726, 0, 38.485306)
-
-[node name="Mountain9" parent="ENvironment/Wall" unique_id=185064622 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(-0.997876, 0, -0.06514186, 0, 1, 0, 0.06514186, 0, -0.997876, -2.0574245, 0, 41.642303)
-
-[node name="Mountain10" parent="ENvironment/Wall" unique_id=1737698611 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(-0.9056503, 0, 0.4240256, 0, 1, 0, -0.4240256, 0, -0.9056503, 10.123371, 0, 46.65432)
-
-[node name="Mountain11" parent="ENvironment/Wall" unique_id=1179017120 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(-0.99847955, 0, -0.05512449, 0, 1, 0, 0.05512449, 0, -0.99847955, 23.435102, 0, 48.083733)
-
-[node name="Mountain12" parent="ENvironment/Wall" unique_id=1334792979 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(-0.0023037791, 0, -0.9999975, 0, 1, 0, 0.9999975, 0, -0.0023037791, 35.77207, 0, 27.099556)
-
-[node name="Mountain13" parent="ENvironment/Wall" unique_id=1402757315 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(-0.6510127, 0, -0.7590669, 0, 1, 0, 0.7590669, 0, -0.6510127, 33.54235, 0, 40.843887)
-
-[node name="Mountain6" parent="ENvironment/Wall" unique_id=2088842505 instance=ExtResource("8_4qsgn")]
-transform = Transform3D(0.66038185, 0, 0.75092995, 0, 1, 0, -0.75092995, 0, 0.66038185, -7.2576046, 0, -1.3050156)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="ENvironment" unique_id=1906453172]
 environment = SubResource("Environment_d1ilt")

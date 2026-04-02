@@ -117,8 +117,8 @@ func _physics_process(_delta: float) -> void:
 		
 		distance = sqrt((position_Finale.x-Objet["basket0"].x)**2+(position_Finale.z-Objet["basket0"].z)**2)
 		distanceAParcourir = sqrt((Objet["tree"+str(index_Tree)].x-Objet["basket0"].x)**2+(Objet["tree"+str(index_Tree)].z-Objet["basket0"].z)**2)
-		var seuil1 = PI/12
-		var seuil2 = PI/6
+		var seuil1 = PI/9
+		var seuil2 = 2*seuil1
 		
 		print("distance")
 		print(distance)

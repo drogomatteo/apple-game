@@ -1,23 +1,30 @@
 extends CharacterBody3D
 
+#Déplacement du joueur
 const SPEED = 2
 const acceleration = 8
 const deceleration = 10
 const sensivity = PI/2
 const GRAVITY = 9.8
 
-const bobFreq = 4.5
-const bobAmp = 0.025
-var tBob = 0.0
+#Balancement de tête
+@export_category("Balancement de tête")
+@export var bobFreq = 4.5
+@export var bobAmp = 0.025
+@export var tBob = 0.0
 
+#Noeuds
 @onready var Left = $Left
 @onready var Right = $Right
 @onready var Forward = $Forward
 @onready var basket = $Basket
 @onready var camera = $Camera3D
 
+#Gestion des bruits de pas
+@export_category("Bruit Pas")
 @export var bruitPas : AudioStreamRandomizer
 
+#Variable utilisé que dans le code
 var temp_vel : float = 0
 var temp_sens : float = 0
 var horizontal_velocity : Vector3
