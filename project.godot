@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="AppleGame"
-run/main_scene="uid://jjyvhy1qlyy3"
+run/main_scene="uid://chqtuqlcdi2qb"
 config/features=PackedStringArray("4.6", "Mobile")
 
 [autoload]
@@ -21,7 +21,6 @@ PlayerData="*uid://cwrvjrtmo4u62"
 
 [editor]
 
-version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
 
 [input]

@@ -21,7 +21,15 @@ func _on_create_pressed():
 	var annee = int(annee_input.text)
 	api.create_user(nom, prenom, email, annee)
 	result_label.text = "Création envoyée..."
-
+	
+#clique sur “Jouer”, tu changes de scène
+func _on_play_button_pressed():
+	PlayerData.nom = $VBoxContainer/NomInput.text
+	PlayerData.prenom = $VBoxContainer/PrenomInput.text
+	PlayerData.email = $VBoxContainer/EmailInput.text
+	PlayerData.annee = int($VBoxContainer/AnneeInput.text)
+	PlayerData.id = int($VBoxContainer/IdInput.text)
+	get_tree().change_scene_to_file("res://scenes/game.tscn")
 # UPDATE
 func _on_update_pressed():
 	var id = int(id_input.text)
@@ -32,3 +40,4 @@ func _on_update_pressed():
 
 	api.update_user(id, nom, prenom, email, annee)
 	result_label.text = "Modification envoyée..."
+	
