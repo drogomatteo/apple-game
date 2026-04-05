@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://chqtuqlcdi2qb"]
 
 [ext_resource type="Script" uid="uid://beit4kg2yergf" path="res://Scripts/ui_api.gd" id="1_j00uw"]
+[ext_resource type="Script" uid="uid://bly8dk40xc1vw" path="res://Scripts/api.gd" id="2_75fju"]
 
 [node name="interface_compte" type="VBoxContainer" unique_id=1075477270]
 offset_right = 40.0
@@ -65,3 +66,6 @@ offset_left = 849.0
 offset_top = 162.0
 offset_right = 1128.0
 offset_bottom = 471.0
+
+[node name="API" type="Node" parent="." unique_id=1481816040]
+script = ExtResource("2_75fju")
