@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://ob5imiystqoc"]
 
 [ext_resource type="Script" uid="uid://cl31bj3wv04u4" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="2_6t5aa"]
+[ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_cvnsp"]
+[ext_resource type="Texture2D" uid="uid://j5orbw47ph2b" path="res://Assets/UI-UX/Images/Left.png" id="2_fkybt"]
+[ext_resource type="Texture2D" uid="uid://cs40qy3tf5ywq" path="res://Assets/UI-UX/Images/avant.png" id="4_3smsa"]
+[ext_resource type="Texture2D" uid="uid://4g1e5lnfmljy" path="res://Assets/UI-UX/Images/Right.png" id="4_x3wgy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v0iea"]
 radius = 0.4
@@ -21,34 +26,50 @@ far = 100.0
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 50.0
-offset_top = -178.0
-offset_right = 150.0
-offset_bottom = -58.0
+offset_left = 40.0
+offset_top = -168.0
+offset_right = 180.0
+offset_bottom = -18.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 40
-text = "<"
+theme_override_icons/icon = ExtResource("2_fkybt")
+theme_override_styles/normal = ExtResource("2_6t5aa")
+theme_override_styles/pressed = ExtResource("2_6t5aa")
+theme_override_styles/hover = ExtResource("2_6t5aa")
 
 [node name="Forward" type="Button" parent="." unique_id=1354974901]
-anchors_preset = 2
+anchors_preset = 3
+anchor_left = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 160.0
-offset_top = -228.0
-offset_right = 260.0
-offset_bottom = -108.0
+offset_left = -212.0
+offset_top = -148.0
+offset_right = -112.0
+offset_bottom = -28.0
+grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 40
-text = "^"
+theme_override_icons/icon = ExtResource("4_3smsa")
+theme_override_styles/normal = ExtResource("2_6t5aa")
+theme_override_styles/pressed = ExtResource("2_6t5aa")
+theme_override_styles/hover = ExtResource("2_6t5aa")
 
 [node name="Right" type="Button" parent="." unique_id=1217418213]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 270.0
-offset_top = -178.0
-offset_right = 370.0
-offset_bottom = -58.0
+offset_left = 220.0
+offset_top = -168.0
+offset_right = 360.0
+offset_bottom = -18.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 40
-text = ">"
+theme_override_icons/icon = ExtResource("4_x3wgy")
+theme_override_styles/normal = ExtResource("2_6t5aa")
+theme_override_styles/pressed = ExtResource("2_6t5aa")
+theme_override_styles/hover = ExtResource("2_6t5aa")
+
+[node name="Basket" parent="." unique_id=1088006378 instance=ExtResource("2_cvnsp")]
+transform = Transform3D(0.124859296, -0.022016067, -0.27189237, 0.05209446, 0.29544234, -1.8343476e-09, 0.2677617, -0.047213618, 0.12678546, 0.65732884, -0.15692094, -0.6272743)
+visible = false

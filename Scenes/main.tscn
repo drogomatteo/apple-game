@@ -4,8 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_6bp64"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="3_344ge"]
+[ext_resource type="Script" path="res://Scripts/api.gd" id="4_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
+[ext_resource type="Script" path="res://Scripts/ui_api.gd" id="5_kry3j"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
 [ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="8_344ge"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_6iyac"]
@@ -107,12 +109,17 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -250.0
-offset_top = -31.0
+offset_left = -152.0
+offset_top = -288.0
+offset_right = -32.0
+offset_bottom = -168.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 40
-text = "Confirmer la position du panier"
+theme_override_styles/normal = ExtResource("6_fdnlq")
+theme_override_styles/pressed = ExtResource("6_fdnlq")
+theme_override_styles/hover = ExtResource("6_fdnlq")
+text = "ˇ"
 
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -4.78409, 1.88428, 11.871809)
