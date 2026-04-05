@@ -3,15 +3,84 @@
 [ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_6bp64"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
-[ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="3_8gbba"]
+[ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="3_344ge"]
 [ext_resource type="Script" path="res://Scripts/api.gd" id="4_jjvhh"]
+[ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
+[ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
+[ext_resource type="Script" path="res://Scripts/ui_api.gd" id="5_kry3j"]
+[ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
+[ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="8_344ge"]
+[ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_6iyac"]
+[ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5a7ea"]
-albedo_color = Color(0.40975842, 0.50363976, 0.19977424, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
+size = Vector3(70, 1, 70)
 
-[sub_resource type="QuadMesh" id="QuadMesh_8j60k"]
-size = Vector2(20, 20)
-orientation = 1
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ynf5e"]
+shader = ExtResource("8_344ge")
+shader_parameter/sun_direction = Vector3(0, 1, 0)
+shader_parameter/day_top_color = Color(0.33437, 0.60982406, 0.84853494, 1)
+shader_parameter/day_bottom_color = Color(0.58431375, 0.8, 0.8901961, 1)
+shader_parameter/sunset_top_color = Color(0.7, 0.75, 1, 1)
+shader_parameter/sunset_bottom_color = Color(1, 0.5, 0.7, 1)
+shader_parameter/night_top_color = Color(0.02, 0, 0.04, 1)
+shader_parameter/night_bottom_color = Color(0.1, 0, 0.2, 1)
+shader_parameter/horizon_color = Color(0, 0.7, 0.8, 1)
+shader_parameter/horizon_blur = 0.05
+shader_parameter/sun_color = Color(10, 8, 1, 1)
+shader_parameter/sun_sunset_color = Color(10, 0, 0, 1)
+shader_parameter/sun_size = 0.2
+shader_parameter/sun_blur = 10.0
+shader_parameter/moon_color = Color(1, 0.95, 0.7, 1)
+shader_parameter/moon_size = 0.06
+shader_parameter/moon_blur = 0.1
+shader_parameter/clouds_edge_color = Color(0.8, 0.8, 0.98, 1)
+shader_parameter/clouds_top_color = Color(1, 1, 1, 1)
+shader_parameter/clouds_middle_color = Color(0.92, 0.92, 0.98, 1)
+shader_parameter/clouds_bottom_color = Color(0.83, 0.83, 0.94, 1)
+shader_parameter/clouds_speed = 2.0
+shader_parameter/clouds_direction = 0.2
+shader_parameter/clouds_scale = 1.0
+shader_parameter/clouds_cutoff = 0.3
+shader_parameter/clouds_fuzziness = 0.5
+shader_parameter/clouds_weight = 0.0
+shader_parameter/clouds_blur = 0.25
+shader_parameter/stars_speed = 1.0
+shader_parameter/overwritten_time = 0.0
+
+[sub_resource type="Sky" id="Sky_hptm8"]
+sky_material = SubResource("ShaderMaterial_ynf5e")
+
+[sub_resource type="Environment" id="Environment_d1ilt"]
+background_mode = 2
+sky = SubResource("Sky_hptm8")
+ambient_light_source = 2
+ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
+ambient_light_energy = 0.3
+
+[sub_resource type="Curve" id="Curve_fdnlq"]
+_data = [Vector2(0.067003794, 0.024412274), 0.0, 0.0, 0, 0, Vector2(0.49431103, 0.8589511), 0.0, 0.0, 0, 0, Vector2(0.91150445, 0.0067812204), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_jkdf5"]
+radius = 0.001
+section_length = 1.0
+curve = SubResource("Curve_fdnlq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wsu2k"]
+render_priority = 0
+shader = ExtResource("10_6iyac")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/fade_time = 5.0
+shader_parameter/time_scale = 3.0
+shader_parameter/wave_amplitude = 0.1
+shader_parameter/wave_frequency = 1.0
+shader_parameter/wave_length = 2.0
+shader_parameter/wave_count = 1.0
+shader_parameter/twist_amplitude = 0.1
+shader_parameter/twist_frequency = 1.0
+shader_parameter/loop_radius = 1.0
+shader_parameter/loop_count = 0.5
 
 [node name="World" type="Node3D" unique_id=1297503563]
 script = ExtResource("1_jjgbg")
@@ -232,6 +301,44 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.
 
 [node name="Fences5" parent="Fences/Mur3" unique_id=1467701185 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
+
+[node name="Fences6" parent="Fences/Mur3" unique_id=1166219814 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
+
+[node name="Mur4" type="Node3D" parent="Fences" unique_id=1340352826]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 55.977177)
+
+[node name="Fences7" parent="Fences/Mur4" unique_id=1801717015 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
+
+[node name="Fences2" parent="Fences/Mur4" unique_id=1815360553 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
+
+[node name="Fences3" parent="Fences/Mur4" unique_id=1989504474 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3866043, 0, -0.08567047)
+
+[node name="Fences8" parent="Fences/Mur4" unique_id=1740953867 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
+
+[node name="Fences9" parent="Fences/Mur4" unique_id=1069234368 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
+
+[node name="Fences4" parent="Fences/Mur4" unique_id=1982114446 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
+
+[node name="Fences5" parent="Fences/Mur4" unique_id=1084892469 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
+
+[node name="Fences6" parent="Fences/Mur4" unique_id=40612797 instance=ExtResource("13_fdnlq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=877071009]
+visible = false
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Button" type="Button" parent="VBoxContainer" unique_id=851866003]
+layout_mode = 2
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Sampling" to="." method="_on_sampling_timeout"]
