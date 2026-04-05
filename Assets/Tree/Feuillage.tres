@@ -1,0 +1,33 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://c6we64s4fjxp4"]
+
+[ext_resource type="Shader" path="res://Assets/Tree/Feuillage.gdshader" id="1_acuai"]
+[ext_resource type="Texture2D" uid="uid://byp2c57gpsuw0" path="res://Assets/Tree/Feuillage.PNG" id="2_bprul"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_acuai")
+shader_parameter/ground_noise_scale = 0.5
+shader_parameter/foliage_tex = ExtResource("2_bprul")
+shader_parameter/use_red_as_alpha = false
+shader_parameter/top_color = Color(0.68, 0.4762267, 0.2856, 1)
+shader_parameter/bottom_color = Color(0.92, 0.8671, 0.7084, 1)
+shader_parameter/tint_color = Color(0.9685, 1, 0.79, 1)
+shader_parameter/color_variation_strength = 0.2370000112575
+shader_parameter/alpha_scissor_threshold = 0.4410000209475
+shader_parameter/edge_softness = 0.0
+shader_parameter/billboard_to_camera = true
+shader_parameter/quad_width = 1.0
+shader_parameter/quad_height = 1.0
+shader_parameter/random_yaw_strength = 3.14159
+shader_parameter/camera_facing_strength = 1.0
+shader_parameter/normals_up = true
+shader_parameter/fake_wrap = 0.690000032775
+shader_parameter/roughness = 0.950000045125
+shader_parameter/specular = 0.08
+shader_parameter/translucency_strength = 2.0
+shader_parameter/use_wind = true
+shader_parameter/wind_speed = 1.5
+shader_parameter/wind_strength = 0.1
+shader_parameter/flutter_strength = 0.02
+shader_parameter/noise_scale = 2.3
+shader_parameter/wind_dir = Vector2(1, 0.2)

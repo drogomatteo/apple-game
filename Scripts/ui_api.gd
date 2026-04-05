@@ -19,7 +19,6 @@ func _on_create_pressed():
 	var prenom = prenom_input.text
 	var email = email_input.text
 	var annee = int(annee_input.text)
-
 	api.create_user(nom, prenom, email, annee)
 	result_label.text = "Création envoyée..."
 	

@@ -1,17 +1,23 @@
 [gd_scene format=3 uid="uid://bpk303voaqeb0"]
 
-[ext_resource type="PackedScene" uid="uid://b37sqmsoi66f0" path="res://Assets/Models/Tree.glb" id="1_0vwjc"]
+[ext_resource type="ArrayMesh" uid="uid://bv85okuojpra2" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/CommonTree_2.obj" id="2_l3oha"]
+[ext_resource type="Material" uid="uid://b4tpa6tt1wy8p" path="res://Assets/Tree/tronc.tres" id="3_m36md"]
+[ext_resource type="Material" uid="uid://c6we64s4fjxp4" path="res://Assets/Tree/Feuillage.tres" id="4_q8wpw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rsuno"]
-size = Vector3(1.7551575, 6.4902954, 1.7709656)
+size = Vector3(1.7551575, 6.4902954, 1.4898529)
 
 [node name="Tree" type="StaticBody3D" unique_id=187056187]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
 collision_layer = 8
 collision_mask = 0
 
-[node name="Tree" parent="." unique_id=386988797 instance=ExtResource("1_0vwjc")]
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1722628734]
-transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.0054473667, 2.745147, -0.048629634)
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0.0054473667, 2.745147, -0.1891859)
 shape = SubResource("BoxShape3D_rsuno")
+
+[node name="CommonTree2" type="MeshInstance3D" parent="." unique_id=667216349]
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.021809932, -0.081065886, -0.0012461336)
+mesh = ExtResource("2_l3oha")
+surface_material_override/0 = ExtResource("3_m36md")
+surface_material_override/1 = ExtResource("4_q8wpw")

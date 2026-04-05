@@ -1,0 +1,381 @@
+[gd_scene format=3 uid="uid://jjyvhy1qlyy3"]
+
+[ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_hu60k"]
+[ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
+[ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
+[ext_resource type="PackedScene" uid="uid://dchprll508xwe" path="res://Scenes/mountain.tscn" id="8_4qsgn"]
+[ext_resource type="FontFile" uid="uid://b2kjkkng2nqef" path="res://Assets/UI-UX/Font/Showpop.otf" id="8_fn5mr"]
+[ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="9_37v8m"]
+[ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_fbs3s"]
+[ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_0wxkg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
+size = Vector3(70, 1, 70)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ynf5e"]
+shader = ExtResource("9_37v8m")
+shader_parameter/sun_direction = Vector3(0, 1, 0)
+shader_parameter/day_top_color = Color(0.33437, 0.60982406, 0.84853494, 1)
+shader_parameter/day_bottom_color = Color(0.58431375, 0.8, 0.8901961, 1)
+shader_parameter/sunset_top_color = Color(0.7, 0.75, 1, 1)
+shader_parameter/sunset_bottom_color = Color(1, 0.5, 0.7, 1)
+shader_parameter/night_top_color = Color(0.02, 0, 0.04, 1)
+shader_parameter/night_bottom_color = Color(0.1, 0, 0.2, 1)
+shader_parameter/horizon_color = Color(0, 0.7, 0.8, 1)
+shader_parameter/horizon_blur = 0.05
+shader_parameter/sun_color = Color(10, 8, 1, 1)
+shader_parameter/sun_sunset_color = Color(10, 0, 0, 1)
+shader_parameter/sun_size = 0.2
+shader_parameter/sun_blur = 10.0
+shader_parameter/moon_color = Color(1, 0.95, 0.7, 1)
+shader_parameter/moon_size = 0.06
+shader_parameter/moon_blur = 0.1
+shader_parameter/clouds_edge_color = Color(0.8, 0.8, 0.98, 1)
+shader_parameter/clouds_top_color = Color(1, 1, 1, 1)
+shader_parameter/clouds_middle_color = Color(0.92, 0.92, 0.98, 1)
+shader_parameter/clouds_bottom_color = Color(0.83, 0.83, 0.94, 1)
+shader_parameter/clouds_speed = 2.0
+shader_parameter/clouds_direction = 0.2
+shader_parameter/clouds_scale = 1.0
+shader_parameter/clouds_cutoff = 0.3
+shader_parameter/clouds_fuzziness = 0.5
+shader_parameter/clouds_weight = 0.0
+shader_parameter/clouds_blur = 0.25
+shader_parameter/stars_speed = 1.0
+shader_parameter/overwritten_time = 0.0
+
+[sub_resource type="Sky" id="Sky_hptm8"]
+sky_material = SubResource("ShaderMaterial_ynf5e")
+
+[sub_resource type="Environment" id="Environment_d1ilt"]
+background_mode = 2
+sky = SubResource("Sky_hptm8")
+ambient_light_source = 2
+ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
+ambient_light_energy = 0.3
+
+[sub_resource type="Curve" id="Curve_fdnlq"]
+_data = [Vector2(0.067003794, 0.024412274), 0.0, 0.0, 0, 0, Vector2(0.49431103, 0.8589511), 0.0, 0.0, 0, 0, Vector2(0.91150445, 0.0067812204), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_jkdf5"]
+radius = 0.001
+section_length = 1.0
+curve = SubResource("Curve_fdnlq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wsu2k"]
+render_priority = 0
+shader = ExtResource("10_fbs3s")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/fade_time = 5.0
+shader_parameter/time_scale = 3.0
+shader_parameter/wave_amplitude = 0.1
+shader_parameter/wave_frequency = 1.0
+shader_parameter/wave_length = 2.0
+shader_parameter/wave_count = 1.0
+shader_parameter/twist_amplitude = 0.1
+shader_parameter/twist_frequency = 1.0
+shader_parameter/loop_radius = 1.0
+shader_parameter/loop_count = 0.5
+
+[sub_resource type="LabelSettings" id="LabelSettings_yygyf"]
+font = ExtResource("8_fn5mr")
+font_size = 100
+outline_size = 40
+outline_color = Color(0.1974, 0.33370003, 0.47, 1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_2j32a"]
+
+[sub_resource type="Theme" id="Theme_mfh7u"]
+
+[node name="World" type="Node3D" unique_id=1297503563]
+
+[node name="ENvironment" type="Node" parent="." unique_id=1831146782]
+
+[node name="Floor" type="Node3D" parent="ENvironment" unique_id=1406393240]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="ENvironment/Floor" unique_id=1466840344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+collision_layer = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ENvironment/Floor/StaticBody3D" unique_id=2104309237]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
+shape = SubResource("BoxShape3D_6bp64")
+debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
+
+[node name="Ensemble Sol" type="Node3D" parent="ENvironment/Floor" unique_id=426609364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
+
+[node name="Node3D" parent="ENvironment/Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ysgxm")]
+
+[node name="Node3D2" parent="ENvironment/Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+
+[node name="Node3D3" parent="ENvironment/Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+
+[node name="Node3D4" parent="ENvironment/Floor/Ensemble Sol" unique_id=1869510594 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
+
+[node name="Node3D5" parent="ENvironment/Floor/Ensemble Sol" unique_id=444045714 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 20)
+
+[node name="Node3D6" parent="ENvironment/Floor/Ensemble Sol" unique_id=406362351 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 40)
+
+[node name="Node3D7" parent="ENvironment/Floor/Ensemble Sol" unique_id=1998737162 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+
+[node name="Node3D8" parent="ENvironment/Floor/Ensemble Sol" unique_id=1992462546 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 20)
+
+[node name="Node3D9" parent="ENvironment/Floor/Ensemble Sol" unique_id=426418514 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 40)
+
+[node name="Wall" type="Node3D" parent="ENvironment" unique_id=1500650431]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.884678, 0, -4.896121)
+visible = false
+
+[node name="Mountain" parent="ENvironment/Wall" unique_id=2012156666 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(0.9559673, 0, 0.2934731, 0, 1, 0, -0.2934731, 0, 0.9559673, 2.1876879, 0, -7.1130476)
+
+[node name="Mountain2" parent="ENvironment/Wall" unique_id=1653966 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(0.9504018, 0, -0.3110248, 0, 1, 0, 0.3110248, 0, 0.9504018, 14.751402, 0, -8.126259)
+
+[node name="Mountain3" parent="ENvironment/Wall" unique_id=1133381620 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(0.9971851, 0, -0.07497874, 0, 1, 0, 0.07497874, 0, 0.9971851, 27.203718, 0, -4.872098)
+
+[node name="Mountain14" parent="ENvironment/Wall" unique_id=854986941 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(0.32601374, 0, -0.94536513, 0, 1, 0, 0.94536513, 0, 0.32601374, 35.183136, 0, -1.0616136)
+
+[node name="Mountain4" parent="ENvironment/Wall" unique_id=1271127932 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(-0.10445908, 0, -0.99452925, 0, 1, 0, 0.99452925, 0, -0.10445908, 37.881847, 0, 12.577494)
+
+[node name="Mountain5" parent="ENvironment/Wall" unique_id=733077354 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(0.28893155, 0, 0.9573498, 0, 1, 0, -0.9573498, 0, 0.28893155, -13.068638, 0, 10.925043)
+
+[node name="Mountain7" parent="ENvironment/Wall" unique_id=1868078056 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(-0.38553566, 0, 0.92269295, 0, 1, 0, -0.92269295, 0, -0.38553566, -11.464748, 0, 24.369156)
+
+[node name="Mountain8" parent="ENvironment/Wall" unique_id=979490760 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(-0.011885406, 0, 0.99992937, 0, 1, 0, -0.99992937, 0, -0.011885406, -10.460726, 0, 38.485306)
+
+[node name="Mountain9" parent="ENvironment/Wall" unique_id=185064622 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(-0.997876, 0, -0.06514186, 0, 1, 0, 0.06514186, 0, -0.997876, -2.0574245, 0, 41.642303)
+
+[node name="Mountain10" parent="ENvironment/Wall" unique_id=1737698611 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(-0.9056503, 0, 0.4240256, 0, 1, 0, -0.4240256, 0, -0.9056503, 10.123371, 0, 46.65432)
+
+[node name="Mountain11" parent="ENvironment/Wall" unique_id=1179017120 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(-0.99847955, 0, -0.05512449, 0, 1, 0, 0.05512449, 0, -0.99847955, 23.435102, 0, 48.083733)
+
+[node name="Mountain12" parent="ENvironment/Wall" unique_id=1334792979 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(-0.0023037791, 0, -0.9999975, 0, 1, 0, 0.9999975, 0, -0.0023037791, 35.77207, 0, 27.099556)
+
+[node name="Mountain13" parent="ENvironment/Wall" unique_id=1402757315 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(-0.6510127, 0, -0.7590669, 0, 1, 0, 0.7590669, 0, -0.6510127, 33.54235, 0, 40.843887)
+
+[node name="Mountain6" parent="ENvironment/Wall" unique_id=2088842505 instance=ExtResource("8_4qsgn")]
+transform = Transform3D(0.66038185, 0, 0.75092995, 0, 1, 0, -0.75092995, 0, 0.66038185, -7.2576046, 0, -1.3050156)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="ENvironment" unique_id=1906453172]
+environment = SubResource("Environment_d1ilt")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="ENvironment/WorldEnvironment" unique_id=629879536]
+transform = Transform3D(-0.40055937, -0.7401756, -0.5400853, -0.6929114, -0.14097442, 0.70710677, -0.5995214, 0.6574695, -0.4564075, -1.0428352, 21.82301, 0.33849716)
+light_color = Color(1, 0.8951667, 0.63, 1)
+light_energy = 0.875
+shadow_enabled = true
+shadow_opacity = 0.5
+directional_shadow_max_distance = 50.0
+sky_mode = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ENvironment/WorldEnvironment" unique_id=615579134]
+transform = Transform3D(0.66913056, -0.74314487, 3.2483893e-08, 0, -4.371139e-08, -1, 0.74314487, 0.66913056, -2.9248627e-08, -0.27680564, 0.7001449, 2.3841858e-07)
+custom_aabb = AABB(0, 0, 0, 0, 20, 0)
+mesh = SubResource("TubeTrailMesh_jkdf5")
+surface_material_override/0 = SubResource("ShaderMaterial_wsu2k")
+
+[node name="Fences" parent="ENvironment" unique_id=123485950 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.49749, 9.536743e-07, -13.549052)
+
+[node name="Mur1" type="Node3D" parent="ENvironment/Fences" unique_id=1072364506]
+
+[node name="Fences2" parent="ENvironment/Fences/Mur1" unique_id=483271512 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
+
+[node name="Fences7" parent="ENvironment/Fences/Mur1" unique_id=277977158 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
+
+[node name="Fences8" parent="ENvironment/Fences/Mur1" unique_id=1037869701 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
+
+[node name="Fences9" parent="ENvironment/Fences/Mur1" unique_id=300569312 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
+
+[node name="Fences4" parent="ENvironment/Fences/Mur1" unique_id=1311991728 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
+
+[node name="Fences5" parent="ENvironment/Fences/Mur1" unique_id=1166814163 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
+
+[node name="Fences6" parent="ENvironment/Fences/Mur1" unique_id=1830918025 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
+
+[node name="Mur2" type="Node3D" parent="ENvironment/Fences" unique_id=1523063634]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.8553295, 0, 54.30452)
+
+[node name="Fences2" parent="ENvironment/Fences/Mur2" unique_id=352287005 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
+
+[node name="Fences3" parent="ENvironment/Fences/Mur2" unique_id=20877721 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4765892, 0, -0.043210983)
+
+[node name="Fences7" parent="ENvironment/Fences/Mur2" unique_id=1125211690 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
+
+[node name="Fences8" parent="ENvironment/Fences/Mur2" unique_id=132473483 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
+
+[node name="Fences9" parent="ENvironment/Fences/Mur2" unique_id=1269545971 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
+
+[node name="Fences4" parent="ENvironment/Fences/Mur2" unique_id=701706382 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
+
+[node name="Fences5" parent="ENvironment/Fences/Mur2" unique_id=1234389138 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
+
+[node name="Fences6" parent="ENvironment/Fences/Mur2" unique_id=457937861 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
+
+[node name="Mur3" type="Node3D" parent="ENvironment/Fences" unique_id=157625582]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 54.795727, 0, 53.721317)
+
+[node name="Fences2" parent="ENvironment/Fences/Mur3" unique_id=900552699 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
+
+[node name="Fences3" parent="ENvironment/Fences/Mur3" unique_id=711720510 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1697998, 0, -0.08567047)
+
+[node name="Fences7" parent="ENvironment/Fences/Mur3" unique_id=1101290456 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
+
+[node name="Fences8" parent="ENvironment/Fences/Mur3" unique_id=548654919 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
+
+[node name="Fences9" parent="ENvironment/Fences/Mur3" unique_id=5357105 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
+
+[node name="Fences4" parent="ENvironment/Fences/Mur3" unique_id=1681154689 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
+
+[node name="Fences5" parent="ENvironment/Fences/Mur3" unique_id=1467701185 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
+
+[node name="Fences6" parent="ENvironment/Fences/Mur3" unique_id=1166219814 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
+
+[node name="Mur4" type="Node3D" parent="ENvironment/Fences" unique_id=1340352826]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 55.977177)
+
+[node name="Fences7" parent="ENvironment/Fences/Mur4" unique_id=1801717015 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
+
+[node name="Fences2" parent="ENvironment/Fences/Mur4" unique_id=1815360553 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
+
+[node name="Fences3" parent="ENvironment/Fences/Mur4" unique_id=1989504474 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3866043, 0, -0.08567047)
+
+[node name="Fences8" parent="ENvironment/Fences/Mur4" unique_id=1740953867 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
+
+[node name="Fences9" parent="ENvironment/Fences/Mur4" unique_id=1069234368 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
+
+[node name="Fences4" parent="ENvironment/Fences/Mur4" unique_id=1982114446 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
+
+[node name="Fences5" parent="ENvironment/Fences/Mur4" unique_id=1084892469 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
+
+[node name="Fences6" parent="ENvironment/Fences/Mur4" unique_id=40612797 instance=ExtResource("13_0wxkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
+
+[node name="AppleTree" parent="ENvironment" unique_id=1176812865 instance=ExtResource("4_hu60k")]
+transform = Transform3D(0.5946082, 0, -0.08025672, 0, 0.59999996, 0, 0.08025672, 0, 0.5946082, 0.9146309, 0.14274561, 0.012308121)
+
+[node name="Camera3D" type="Camera3D" parent="ENvironment" unique_id=211906111]
+transform = Transform3D(0.7625035, -0.1539145, -0.6284097, -0.005938984, 0.96958476, -0.2446838, 0.64695674, 0.19030437, 0.7383977, 0.6706778, 1.0877607, 4.2089725)
+fov = 81.041435
+metadata/_edit_lock_ = true
+
+[node name="Interface" type="Node" parent="." unique_id=769587623]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Interface" unique_id=1935196015]
+
+[node name="MenuPrincipal" type="Control" parent="Interface/CanvasLayer" unique_id=2016923985]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_2hlom")
+
+[node name="Title" type="Label" parent="Interface/CanvasLayer/MenuPrincipal" unique_id=365040410]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.44444445
+anchor_top = -0.061728396
+anchor_right = 0.5555556
+anchor_bottom = -0.026234567
+offset_left = -256.5
+offset_top = 188.0
+offset_right = 256.5
+offset_bottom = 284.0
+grow_horizontal = 2
+text = "Apple Game"
+label_settings = SubResource("LabelSettings_yygyf")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/CanvasLayer/MenuPrincipal" unique_id=372742890]
+material = SubResource("CanvasItemMaterial_2j32a")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5810185
+anchor_right = 0.5
+anchor_bottom = 0.5810185
+offset_left = -83.5
+offset_top = -75.5
+offset_right = 83.5
+offset_bottom = 75.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_mfh7u")
+theme_override_constants/separation = 15
+script = ExtResource("7_2hlom")
+metadata/_edit_use_anchors_ = true
+
+[node name="StartButton" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/VBoxContainer" unique_id=555364924]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.071672834, 0.23090953, 0.35577714, 1)
+theme_override_fonts/font = ExtResource("8_fn5mr")
+theme_override_font_sizes/font_size = 50
+text = "Start"
+metadata/_edit_use_anchors_ = true
+
+[node name="Quit Button" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/VBoxContainer" unique_id=1997243648]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("8_fn5mr")
+theme_override_font_sizes/font_size = 50
+text = "Quit
+"
+metadata/_edit_use_anchors_ = true
+
+[connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/VBoxContainer/StartButton" to="Interface/CanvasLayer/MenuPrincipal" method="_on_start_button_button_down"]
+[connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/VBoxContainer/Quit Button" to="Interface/CanvasLayer/MenuPrincipal" method="_on_quit_button_button_down"]

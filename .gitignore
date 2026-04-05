@@ -12,7 +12,7 @@
 export/
 build/
 bin/
-
+Assets/Fences/Meshes
 # Godot mono builds
 .mono/
 data_*/

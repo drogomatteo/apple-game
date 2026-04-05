@@ -1,0 +1,51 @@
+color variation 2: e2c25a
+color vriation 1: 
+herb bottom: 797E37
+herb top: B4BB54
+
+HERBE COULEUR FINALE:
+	___Foncé___
+	667d37
+	8f9542
+	a6994b
+	ba9d54
+	b7ad4c
+	d1b560
+	_____Clair_____
+
+
+<palette>
+  <color name="Charcoal Blue" hex="325269" r="50" g="82" b="105" />
+  <color name="Carbon Black" hex="23241F" r="35" g="36" b="31" />
+  <color name="Dark Khaki" hex="383C24" r="56" g="60" b="36" />
+  <color name="Olive" hex="797E37" r="121" g="126" b="55" />
+  <color name="Golden Sand" hex="B4BB54" r="180" g="187" b="84" />
+  <color name="Golden Sand" hex="CECB55" r="206" g="203" b="85" />
+
+  <color name="Bright Lemon" hex="FBE900" r="251" g="233" b="0" />
+  <color name="Amber Honey" hex="E2A602" r="226" g="166" b="2" />
+  <color name="Burnt Caramel" hex="C26602" r="194" g="102" b="2" />
+  <color name="Raw Umber" hex="844A0B" r="132" g="74" b="11" />
+</palette>
+
+- CSV
+
+325269,23241F,383C24,797E37,B4BB54,CECB55,FBE900,E2A602,C26602,844A0B
+
+- With #
+
+#325269, #23241F, #383C24, #797E37, #B4BB54, #CECB55, #FBE900, #E2A602, #C26602, #844A0B
+
+- Array
+
+["325269","23241F","383C24","797E37","B4BB54","CECB55","FBE900","E2A602","C26602","844A0B"]
+
+- Object
+
+{"Charcoal Blue":"325269","Carbon Black":"23241F","Dark Khaki":"383C24","Olive":"797E37","Golden Sand":"B4BB54","Golden Sand 2":"CECB55","Bright Lemon":"FBE900","Amber Honey":"E2A602","Burnt Caramel":"C26602","Raw Umber":"844A0B"}
+
+- Extended Array
+
+[{"name":"Charcoal Blue","hex":"325269","rgb":[50,82,105],"cmyk":[52,22,0,59],"hsb":[205,52,41],"hsl":[205,35,30],"lab":[33,-5,-17]},{"name":"Carbon Black","hex":"23241F","rgb":[35,36,31],"cmyk":[3,0,14,86],"hsb":[72,14,14],"hsl":[72,7,13],"lab":[14,-2,3]},{"name":"Dark Khaki","hex":"383C24","rgb":[56,60,36],"cmyk":[7,0,40,76],"hsb":[70,40,24],"hsl":[70,25,19],"lab":[24,-6,14]},{"name":"Olive","hex":"797E37","rgb":[121,126,55],"cmyk":[4,0,56,51],"hsb":[64,56,49],"hsl":[64,39,35],"lab":[51,-12,37]},{"name":"Golden Sand","hex":"B4BB54","rgb":[180,187,84],"cmyk":[4,0,55,27],"hsb":[64,55,73],"hsl":[64,43,53],"lab":[73,-17,50]},{"name":"Golden Sand","hex":"CECB55","rgb":[206,203,85],"cmyk":[0,1,59,19],"hsb":[59,59,81],"hsl":[59,55,57],"lab":[80,-14,58]},{"name":"Bright Lemon","hex":"FBE900","rgb":[251,233,0],"cmyk":[0,7,100,2],"hsb":[56,100,98],"hsl":[56,100,49],"lab":[91,-13,90]},{"name":"Amber Honey","hex":"E2A602","rgb":[226,166,2],"cmyk":[0,27,99,11],"hsb":[44,99,89],"hsl":[44,98,45],"lab":[72,11,75]},{"name":"Burnt Caramel","hex":"C26602","rgb":[194,102,2],"cmyk":[0,47,99,24],"hsb":[31,99,76],"hsl":[31,98,38],"lab":[53,32,61]},{"name":"Raw Umber","hex":"844A0B","rgb":[132,74,11],"cmyk":[0,44,92,48],"hsb":[31,92,52],"hsl":[31,85,28],"lab":[38,20,44]}]
+
+- XML

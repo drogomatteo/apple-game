@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://b4tpa6tt1wy8p"]
+
+[ext_resource type="Texture2D" uid="uid://bpl6lnd15wgoq" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/Textures/Bark_NormalTree.png" id="1_e3ms4"]
+
+[resource]
+albedo_color = Color(0.5019608, 0.32156864, 0.12941177, 0)
+albedo_texture = ExtResource("1_e3ms4")
