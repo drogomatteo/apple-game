@@ -65,9 +65,6 @@ var Difficulté_actuel : Array
 
 func _ready() -> void:
 	Initialisation()
-	
-	print(PlayerData.nom)
-	print(PlayerData.email)
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
 func _physics_process(_delta: float) -> void:
