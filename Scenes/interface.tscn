@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://chqtuqlcdi2qb"]
 
 [ext_resource type="Script" uid="uid://beit4kg2yergf" path="res://Scripts/ui_api.gd" id="1_j00uw"]
-[ext_resource type="Script" uid="uid://bly8dk40xc1vw" path="res://Scripts/api.gd" id="2_75fju"]
+[ext_resource type="Script" uid="uid://26ij6miojb1w" path="res://Scripts/api.gd" id="2_75fju"]
 
 [node name="interface_compte" type="VBoxContainer" unique_id=1075477270]
 offset_right = 40.0
@@ -70,6 +70,18 @@ offset_left = 849.0
 offset_top = 162.0
 offset_right = 1128.0
 offset_bottom = 368.0
+
+[node name="RetourMenuPrincipal" type="Button" parent="UI" unique_id=1471390808]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 75.0
+offset_top = 524.0
+offset_right = 83.0
+offset_bottom = 532.0
+grow_vertical = 2
+text = "Sauvegarder et retour au menu principal"
 
 [node name="API" type="Node" parent="." unique_id=338589668]
 script = ExtResource("2_75fju")
