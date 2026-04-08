@@ -9,11 +9,12 @@
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
-[ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="8_344ge"]
-[ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_6iyac"]
+[ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Shader/Sky.gdshader" id="8_344ge"]
+[ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_6iyac"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
-[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Scenes/pause.gdshader" id="14_jkdf5"]
+[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="14_jkdf5"]
+[ext_resource type="Shader" uid="uid://dxvtbju7ihdgq" path="res://Assets/Shader/Dalt.gdshader" id="15_wsu2k"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(70, 1, 70)
@@ -84,6 +85,10 @@ shader_parameter/twist_frequency = 1.0
 shader_parameter/loop_radius = 1.0
 shader_parameter/loop_count = 0.5
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k12tt"]
+shader = ExtResource("14_jkdf5")
+shader_parameter/blur_amount = 1.30000006175
+
 [sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
 font = ExtResource("12_fdnlq")
 font_size = 40
@@ -101,9 +106,9 @@ font = ExtResource("12_fdnlq")
 font_size = 36
 font_color = Color(0, 0, 0, 1)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k12tt"]
-shader = ExtResource("14_jkdf5")
-shader_parameter/blur_amount = 1.30000006175
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h1bgf"]
+shader = ExtResource("15_wsu2k")
+shader_parameter/mode = 0
 
 [node name="World" type="Node3D" unique_id=1297503563]
 script = ExtResource("1_jjgbg")
@@ -114,14 +119,6 @@ visual = ExtResource("5_hptm8")
 
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -4.78409, 1.88428, 11.871809)
-
-[node name="Timer" type="Timer" parent="." unique_id=1724200824]
-wait_time = 30.0
-one_shot = true
-
-[node name="Sampling" type="Timer" parent="." unique_id=594617237]
-wait_time = 0.2
-autostart = true
 
 [node name="Floor" type="Node3D" parent="." unique_id=1406393240]
 
@@ -291,102 +288,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.
 [node name="Fences6" parent="Fences/Mur4" unique_id=40612797 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
 
-[node name="TempsRestant" type="Label" parent="." unique_id=151437164]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 50.0
-offset_bottom = 65.0
-label_settings = SubResource("LabelSettings_jkdf5")
-
-[node name="AlertMessage" type="Label" parent="." unique_id=10637415]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -166.0
-offset_top = -223.0
-offset_right = 166.0
-offset_bottom = -154.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
-theme_override_font_sizes/font_size = 40
-text = "Temps écoulé !"
-label_settings = SubResource("LabelSettings_fdnlq")
-
-[node name="NextLevel" type="Button" parent="." unique_id=1237651726]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -148.0
-offset_top = 112.0
-offset_right = 148.0
-offset_bottom = 175.00003
-grow_horizontal = 2
-theme_override_fonts/font = ExtResource("12_fdnlq")
-theme_override_font_sizes/font_size = 40
-text = "Niveau suivant"
-
-[node name="ValidateButton" type="Button" parent="." unique_id=922594922]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -152.0
-offset_top = -288.0
-offset_right = -32.0
-offset_bottom = -168.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 40
-theme_override_styles/normal = ExtResource("6_fdnlq")
-theme_override_styles/pressed = ExtResource("6_fdnlq")
-theme_override_styles/hover = ExtResource("6_fdnlq")
-text = "ˇ"
-
-[node name="MessageLabel" type="Label" parent="." unique_id=825985541]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -25.0
-offset_right = 20.0
-offset_bottom = 25.0
-grow_horizontal = 2
-grow_vertical = 2
-label_settings = SubResource("LabelSettings_wsu2k")
-
-[node name="ToDo" type="Label" parent="." unique_id=1336770187]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_top = 21.0
-offset_right = 20.0
-offset_bottom = 71.0
-grow_horizontal = 2
-label_settings = SubResource("LabelSettings_wsu2k")
-
-[node name="Pause" type="Button" parent="." unique_id=635311221]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -28.0
-offset_top = 10.0
-offset_right = -20.0
-offset_bottom = 18.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("12_fdnlq")
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("6_fdnlq")
-theme_override_styles/pressed = ExtResource("6_fdnlq")
-theme_override_styles/hover = ExtResource("6_fdnlq")
-text = "Pause"
-
 [node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1622927938]
 process_mode = 3
 layer = 0
@@ -431,7 +332,148 @@ theme_override_fonts/font = ExtResource("12_fdnlq")
 theme_override_font_sizes/font_size = 40
 text = "PAUSE"
 
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
-[connection signal="timeout" from="Sampling" to="." method="_on_sampling_timeout"]
-[connection signal="pressed" from="Pause" to="." method="_on_pause_pressed"]
+[node name="Zone de texte" type="Control" parent="." unique_id=584328298]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TempsRestant" type="Label" parent="Zone de texte" unique_id=151437164]
+layout_mode = 1
+offset_left = 12.0
+offset_top = 9.0
+offset_right = 52.0
+offset_bottom = 64.0
+label_settings = SubResource("LabelSettings_jkdf5")
+
+[node name="AlertMessage" type="Label" parent="Zone de texte" unique_id=10637415]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -205.0
+offset_top = 102.0
+offset_right = 206.0
+offset_bottom = 171.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
+theme_override_font_sizes/font_size = 40
+text = "Temps écoulé !"
+label_settings = SubResource("LabelSettings_fdnlq")
+
+[node name="MessageLabel" type="Label" parent="Zone de texte" unique_id=825985541]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -19.0
+offset_top = 160.0
+offset_right = 21.0
+offset_bottom = 210.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_wsu2k")
+
+[node name="ToDo" type="Label" parent="Zone de texte" unique_id=1336770187]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 50.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_wsu2k")
+
+[node name="Bouton" type="Control" parent="." unique_id=1081117856]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="NextLevel" type="Button" parent="Bouton" unique_id=1237651726]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -31.500015
+offset_right = 160.0
+offset_bottom = 31.500015
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("12_fdnlq")
+theme_override_font_sizes/font_size = 40
+text = "Niveau suivant"
+
+[node name="ValidateButton" type="Button" parent="Bouton" unique_id=922594922]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -143.0
+offset_top = -265.0
+offset_right = -23.0
+offset_bottom = -145.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = ExtResource("6_fdnlq")
+theme_override_styles/pressed = ExtResource("6_fdnlq")
+theme_override_styles/hover = ExtResource("6_fdnlq")
+text = "ˇ"
+
+[node name="Pause" type="Button" parent="Bouton" unique_id=635311221]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -151.0
+offset_top = 13.0
+offset_right = -18.0
+offset_bottom = 47.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("12_fdnlq")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("6_fdnlq")
+theme_override_styles/pressed = ExtResource("6_fdnlq")
+theme_override_styles/hover = ExtResource("6_fdnlq")
+text = "Pause"
+
+[node name="Temps" type="Node" parent="." unique_id=765541918]
+
+[node name="Timer" type="Timer" parent="Temps" unique_id=1724200824]
+wait_time = 30.0
+one_shot = true
+
+[node name="Sampling" type="Timer" parent="Temps" unique_id=594617237]
+wait_time = 0.2
+autostart = true
+
+[node name="ModeDaltonien" type="CanvasLayer" parent="." unique_id=440335791]
+
+[node name="ColorRect" type="ColorRect" parent="ModeDaltonien" unique_id=1196828377]
+material = SubResource("ShaderMaterial_h1bgf")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [connection signal="pressed" from="PauseMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="Bouton/Pause" to="." method="_on_pause_pressed"]
+[connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="Temps/Sampling" to="." method="_on_sampling_timeout"]

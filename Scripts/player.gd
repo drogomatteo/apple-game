@@ -43,7 +43,7 @@ func _physics_process(delta: float) -> void:
 	if avance:
 		direction.z -= 1
 		#Gestion du son
-		if not $AudioStreamPlayer2D.is_playing():
+		if not $AudioStreamPlayer2D.is_playing() and Paramètre.sound:
 			$AudioStreamPlayer2D.stream = bruitPas
 			$AudioStreamPlayer2D.play()
 		#Animation du panier

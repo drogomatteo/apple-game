@@ -17,6 +17,11 @@ config/features=PackedStringArray("4.6", "Mobile")
 [autoload]
 
 PlayerData="*uid://bnt3vxow8rqq7"
+"Paramètre"="*uid://ci78nbf2nkdwv"
+
+[display]
+
+window/stretch/aspect="keep_width"
 
 [editor]
 

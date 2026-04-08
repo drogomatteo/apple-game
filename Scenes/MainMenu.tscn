@@ -4,11 +4,12 @@
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="8_cmrfp"]
-[ext_resource type="Texture2D" uid="uid://dggx8knfvp5qv" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
-[ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="9_37v8m"]
+[ext_resource type="Texture2D" uid="uid://ctwc11wic5low" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
+[ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Shader/Sky.gdshader" id="9_37v8m"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="9_if7li"]
-[ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_fbs3s"]
+[ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_fbs3s"]
 [ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="10_loo7a"]
+[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="11_if7li"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_0wxkg"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
@@ -92,6 +93,14 @@ shadow_offset = Vector2(3, 3)
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_2j32a"]
 
 [sub_resource type="Theme" id="Theme_mfh7u"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rrcx7"]
+shader = ExtResource("11_if7li")
+shader_parameter/blur_amount = 2.5
+
+[sub_resource type="LabelSettings" id="LabelSettings_if7li"]
+font_size = 24
+font_color = Color(0, 0, 0, 1)
 
 [node name="World" type="Node3D" unique_id=1297503563]
 
@@ -270,11 +279,12 @@ transform = Transform3D(0.7625035, -0.1539145, -0.6284097, -0.005938984, 0.96958
 fov = 81.041435
 metadata/_edit_lock_ = true
 
-[node name="Interface" type="Node" parent="." unique_id=769587623]
+[node name="Interface" type="Node" parent="." unique_id=447049075]
+script = ExtResource("7_2hlom")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="Interface" unique_id=1935196015]
+[node name="Couche 1" type="CanvasLayer" parent="Interface" unique_id=1108448482]
 
-[node name="MenuPrincipal" type="Control" parent="Interface/CanvasLayer" unique_id=2016923985]
+[node name="MenuPrincipal" type="Control" parent="Interface/Couche 1" unique_id=769743583]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -283,25 +293,21 @@ offset_left = 1.0
 offset_right = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("7_2hlom")
 
-[node name="Title" type="Label" parent="Interface/CanvasLayer/MenuPrincipal" unique_id=365040410]
+[node name="Title" type="Label" parent="Interface/Couche 1/MenuPrincipal" unique_id=1261056541]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.44444445
-anchor_top = -0.061728396
-anchor_right = 0.5555556
-anchor_bottom = -0.026234567
-offset_left = -256.5
-offset_top = 188.0
-offset_right = 256.5
-offset_bottom = 284.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -310.0
+offset_top = 106.0
+offset_right = 310.0
+offset_bottom = 215.0
 grow_horizontal = 2
 text = "Apple Game"
 label_settings = SubResource("LabelSettings_yygyf")
-metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Interface/CanvasLayer/MenuPrincipal" unique_id=372742890]
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/Couche 1/MenuPrincipal" unique_id=784950215]
 material = SubResource("CanvasItemMaterial_2j32a")
 layout_mode = 1
 anchors_preset = -1
@@ -317,10 +323,9 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_mfh7u")
 theme_override_constants/separation = 15
-script = ExtResource("7_2hlom")
 metadata/_edit_use_anchors_ = true
 
-[node name="StartButton" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/VBoxContainer" unique_id=555364924]
+[node name="StartButton" type="Button" parent="Interface/Couche 1/MenuPrincipal/VBoxContainer" unique_id=6143164]
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.071672834, 0.23090953, 0.35577714, 1)
 theme_override_fonts/font = ExtResource("8_cmrfp")
@@ -328,7 +333,7 @@ theme_override_font_sizes/font_size = 50
 text = "Jouer"
 metadata/_edit_use_anchors_ = true
 
-[node name="Quit Button" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/VBoxContainer" unique_id=1997243648]
+[node name="Quit Button" type="Button" parent="Interface/Couche 1/MenuPrincipal/VBoxContainer" unique_id=1819607331]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("8_cmrfp")
 theme_override_font_sizes/font_size = 50
@@ -336,7 +341,7 @@ text = "Quitter
 "
 metadata/_edit_use_anchors_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Interface/CanvasLayer/MenuPrincipal" unique_id=504561329]
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/Couche 1/MenuPrincipal" unique_id=1918436759]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -348,21 +353,107 @@ offset_top = -64.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="Option" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/HBoxContainer" unique_id=1262358282]
+[node name="Option" type="Button" parent="Interface/Couche 1/MenuPrincipal/HBoxContainer" unique_id=958335643]
 layout_mode = 2
 theme_override_icons/icon = ExtResource("10_loo7a")
 theme_override_styles/normal = ExtResource("9_if7li")
 theme_override_styles/pressed = ExtResource("9_if7li")
 theme_override_styles/hover = ExtResource("9_if7li")
 
-[node name="Compte" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/HBoxContainer" unique_id=1515659249]
+[node name="Compte" type="Button" parent="Interface/Couche 1/MenuPrincipal/HBoxContainer" unique_id=521952115]
 layout_mode = 2
 theme_override_icons/icon = ExtResource("8_loo7a")
 theme_override_styles/normal = ExtResource("9_if7li")
 theme_override_styles/pressed = ExtResource("9_if7li")
 theme_override_styles/hover = ExtResource("9_if7li")
 
-[connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/VBoxContainer/StartButton" to="Interface/CanvasLayer/MenuPrincipal" method="_on_start_button_button_down"]
-[connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/VBoxContainer/Quit Button" to="Interface/CanvasLayer/MenuPrincipal" method="_on_quit_button_button_down"]
-[connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/HBoxContainer/Option" to="Interface/CanvasLayer/MenuPrincipal" method="_on_option_button_down"]
-[connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/HBoxContainer/Compte" to="Interface/CanvasLayer/MenuPrincipal" method="_on_compte_button_down"]
+[node name="Couche 2" type="CanvasLayer" parent="Interface" unique_id=490601159]
+visible = false
+
+[node name="Options" type="Control" parent="Interface/Couche 2" unique_id=1038948265]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Interface/Couche 2/Options" unique_id=20003110]
+material = SubResource("ShaderMaterial_rrcx7")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BackButton" type="Button" parent="Interface/Couche 2/Options" unique_id=659578420]
+z_index = 1
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -142.0
+offset_top = 13.0
+offset_right = -17.0
+offset_bottom = 55.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("8_cmrfp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = ExtResource("9_if7li")
+theme_override_styles/pressed = ExtResource("9_if7li")
+theme_override_styles/hover = ExtResource("9_if7li")
+text = "Retour"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Interface/Couche 2/Options" unique_id=399316877]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -74.5
+offset_top = -29.5
+offset_right = 74.5
+offset_bottom = 29.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sound" type="CheckButton" parent="Interface/Couche 2/Options/VBoxContainer" unique_id=1301963208]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+button_pressed = true
+text = "Bruits de pas"
+
+[node name="Label" type="Label" parent="Interface/Couche 2/Options/VBoxContainer" unique_id=2040572417]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Daltonisme"
+label_settings = SubResource("LabelSettings_if7li")
+horizontal_alignment = 1
+
+[node name="Daltonien" type="ItemList" parent="Interface/Couche 2/Options/VBoxContainer" unique_id=1320494094]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+allow_search = false
+auto_height = true
+item_count = 4
+item_0/text = "Aucun"
+item_1/text = "Protanopia"
+item_2/text = "Deuteranopia"
+item_3/text = "Tritanopia"
+
+[connection signal="button_down" from="Interface/Couche 1/MenuPrincipal/VBoxContainer/StartButton" to="Interface" method="_on_start_button_button_down"]
+[connection signal="button_down" from="Interface/Couche 1/MenuPrincipal/VBoxContainer/Quit Button" to="Interface" method="_on_quit_button_button_down"]
+[connection signal="button_down" from="Interface/Couche 1/MenuPrincipal/HBoxContainer/Option" to="Interface" method="_on_option_button_down"]
+[connection signal="button_down" from="Interface/Couche 1/MenuPrincipal/HBoxContainer/Compte" to="Interface" method="_on_compte_button_down"]
+[connection signal="button_down" from="Interface/Couche 2/Options/BackButton" to="Interface" method="_on_back_button_button_down"]
+[connection signal="toggled" from="Interface/Couche 2/Options/VBoxContainer/Sound" to="Interface" method="_on_sound_toggled"]
+[connection signal="item_selected" from="Interface/Couche 2/Options/VBoxContainer/Daltonien" to="Interface" method="_on_daltonien_item_selected"]

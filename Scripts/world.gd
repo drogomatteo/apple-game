@@ -1,12 +1,12 @@
 extends Node3D
 
 #Zone de texte
-@onready var validate_button = $ValidateButton
-@onready var message_label = $MessageLabel
-@onready var next_level = $NextLevel
-@onready var message_alerte = $AlertMessage
-@onready var temps_restant = $TempsRestant
-@onready var textToDo = $ToDo
+@onready var validate_button = $Bouton/ValidateButton
+@onready var message_label = $"Zone de texte/MessageLabel"
+@onready var next_level = $Bouton/NextLevel
+@onready var message_alerte = $"Zone de texte/AlertMessage"
+@onready var temps_restant = $"Zone de texte/TempsRestant"
+@onready var textToDo = $"Zone de texte/ToDo"
 
 #Scène
 @export_group("Scènes")
@@ -54,7 +54,7 @@ var phase : int = 0
 #4 : feedback
 
 #Gestion du temps
-@onready var max_timer = $Timer
+@onready var max_timer = $Temps/Timer
 var timeout : bool
 
 #Score et difficulté
@@ -66,14 +66,14 @@ var Difficulté_actuel : Array
 @export var use_generated_spawn := true
 
 #Gestion de la pause
-@onready var ButtonPause = $Pause
+@onready var ButtonPause = $Bouton/Pause
 @onready var PauseMenu = $PauseMenu
 @onready var ResmueButton = $PauseMenu/ResumeButton
 var paused = false
 
 func _ready() -> void:
 	Initialisation()
-	
+	_mettre_a_jour_daltonien(Paramètre.daltonien)
 	print(PlayerData.nom)
 	print(PlayerData.prenom)
 
@@ -396,3 +396,7 @@ func _on_resume_button_pressed() -> void:
 		get_tree().paused = false
 		ButtonPause.set_visible(true)
 		PauseMenu.set_visible(false)
+
+func _mettre_a_jour_daltonien(nouveau_mode : int):
+	var mon_materiel = $ModeDaltonien/ColorRect.material as ShaderMaterial
+	mon_materiel.set_shader_parameter("mode", nouveau_mode)
