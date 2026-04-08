@@ -14,6 +14,7 @@ extends Node3D
 @export var tree : PackedScene
 @export var apple_tree : PackedScene
 @export var visual : PackedScene
+@onready var menu = load("res://Scenes/MainMenu.tscn")
 #Noeud
 @onready var Player = $Player
 var Basket : Node
@@ -84,13 +85,15 @@ func _physics_process(_delta: float) -> void:
 	if phase == 3:
 		if max_timer.get_time_left() >= 1:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" secondes")
+			var Red : float = (max_timer.get_wait_time()-max_timer.get_time_left())/max_timer.get_wait_time()
+			temps_restant.label_settings.font_color = Color(Red, 0.0, 0.0, 1.0)
 		else:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" seconde")
 
 	if next_level.is_pressed():
 		#Si c'était le dernier niveau, alors on arrête (Il faut renvoyer au menu principal et envoyer les données dans la BD)
 		if niveau == niveau_max:
-			get_tree().quit()
+			get_tree().change_scene_to_packed(menu)
 		#Sinon, on continue
 		else:
 			# On retire noeuds rajoutés
@@ -125,7 +128,7 @@ func _physics_process(_delta: float) -> void:
 		position_Finale = player_cell()
 		
 		distance = sqrt((position_Finale.x-Objet["basket0"].x)**2+(position_Finale.z-Objet["basket0"].z)**2)
-		distanceAParcourir = sqrt((Objet["tree"+str(index_Tree)].x-Objet["basket0"].x)**2+(Objet["tree"+str(index_Tree)].z-Objet["basket0"].z)**2)
+		distanceAParcourir = sqrt((Objet["apple_tree0"].x-Objet["basket0"].x)**2+(Objet["apple_tree0"].z-Objet["basket0"].z)**2)
 		var seuil1 = PI/9
 		var seuil2 = 2*seuil1
 		
@@ -400,3 +403,7 @@ func _on_resume_button_pressed() -> void:
 func _mettre_a_jour_daltonien(nouveau_mode : int):
 	var mon_materiel = $ModeDaltonien/ColorRect.material as ShaderMaterial
 	mon_materiel.set_shader_parameter("mode", nouveau_mode)
+
+
+func _on_retour_button_down() -> void:
+	get_tree().change_scene_to_packed(menu)
