@@ -65,12 +65,21 @@ var Difficile = 20
 var Difficulté_actuel : Array
 @export var use_generated_spawn := true
 
+#Gestion de la pause
+@onready var ButtonPause = $Pause
+@onready var PauseMenu = $PauseMenu
+@onready var ResmueButton = $PauseMenu/ResumeButton
+var paused = false
+
 func _ready() -> void:
 	Initialisation()
+	
+	print(PlayerData.nom)
+	print(PlayerData.prenom)
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
 func _physics_process(_delta: float) -> void:
-	textToDo.set_text(toDo(phase))
+	textToDo.set_text(toDo())
 	
 	if phase == 3:
 		if max_timer.get_time_left() >= 1:
@@ -351,7 +360,7 @@ func save_level(i):
 	
 	return level
 
-func toDo(phase):
+func toDo():
 	
 	#Phase 0: cherche Panier
 	if phase == 0:
@@ -371,3 +380,19 @@ func _on_timer_timeout() -> void:
 
 func _on_sampling_timeout() -> void:
 	position_joueur.append(player_cell())
+
+
+func _on_pause_pressed() -> void:
+	if not paused:
+		paused = true
+		get_tree().paused = true
+		ButtonPause.set_visible(false)
+		PauseMenu.set_visible(true)
+
+
+func _on_resume_button_pressed() -> void:
+	if paused:
+		paused = false
+		get_tree().paused = false
+		ButtonPause.set_visible(true)
+		PauseMenu.set_visible(false)

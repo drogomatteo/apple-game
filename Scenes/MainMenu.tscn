@@ -4,8 +4,11 @@
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="8_cmrfp"]
+[ext_resource type="Texture2D" uid="uid://dggx8knfvp5qv" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
 [ext_resource type="Shader" uid="uid://bj17fifrf8svm" path="res://Assets/Sky/Sky.gdshader" id="9_37v8m"]
+[ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="9_if7li"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Sky/WindEffect.gdshader" id="10_fbs3s"]
+[ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="10_loo7a"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_0wxkg"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
@@ -333,5 +336,33 @@ text = "Quitter
 "
 metadata/_edit_use_anchors_ = true
 
+[node name="HBoxContainer" type="HBoxContainer" parent="Interface/CanvasLayer/MenuPrincipal" unique_id=504561329]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -64.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Option" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/HBoxContainer" unique_id=1262358282]
+layout_mode = 2
+theme_override_icons/icon = ExtResource("10_loo7a")
+theme_override_styles/normal = ExtResource("9_if7li")
+theme_override_styles/pressed = ExtResource("9_if7li")
+theme_override_styles/hover = ExtResource("9_if7li")
+
+[node name="Compte" type="Button" parent="Interface/CanvasLayer/MenuPrincipal/HBoxContainer" unique_id=1515659249]
+layout_mode = 2
+theme_override_icons/icon = ExtResource("8_loo7a")
+theme_override_styles/normal = ExtResource("9_if7li")
+theme_override_styles/pressed = ExtResource("9_if7li")
+theme_override_styles/hover = ExtResource("9_if7li")
+
 [connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/VBoxContainer/StartButton" to="Interface/CanvasLayer/MenuPrincipal" method="_on_start_button_button_down"]
 [connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/VBoxContainer/Quit Button" to="Interface/CanvasLayer/MenuPrincipal" method="_on_quit_button_button_down"]
+[connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/HBoxContainer/Option" to="Interface/CanvasLayer/MenuPrincipal" method="_on_option_button_down"]
+[connection signal="button_down" from="Interface/CanvasLayer/MenuPrincipal/HBoxContainer/Compte" to="Interface/CanvasLayer/MenuPrincipal" method="_on_compte_button_down"]

@@ -16,8 +16,7 @@ config/features=PackedStringArray("4.6", "Mobile")
 
 [autoload]
 
-GameManager="*uid://cquy1ltqdm4j5"
-PlayerData="*uid://cwrvjrtmo4u62"
+PlayerData="*uid://bnt3vxow8rqq7"
 
 [editor]
 

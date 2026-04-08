@@ -139,5 +139,17 @@ offset_top = 162.0
 offset_right = 1128.0
 offset_bottom = 368.0
 
+[node name="RetourMenuPrincipal" type="Button" parent="UI" unique_id=1471390808]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 75.0
+offset_top = 524.0
+offset_right = 83.0
+offset_bottom = 532.0
+grow_vertical = 2
+text = "Sauvegarder et retour au menu principal"
+
 [node name="API" type="Node" parent="." unique_id=338589668]
 script = SubResource("GDScript_j00uw")

@@ -1,6 +1,7 @@
 extends Control
 
 @onready var api = get_node("../API")
+@export var MainMenu = load("res://Scenes/MainMenu.tscn")
 
 @onready var nom_input = $NomInput
 @onready var prenom_input = $PrenomInput
@@ -12,6 +13,7 @@ extends Control
 func _ready():
 	$CreateButton.pressed.connect(_on_create_pressed)
 	$UpdateButton.pressed.connect(_on_update_pressed)
+	$RetourMenuPrincipal.pressed.connect(_on_retour_menu_principal_pressed)
 
 # CREATE
 func _on_create_pressed():
@@ -21,6 +23,14 @@ func _on_create_pressed():
 	var annee = int(annee_input.text)
 	api.create_user(nom, prenom, email, annee)
 	result_label.text = "Création envoyée..."
+
+func _on_retour_menu_principal_pressed():
+	PlayerData.nom = $NomInput.text
+	PlayerData.prenom = $PrenomInput.text
+	PlayerData.email = $EmailInput.text
+	PlayerData.annee = $AnneeInput.text
+	PlayerData.id = int($IdInput.text)
+	get_tree().change_scene_to_packed(MainMenu)
 
 # UPDATE
 func _on_update_pressed():

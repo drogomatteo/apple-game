@@ -17,7 +17,6 @@ const GRAVITY = 9.8
 @onready var Left = $Left
 @onready var Right = $Right
 @onready var Forward = $Forward
-@onready var basket = $Basket
 @onready var camera = $Camera3D
 
 #Gestion des bruits de pas
