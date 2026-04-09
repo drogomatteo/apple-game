@@ -14,7 +14,6 @@ extends Node3D
 @export var tree : PackedScene
 @export var apple_tree : PackedScene
 @export var visual : PackedScene
-@onready var menu = load("res://Scenes/MainMenu.tscn")
 #Noeud
 @onready var Player = $Player
 var Basket : Node
@@ -85,15 +84,15 @@ func _physics_process(_delta: float) -> void:
 	if phase == 3:
 		if max_timer.get_time_left() >= 1:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" secondes")
-			var Red : float = (max_timer.get_wait_time()-max_timer.get_time_left())/max_timer.get_wait_time()
-			temps_restant.label_settings.font_color = Color(Red, 0.0, 0.0, 1.0)
 		else:
 			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" seconde")
+		var Red : float = (max_timer.get_wait_time()-max_timer.get_time_left())/max_timer.get_wait_time()
+		temps_restant.label_settings.font_color = Color(Red, 0.0, 0.0, 1.0)
 
 	if next_level.is_pressed():
 		#Si c'était le dernier niveau, alors on arrête (Il faut renvoyer au menu principal et envoyer les données dans la BD)
 		if niveau == niveau_max:
-			get_tree().change_scene_to_packed(menu)
+			Transition.go_to_scene("MainMenu")
 		#Sinon, on continue
 		else:
 			# On retire noeuds rajoutés
@@ -406,4 +405,4 @@ func _mettre_a_jour_daltonien(nouveau_mode : int):
 
 
 func _on_retour_button_down() -> void:
-	get_tree().change_scene_to_packed(menu)
+	Transition.go_to_scene("MainMenu")

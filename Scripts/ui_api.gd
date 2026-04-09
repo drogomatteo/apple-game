@@ -1,7 +1,7 @@
 extends Control
 
 @onready var api = get_node("../API")
-@export var MainMenu = load("res://Scenes/MainMenu.tscn")
+var cheminMenu = "MainMenu"
 
 @onready var nom_input = $NomInput
 @onready var prenom_input = $PrenomInput
@@ -30,7 +30,7 @@ func _on_retour_menu_principal_pressed():
 	PlayerData.email = $EmailInput.text
 	PlayerData.annee = $AnneeInput.text
 	PlayerData.id = int($IdInput.text)
-	get_tree().change_scene_to_packed(MainMenu)
+	Transition.go_to_scene(cheminMenu)
 
 # UPDATE
 func _on_update_pressed():
