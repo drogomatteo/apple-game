@@ -96,7 +96,8 @@ shadow_offset = Vector2(3, 3)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rrcx7"]
 shader = ExtResource("11_if7li")
-shader_parameter/blur_amount = 2.5
+shader_parameter/blur_amount = 2.50000011875
+shader_parameter/mix_color = Color(0, 0, 0, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_if7li"]
 font_size = 24

@@ -73,7 +73,7 @@ var paused = false
 
 func _ready() -> void:
 	Initialisation()
-	_mettre_a_jour_daltonien(Paramètre.daltonien)
+
 	print(PlayerData.nom)
 	print(PlayerData.prenom)
 
@@ -398,11 +398,6 @@ func _on_resume_button_pressed() -> void:
 		get_tree().paused = false
 		ButtonPause.set_visible(true)
 		PauseMenu.set_visible(false)
-
-func _mettre_a_jour_daltonien(nouveau_mode : int):
-	var mon_materiel = $ModeDaltonien/ColorRect.material as ShaderMaterial
-	mon_materiel.set_shader_parameter("mode", nouveau_mode)
-
 
 func _on_retour_button_down() -> void:
 	Transition.go_to_scene("MainMenu")

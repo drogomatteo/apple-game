@@ -14,7 +14,6 @@
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="14_jkdf5"]
-[ext_resource type="Shader" uid="uid://dxvtbju7ihdgq" path="res://Assets/Shader/Dalt.gdshader" id="15_wsu2k"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(70, 1, 70)
@@ -87,7 +86,16 @@ shader_parameter/loop_count = 0.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k12tt"]
 shader = ExtResource("14_jkdf5")
-shader_parameter/blur_amount = 1.30000006175
+shader_parameter/blur_amount = 2.50000011875
+shader_parameter/mix_color = Color(0.19607843, 0.23529412, 0.19607843, 0.23529412)
+
+[sub_resource type="LabelSettings" id="LabelSettings_k12tt"]
+font = ExtResource("12_fdnlq")
+font_size = 40
+font_color = Color(0, 0, 0, 1)
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 0.17254902)
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
 font = ExtResource("12_fdnlq")
@@ -105,10 +113,6 @@ shadow_color = Color(0, 0, 0, 0.48235294)
 font = ExtResource("12_fdnlq")
 font_size = 36
 font_color = Color(0, 0, 0, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_h1bgf"]
-shader = ExtResource("15_wsu2k")
-shader_parameter/mode = 0
 
 [node name="World" type="Node3D" unique_id=1297503563]
 script = ExtResource("1_jjgbg")
@@ -322,15 +326,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
+offset_left = -62.0
+offset_top = -223.0
+offset_right = 62.0
+offset_bottom = -179.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_fonts/font = ExtResource("12_fdnlq")
-theme_override_font_sizes/font_size = 40
 text = "PAUSE"
+label_settings = SubResource("LabelSettings_k12tt")
 
 [node name="Retour" type="Button" parent="PauseMenu" unique_id=1806222345]
 anchors_preset = 8
@@ -338,12 +341,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -4.0
-offset_top = 50.0
-offset_right = 4.0
-offset_bottom = 58.0
+offset_left = -163.5
+offset_top = 52.0
+offset_right = 163.5
+offset_bottom = 94.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_font_sizes/font_size = 24
 text = "Retournez au menu pricipal"
 
 [node name="Zone de texte" type="Control" parent="." unique_id=584328298]
@@ -475,17 +479,6 @@ one_shot = true
 [node name="Sampling" type="Timer" parent="Temps" unique_id=594617237]
 wait_time = 0.2
 autostart = true
-
-[node name="ModeDaltonien" type="CanvasLayer" parent="." unique_id=440335791]
-
-[node name="ColorRect" type="ColorRect" parent="ModeDaltonien" unique_id=1196828377]
-material = SubResource("ShaderMaterial_h1bgf")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
 
 [connection signal="pressed" from="PauseMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="button_down" from="PauseMenu/Retour" to="." method="_on_retour_button_down"]

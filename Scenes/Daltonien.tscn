@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://8y5yuplw0kyy"]
+
+[ext_resource type="Shader" uid="uid://dxvtbju7ihdgq" path="res://Assets/Shader/Dalt.gdshader" id="1_0ytq5"]
+[ext_resource type="Script" uid="uid://b8c5e3ior52bb" path="res://Scripts/daltonien.gd" id="1_8h8ws"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8h8ws"]
+shader = ExtResource("1_0ytq5")
+shader_parameter/mode = 0
+
+[node name="Daltonien" type="CanvasLayer" unique_id=232147617]
+layer = 110
+script = ExtResource("1_8h8ws")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=799180882]
+material = SubResource("ShaderMaterial_8h8ws")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
