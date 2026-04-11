@@ -6,6 +6,9 @@ var player_data : Dictionary
 var save_path = "user://save.dat"
 var repport_path = path_report_generator(i)
 
+func _ready() -> void:
+	load_game()
+
 func local_files() -> void:
 	if i != 0 :
 		#Si i !=0, cela veut dire que le joueur possède actuellement i fichiers à envoyer
