@@ -93,3 +93,5 @@ collision_layer = 0
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=686640594]
 volume_db = -3.0
+
+[editable path="Node3D/Basket"]
