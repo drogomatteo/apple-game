@@ -155,20 +155,23 @@ func _physics_process(_delta: float) -> void:
 		
 		string_to_save += save_level(niveau)
 		if niveau == niveau_max:
-			# rapport complet
+
 			var file = FileAccess.open("user://rapport_complet.dat", FileAccess.WRITE)
 			file.store_string(string_to_save)
 			file.close()
 
-			# rapport médecin simple
 			var file2 = FileAccess.open("user://rapport_medecin.dat", FileAccess.WRITE)
 			file2.store_string("Score: " + str(score))
 			file2.close()
 
 			GameManager.send_rapport_complet()
 
-		if not GameManager.is_guest:
-			GameManager.send_rapport_medecin()
+			if not PlayerData.is_guest:
+				GameManager.send_rapport_medecin()
+
+			print("Rapports envoyés")
+
+			Transition.go_to_scene("MainMenu")
 
 
 	#Gestion des collisions avec le joueur

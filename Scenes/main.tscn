@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_6bp64"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="3_344ge"]
-[ext_resource type="Script" uid="uid://26ij6miojb1w" path="res://Scripts/api.gd" id="4_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
@@ -54,6 +53,72 @@ shader_parameter/twist_amplitude = 0.1
 shader_parameter/twist_frequency = 1.0
 shader_parameter/loop_radius = 1.0
 shader_parameter/loop_count = 0.5
+
+[sub_resource type="GDScript" id="GDScript_fdnlq"]
+script/source = "extends Node
+
+var base_url = \"http://100.111.28.32:8000/user/\"
+var http: HTTPRequest
+
+func _ready():
+	print(\"API ready\")
+
+	http = HTTPRequest.new()
+	add_child(http)
+
+	http.request_completed.connect(_on_request_completed)
+
+
+# CREATE USER (POST)
+func create_user(nom, prenom, email, annee):
+	var data = {
+		\"nom\": nom,
+		\"prenom\": prenom,
+		\"email\": email,
+		\"annee_naissance\": annee
+	}
+
+	var json = JSON.stringify(data)
+
+	return http.request(
+		base_url,
+		[\"Content-Type: application/json\"],
+		HTTPClient.METHOD_POST,
+		json
+	)
+
+
+# UPDATE USER (PUT)
+func update_user(id, nom, prenom, email, annee):
+	var data = {
+		\"nom\": nom,
+		\"prenom\": prenom,
+		\"email\": email,
+		\"annee_naissance\": annee
+	}
+
+	var json = JSON.stringify(data)
+
+	return http.request(
+		base_url + str(id) + \"/\",
+		[\"Content-Type: application/json\"],
+		HTTPClient.METHOD_PUT,
+		json
+	)
+
+
+
+# CALLBACK
+func _on_request_completed(result, response_code, headers, body):
+	print(\"RESULT:\", result)
+	print(\"Code:\", response_code)
+	var response = body.get_string_from_utf8()
+	print(\"Réponse:\", response)
+
+	# ⚠️ éviter crash si UI n'existe pas
+	if has_node(\"../UI/ResultLabel\"):
+		get_node(\"../UI/ResultLabel\").text = response
+"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k12tt"]
 shader = ExtResource("14_jkdf5")
@@ -154,7 +219,7 @@ mesh = SubResource("TubeTrailMesh_jkdf5")
 surface_material_override/0 = SubResource("ShaderMaterial_wsu2k")
 
 [node name="API" type="Node" parent="." unique_id=1739315456]
-script = ExtResource("4_jjvhh")
+script = SubResource("GDScript_fdnlq")
 
 [node name="Fences" parent="." unique_id=123485950 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.49749, 9.536743e-07, -13.549052)
