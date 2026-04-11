@@ -270,14 +270,7 @@ func populate_chunk_with_density(
 			if invert_distribution_mask:
 				distribution_value = 1.0 - distribution_value
 
-			if debug_print_count < 20:
-				print(
-					node.name,
-					" distribution=", distribution_value,
-					" threshold=", distribution_threshold,
-					" invert=", invert_distribution_mask
-				)
-				debug_print_count += 1
+
 
 			# En dehors du cluster -> rejet
 			if distribution_value > distribution_threshold + distribution_softness:
@@ -323,7 +316,7 @@ func populate_chunk_with_density(
 	for i in range(transforms.size()):
 		mm.set_instance_transform(i, transforms[i])
 
-	print(node.name, " target=", target_count, " final=", transforms.size(), " attempts=", attempts)
+	
 
 
 func configure_near_visibility(node: MultiMeshInstance3D) -> void:
