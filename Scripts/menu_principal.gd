@@ -8,7 +8,7 @@ func _ready() -> void:
 	GestionFichier.load_game()
 
 func _on_start_button_button_down() -> void:
-	Transition.go_to_scene(cheminJeu)
+	Transition.go_to_scene("UserForm")
 
 
 func _on_quit_button_button_down() -> void:
