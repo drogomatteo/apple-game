@@ -8,3 +8,4 @@ metadata/_snap_count = 51
 
 [resource]
 gradient = SubResource("Gradient_0cusm")
+height = 41

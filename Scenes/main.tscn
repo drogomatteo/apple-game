@@ -8,15 +8,24 @@
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
+[ext_resource type="Script" uid="uid://cyf1mrcpq47gu" path="res://Scripts/grass_system.gd" id="7_k12tt"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
+[ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
+[ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_6iyac"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="14_jkdf5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
-size = Vector3(70, 1, 70)
+size = Vector3(26, 1, 26)
+
+[sub_resource type="QuadMesh" id="QuadMesh_b3802"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_b3802"]
+size = Vector2(24, 24)
+center_offset = Vector3(4.2, 0, 4)
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_k12tt"]
 panorama = ExtResource("8_wsu2k")
@@ -98,7 +107,7 @@ transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.707
 [node name="Floor" type="Node3D" parent="." unique_id=1406393240]
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=1466840344]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -1, -8)
 collision_layer = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=2104309237]
@@ -108,44 +117,65 @@ debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
 
 [node name="Ensemble Sol" type="Node3D" parent="Floor" unique_id=426609364]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
+script = ExtResource("7_k12tt")
+density_per_m2 = 20.0
+grass_mesh = SubResource("QuadMesh_b3802")
+grass_material = ExtResource("8_h1bgf")
+far_visibility_end = 16.0
 
 [node name="Node3D" parent="Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ynf5e")]
 
 [node name="Node3D2" parent="Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
 
 [node name="Node3D3" parent="Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
 
-[node name="Node3D4" parent="Floor/Ensemble Sol" unique_id=1869510594 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
+[node name="Node3D10" parent="Floor/Ensemble Sol" unique_id=1130719551 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 18)
 
-[node name="Node3D5" parent="Floor/Ensemble Sol" unique_id=444045714 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 20)
+[node name="Node3D4" parent="Floor/Ensemble Sol" unique_id=179543784 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
 
-[node name="Node3D6" parent="Floor/Ensemble Sol" unique_id=406362351 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 40)
+[node name="Node3D5" parent="Floor/Ensemble Sol" unique_id=1359805284 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 6)
 
-[node name="Node3D7" parent="Floor/Ensemble Sol" unique_id=1998737162 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+[node name="Node3D6" parent="Floor/Ensemble Sol" unique_id=620084641 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 12)
 
-[node name="Node3D8" parent="Floor/Ensemble Sol" unique_id=1992462546 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 20)
+[node name="Node3D12" parent="Floor/Ensemble Sol" unique_id=176907512 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 18)
 
-[node name="Node3D9" parent="Floor/Ensemble Sol" unique_id=426418514 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 40)
+[node name="Node3D7" parent="Floor/Ensemble Sol" unique_id=1394284664 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
+
+[node name="Node3D8" parent="Floor/Ensemble Sol" unique_id=1810276722 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 6)
+
+[node name="Node3D9" parent="Floor/Ensemble Sol" unique_id=912886912 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
+
+[node name="Node3D14" parent="Floor/Ensemble Sol" unique_id=697644848 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 18)
+
+[node name="Node3D16" parent="Floor/Ensemble Sol" unique_id=446660227 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
+
+[node name="Node3D17" parent="Floor/Ensemble Sol" unique_id=900406900 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 6)
+
+[node name="Node3D18" parent="Floor/Ensemble Sol" unique_id=1784722520 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 12)
+
+[node name="Node3D19" parent="Floor/Ensemble Sol" unique_id=1276527557 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 18)
+
+[node name="Ground" type="MeshInstance3D" parent="Floor" unique_id=133471086]
+material_override = ExtResource("9_h1bgf")
+mesh = SubResource("PlaneMesh_b3802")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1906453172]
 environment = SubResource("Environment_d1ilt")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=629879536]
-transform = Transform3D(-0.40055937, -0.7401756, -0.5400853, -0.6929114, -0.14097442, 0.70710677, -0.5995214, 0.6574695, -0.4564075, -1.0428352, 21.82301, 0.33849716)
-light_color = Color(1, 0.8951667, 0.63, 1)
-light_energy = 0.875
-shadow_enabled = true
-shadow_opacity = 0.63
-directional_shadow_max_distance = 50.0
-sky_mode = 1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment" unique_id=615579134]
 transform = Transform3D(0.66913056, -0.74314487, 3.2483893e-08, 0, -4.371139e-08, -1, 0.74314487, 0.66913056, -2.9248627e-08, -0.27680564, 0.7001449, 2.3841858e-07)
@@ -158,6 +188,7 @@ script = ExtResource("4_jjvhh")
 
 [node name="Fences" parent="." unique_id=123485950 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.49749, 9.536743e-07, -13.549052)
+visible = false
 
 [node name="Mur1" type="Node3D" parent="Fences" unique_id=1072364506]
 
@@ -450,6 +481,16 @@ one_shot = true
 [node name="Sampling" type="Timer" parent="Temps" unique_id=594617237]
 wait_time = 0.2
 autostart = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
+transform = Transform3D(-0.4005594, -0.74017566, -0.5400854, -0.69291145, -0.14097443, 0.7071068, -0.59952146, 0.6574696, -0.45640755, -1.0428352, 21.82301, 0.33849716)
+light_color = Color(1, 0.8951667, 0.63, 1)
+light_energy = 0.875
+light_bake_mode = 1
+shadow_enabled = true
+shadow_opacity = 0.63
+directional_shadow_max_distance = 50.0
+sky_mode = 1
 
 [connection signal="pressed" from="PauseMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="button_down" from="PauseMenu/Retour" to="." method="_on_retour_button_down"]
