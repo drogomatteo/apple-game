@@ -1,7 +1,7 @@
 extends Node
 
 var cheminJeu =  "main"
-var cheminCompte = "interface"
+var cheminCompte = "userForm"
 
 func _ready() -> void:
 	get_tree().paused = false
@@ -10,9 +10,9 @@ func _ready() -> void:
 func _on_start_button_button_down() -> void:
 
 	if PlayerData.user_id != -1:
-		Transition.go_to_scene("main")
+		Transition.go_to_scene(cheminJeu)
 	else:
-		Transition.go_to_scene("UserForm")
+		Transition.go_to_scene(cheminCompte)
 
 
 func _on_quit_button_button_down() -> void:
