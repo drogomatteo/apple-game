@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ciiarbj0qn64p"]
 
-[ext_resource type="Script" uid="uid://d2aioml31y8mv" path="res://Scripts/ScèneTransition.gd" id="1_jnsx0"]
+[ext_resource type="Script" uid="uid://d2aioml31y8mv" path="res://Scripts/scène_transition.gd" id="1_jnsx0"]
 [ext_resource type="Shader" uid="uid://bxj038tvxkitq" path="res://Assets/Shader/transition.gdshader" id="2_ah04o"]
 [ext_resource type="Texture2D" uid="uid://dfvgfi1rpxvlc" path="res://PommeAnimation/apple.png" id="3_vlteq"]
 
