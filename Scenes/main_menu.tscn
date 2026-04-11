@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://bwq3eicpmx7gl"]
+
+[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="1_ce3w2"]
+[ext_resource type="Script" uid="uid://bgub81fhtsdig" path="res://Scripts/main_menu.gd" id="1_n45e2"]
+[ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="2_n45e2"]
+[ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="3_opfnp"]
+[ext_resource type="Texture2D" uid="uid://ctwc11wic5low" path="res://Assets/UI-UX/Images/images.png" id="4_cp0ys"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_yhxw7"]
+font = ExtResource("1_ce3w2")
+font_size = 100
+outline_size = 30
+outline_color = Color(0.1974, 0.33370003, 0.47, 1)
+shadow_size = 32
+shadow_color = Color(0, 0, 0, 0.58431375)
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_trj04"]
+
+[sub_resource type="Theme" id="Theme_16hvj"]
+
+[node name="MainMenu" type="Control" unique_id=1142539147]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n45e2")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1863948896]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=252485785]
+layout_mode = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer" unique_id=109566338]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+text = "Apple Game"
+label_settings = SubResource("LabelSettings_yhxw7")
+horizontal_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer" unique_id=1736047804]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CenterContainer" unique_id=183065039]
+material = SubResource("CanvasItemMaterial_trj04")
+layout_mode = 2
+theme = SubResource("Theme_16hvj")
+theme_override_constants/separation = 20
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=602920171]
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.071672834, 0.23090953, 0.35577714, 1)
+theme_override_fonts/font = ExtResource("1_ce3w2")
+theme_override_font_sizes/font_size = 50
+text = "Jouer"
+metadata/_edit_use_anchors_ = true
+
+[node name="Quit Button" type="Button" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=452904443]
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_ce3w2")
+theme_override_font_sizes/font_size = 50
+text = "Quitter
+"
+metadata/_edit_use_anchors_ = true
+
+[node name="SpacerTop" type="Control" parent="MarginContainer/VBoxContainer" unique_id=745547319]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SpacerBottom" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1699160874]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1236421359]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="OptionButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=841365345]
+layout_mode = 2
+theme_override_icons/icon = ExtResource("2_n45e2")
+theme_override_styles/normal = ExtResource("3_opfnp")
+theme_override_styles/pressed = ExtResource("3_opfnp")
+theme_override_styles/hover = ExtResource("3_opfnp")
+
+[node name="UserButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2042841062]
+layout_mode = 2
+theme_override_icons/icon = ExtResource("4_cp0ys")
+theme_override_styles/normal = ExtResource("3_opfnp")
+theme_override_styles/pressed = ExtResource("3_opfnp")
+theme_override_styles/hover = ExtResource("3_opfnp")
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/Quit Button" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/OptionButton" to="." method="_on_option_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/UserButton" to="." method="_on_user_button_pressed"]
