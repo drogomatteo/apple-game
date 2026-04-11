@@ -1,7 +1,8 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://bra6ug2wjmj0j"]
 
-[ext_resource type="Shader" uid="uid://d2pxrch4crrap" path="res://Assets/Herbe/src/shader/ground.gdshader" id="1_qlfk2"]
+[ext_resource type="Shader" uid="uid://of66emc4u83i" path="res://Assets/Herbe/GroundMateriel.gdshader" id="1_ljdox"]
 [ext_resource type="Texture2D" uid="uid://di62ixsr75dl2" path="res://Assets/Herbe/src/palette/palette_01.tres" id="2_qlfk2"]
+[ext_resource type="Texture2D" uid="uid://bd8muo6fy7acq" path="res://Assets/Herbe/texturesInternety/grass_01_ambient_occlusion_1k.png" id="3_7ffeh"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_1bvp3"]
 seed = 6
@@ -14,6 +15,13 @@ seamless_blend_skirt = 0.2
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_qlfk2")
+shader = ExtResource("1_ljdox")
 shader_parameter/noise_texture = SubResource("NoiseTexture2D_lquwl")
 shader_parameter/color_gradient = ExtResource("2_qlfk2")
+shader_parameter/ground_albedo_tex = ExtResource("3_7ffeh")
+shader_parameter/use_ground_texture = true
+shader_parameter/ground_uv_scale = 2.0
+shader_parameter/ground_texture_strength = 0.066000003135
+shader_parameter/noise_world_scale = 0.05
+shader_parameter/roughness = 1.0
+shader_parameter/specular = 0.02

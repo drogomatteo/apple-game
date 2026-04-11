@@ -22,6 +22,6 @@ void fragment() {
 }
 
 //void light(){
-//	float ndotl = dot(LIGHT, NORMAL) * ATTENUATION;
+//	float ndotl = dot(LIGHT, NORMAL) * ATTEN&UATION;
 //	DIFFUSE_LIGHT += ndotl;
 //}
