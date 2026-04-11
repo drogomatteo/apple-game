@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode cull_disabled, diffuse_burley;
 
 uniform bool billboard = false;
 
@@ -31,6 +32,7 @@ void vertex() {
 }
 
 void fragment() {
+	NORMAL = FRONT_FACING ? NORMAL : -NORMAL;
 	float shape_value = texture(shape_texture, UV).r;
 
 	float noise_value = texture(noise_texture, world_pos.xz * 0.05).r;

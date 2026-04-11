@@ -2,35 +2,15 @@
 
 [ext_resource type="Shader" uid="uid://jqrwa1d8fqbj" path="res://Assets/Herbe/src/shader/grass.gdshader" id="1_cfd4i"]
 [ext_resource type="Texture2D" uid="uid://di62ixsr75dl2" path="res://Assets/Herbe/src/palette/palette_01.tres" id="2_khneh"]
-[ext_resource type="Texture2D" uid="uid://q5d0mijla6el" path="res://Assets/Herbe/src/texture/basic/grass_basic_atlas.png" id="3_bm8r7"]
 [ext_resource type="Texture2D" uid="uid://bjauy7ej6k0a6" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="3_khneh"]
 [ext_resource type="Texture2D" uid="uid://c224g1fw1i2db" path="res://Assets/Herbe/src/texture/basic/grass_basic_02.png" id="4_dq75s"]
-
-[sub_resource type="Gradient" id="Gradient_lquwl"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_lquwl"]
-noise_type = 0
-fractal_octaves = 3
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7mycd"]
-width = 1024
-height = 1024
-noise = SubResource("FastNoiseLite_lquwl")
-color_ramp = SubResource("Gradient_lquwl")
-seamless = true
-seamless_blend_skirt = 0.2
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_cfd4i")
-shader_parameter/billboard = true
+shader_parameter/billboard = false
 shader_parameter/shape_texture = ExtResource("4_dq75s")
-shader_parameter/shape_atlas = ExtResource("3_bm8r7")
-shader_parameter/use_atlas = false
 shader_parameter/noise_texture = ExtResource("3_khneh")
 shader_parameter/color_gradient = ExtResource("2_khneh")
-shader_parameter/random_variation = 0.0
-shader_parameter/wind_texture = SubResource("NoiseTexture2D_7mycd")
-shader_parameter/wind_velocity = Vector2(0, 0)
 shader_parameter/alpha_cut_start = 0.4
 shader_parameter/alpha_cut_end = 0.6

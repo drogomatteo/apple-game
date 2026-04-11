@@ -23,6 +23,7 @@
 size = Vector3(26, 1, 26)
 
 [sub_resource type="QuadMesh" id="QuadMesh_b3802"]
+size = Vector2(0.7, 0.7)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_b3802"]
 size = Vector2(24, 24)
@@ -120,14 +121,16 @@ debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
 script = ExtResource("7_k12tt")
 distribution_texture = ExtResource("8_b3802")
-distribution_threshold = 0.3
+distribution_threshold = 0.4
 distribution_softness = 0.3
 invert_distribution_mask = true
 remap_distribution_values = false
-density_per_m2 = 20.0
+density_per_m2 = 10.0
 grass_mesh = SubResource("QuadMesh_b3802")
 grass_material = ExtResource("8_h1bgf")
+near_density_multiplier = 1.2
 near_visibility_end_margin = 0.1
+far_scale_multiplier = 1.2
 far_visibility_begin = 7.0
 print_distribution_debug = true
 

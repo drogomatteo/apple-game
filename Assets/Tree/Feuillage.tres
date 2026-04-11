@@ -1,13 +1,13 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://c6we64s4fjxp4"]
 
 [ext_resource type="Shader" uid="uid://dblx2iuituycp" path="res://Assets/Tree/Feuillage.gdshader" id="1_acuai"]
-[ext_resource type="Texture2D" uid="uid://du8jcbcjaemm6" path="res://Assets/Tree/Feuillage.PNG" id="2_bprul"]
+[ext_resource type="Texture2D" uid="uid://v5q4yruxyho2" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/glTF/Leaves_TwistedTree.png" id="2_acuai"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_acuai")
 shader_parameter/ground_noise_scale = 0.5
-shader_parameter/foliage_tex = ExtResource("2_bprul")
+shader_parameter/foliage_tex = ExtResource("2_acuai")
 shader_parameter/use_red_as_alpha = false
 shader_parameter/top_color = Color(0.68, 0.4762267, 0.2856, 1)
 shader_parameter/bottom_color = Color(0.92, 0.8671, 0.7084, 1)
