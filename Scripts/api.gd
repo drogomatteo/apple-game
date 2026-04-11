@@ -1,6 +1,6 @@
 extends Node
 
-var base_url = "http://100.111.28.32:8000/user/"
+var base_url = "http://100.111.28.32:8000/api/user/"
 var http: HTTPRequest
 
 func _ready():
