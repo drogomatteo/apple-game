@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_6bp64"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="3_344ge"]
-[ext_resource type="Script" uid="uid://26ij6miojb1w" path="res://Scripts/api.gd" id="4_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
@@ -41,6 +40,99 @@ ambient_light_source = 2
 ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
 ambient_light_energy = 0.3
 
+<<<<<<< HEAD
+=======
+[sub_resource type="Curve" id="Curve_fdnlq"]
+_data = [Vector2(0.067003794, 0.024412274), 0.0, 0.0, 0, 0, Vector2(0.49431103, 0.8589511), 0.0, 0.0, 0, 0, Vector2(0.91150445, 0.0067812204), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_jkdf5"]
+radius = 0.001
+section_length = 1.0
+curve = SubResource("Curve_fdnlq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wsu2k"]
+render_priority = 0
+shader = ExtResource("10_6iyac")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/fade_time = 5.0
+shader_parameter/time_scale = 3.0
+shader_parameter/wave_amplitude = 0.1
+shader_parameter/wave_frequency = 1.0
+shader_parameter/wave_length = 2.0
+shader_parameter/wave_count = 1.0
+shader_parameter/twist_amplitude = 0.1
+shader_parameter/twist_frequency = 1.0
+shader_parameter/loop_radius = 1.0
+shader_parameter/loop_count = 0.5
+
+[sub_resource type="GDScript" id="GDScript_fdnlq"]
+script/source = "extends Node
+
+var base_url = \"http://100.111.28.32:8000/user/\"
+var http: HTTPRequest
+
+func _ready():
+	print(\"API ready\")
+
+	http = HTTPRequest.new()
+	add_child(http)
+
+	http.request_completed.connect(_on_request_completed)
+
+
+# CREATE USER (POST)
+func create_user(nom, prenom, email, annee):
+	var data = {
+		\"nom\": nom,
+		\"prenom\": prenom,
+		\"email\": email,
+		\"annee_naissance\": annee
+	}
+
+	var json = JSON.stringify(data)
+
+	return http.request(
+		base_url,
+		[\"Content-Type: application/json\"],
+		HTTPClient.METHOD_POST,
+		json
+	)
+
+
+# UPDATE USER (PUT)
+func update_user(id, nom, prenom, email, annee):
+	var data = {
+		\"nom\": nom,
+		\"prenom\": prenom,
+		\"email\": email,
+		\"annee_naissance\": annee
+	}
+
+	var json = JSON.stringify(data)
+
+	return http.request(
+		base_url + str(id) + \"/\",
+		[\"Content-Type: application/json\"],
+		HTTPClient.METHOD_PUT,
+		json
+	)
+
+
+
+# CALLBACK
+func _on_request_completed(result, response_code, headers, body):
+	print(\"RESULT:\", result)
+	print(\"Code:\", response_code)
+	var response = body.get_string_from_utf8()
+	print(\"Réponse:\", response)
+
+	# ⚠️ éviter crash si UI n'existe pas
+	if has_node(\"../UI/ResultLabel\"):
+		get_node(\"../UI/ResultLabel\").text = response
+"
+
+>>>>>>> e5f4396 (update)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k12tt"]
 shader = ExtResource("14_jkdf5")
 shader_parameter/blur_amount = 2.50000011875
@@ -206,7 +298,7 @@ mesh = SubResource("PlaneMesh_b3802")
 environment = SubResource("Environment_d1ilt")
 
 [node name="API" type="Node" parent="." unique_id=1739315456]
-script = ExtResource("4_jjvhh")
+script = SubResource("GDScript_fdnlq")
 
 [node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1622927938]
 process_mode = 3

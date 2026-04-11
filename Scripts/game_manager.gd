@@ -1,11 +1,13 @@
 extends Node
 
-var user_id = null
-var is_guest = false
 var BASE_URL = "http://193.190.211.21:8000/"
 
 
 func send_file(filepath, url):
+
+	if PlayerData.user_id == -1:
+		print("Erreur : user_id invalide")
+		return
 
 	var file = FileAccess.open(filepath, FileAccess.READ)
 	if file == null:
@@ -17,10 +19,12 @@ func send_file(filepath, url):
 	var boundary = "----GodotBoundary"
 	var body = ""
 
+	# USER ID
 	body += "--" + boundary + "\r\n"
 	body += 'Content-Disposition: form-data; name="user"\r\n\r\n'
-	body += str(user_id) + "\r\n"
+	body += str(PlayerData.user_id) + "\r\n"
 
+	# FILE
 	body += "--" + boundary + "\r\n"
 	body += 'Content-Disposition: form-data; name="fichier"; filename="rapport.dat"\r\n'
 	body += "Content-Type: application/octet-stream\r\n\r\n"

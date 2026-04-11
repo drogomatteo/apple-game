@@ -8,7 +8,11 @@ func _ready() -> void:
 	GestionFichier.load_game()
 
 func _on_start_button_button_down() -> void:
-	Transition.go_to_scene("UserForm")
+
+	if PlayerData.user_id != -1:
+		Transition.go_to_scene("main")
+	else:
+		Transition.go_to_scene("UserForm")
 
 
 func _on_quit_button_button_down() -> void:
@@ -26,7 +30,7 @@ func _on_option_button_down() -> void:
 
 
 func _on_compte_button_down() -> void:
-	Transition.go_to_scene(cheminCompte)
+	Transition.go_to_scene("UserForm")
 
 
 func _on_back_button_button_down() -> void:
