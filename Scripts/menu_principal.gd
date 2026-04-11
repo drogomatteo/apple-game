@@ -22,6 +22,7 @@ func _on_option_button_down() -> void:
 	
 	$"Couche 2".set_visible(true)
 	$"Couche 2/Options/VBoxContainer/Daltonien".select(Paramètre.daltonien)
+	$"Couche 2/Options/VBoxContainer/Sound".set_pressed(Paramètre.sound)
 
 
 func _on_compte_button_down() -> void:

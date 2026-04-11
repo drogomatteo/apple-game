@@ -29,3 +29,12 @@ func load_game():
 	if file:
 		player_data = file.get_var()
 		file.close()
+	
+	PlayerData.nom = player_data["nom"]
+	PlayerData.prenom = player_data["prenom"]
+	PlayerData.email = player_data["email"]
+	PlayerData.annee = player_data["annee"]
+	PlayerData.id = player_data["id"]
+	Paramètre.definir_mode_daltonien(player_data["options"]["daltonien"])
+	Paramètre.definir_sound(player_data["options"]["sound"])
+	
