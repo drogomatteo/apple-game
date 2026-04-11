@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="8_cmrfp"]
-[ext_resource type="Texture2D" uid="uid://ctwc11wic5low" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
+[ext_resource type="Texture2D" uid="uid://dggx8knfvp5qv" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="9_if7li"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_fbs3s"]
 [ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="10_loo7a"]
@@ -122,7 +122,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 40)
 environment = SubResource("Environment_d1ilt")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="ENvironment/WorldEnvironment" unique_id=629879536]
-transform = Transform3D(-0.40055937, -0.7401756, -0.5400853, -0.6929114, -0.14097442, 0.70710677, -0.5995214, 0.6574695, -0.4564075, -1.0428352, 21.82301, 0.33849716)
+transform = Transform3D(0.66557264, -0.5022085, 0.5520868, -0.6929114, -0.14097442, 0.70710677, -0.2772849, -0.85317814, -0.4418147, -1.0428352, 21.82301, 0.33849716)
 light_color = Color(1, 0.8951667, 0.63, 1)
 light_energy = 0.875
 shadow_enabled = true

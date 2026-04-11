@@ -5,12 +5,14 @@ var cheminCompte = "interface"
 
 func _ready() -> void:
 	get_tree().paused = false
+	GestionFichier.load_game()
 
 func _on_start_button_button_down() -> void:
 	Transition.go_to_scene(cheminJeu)
 
 
 func _on_quit_button_button_down() -> void:
+	GestionFichier.save_data()
 	get_tree().quit()
 
 
