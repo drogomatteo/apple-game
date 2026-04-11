@@ -5,15 +5,15 @@
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="8_cmrfp"]
-[ext_resource type="Texture2D" uid="uid://dggx8knfvp5qv" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
+[ext_resource type="Texture2D" uid="uid://ctwc11wic5low" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="9_if7li"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_fbs3s"]
 [ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="10_loo7a"]
+[ext_resource type="Script" uid="uid://cyf1mrcpq47gu" path="res://Scripts/grass_system.gd" id="11_8e205"]
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="11_if7li"]
+[ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="12_7467j"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_0wxkg"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
-size = Vector3(70, 1, 70)
+[ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="14_2x1g0"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_loo7a"]
 panorama = ExtResource("2_if7li")
@@ -74,49 +74,18 @@ shader_parameter/mix_color = Color(0, 0, 0, 0)
 font_size = 24
 font_color = Color(0, 0, 0, 1)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_riqfo"]
+size = Vector3(26, 1, 26)
+
+[sub_resource type="QuadMesh" id="QuadMesh_yxkem"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7v4os"]
+size = Vector2(24, 24)
+center_offset = Vector3(4.2, 0, 4)
+
 [node name="World" type="Node3D" unique_id=1297503563]
 
 [node name="ENvironment" type="Node" parent="." unique_id=1831146782]
-
-[node name="Floor" type="Node3D" parent="ENvironment" unique_id=1406393240]
-
-[node name="StaticBody3D" type="StaticBody3D" parent="ENvironment/Floor" unique_id=1466840344]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-collision_layer = 6
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ENvironment/Floor/StaticBody3D" unique_id=2104309237]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
-shape = SubResource("BoxShape3D_6bp64")
-debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
-
-[node name="Ensemble Sol" type="Node3D" parent="ENvironment/Floor" unique_id=426609364]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
-
-[node name="Node3D" parent="ENvironment/Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ysgxm")]
-
-[node name="Node3D2" parent="ENvironment/Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("7_ysgxm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
-
-[node name="Node3D3" parent="ENvironment/Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("7_ysgxm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
-
-[node name="Node3D4" parent="ENvironment/Floor/Ensemble Sol" unique_id=1869510594 instance=ExtResource("7_ysgxm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
-
-[node name="Node3D5" parent="ENvironment/Floor/Ensemble Sol" unique_id=444045714 instance=ExtResource("7_ysgxm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 20)
-
-[node name="Node3D6" parent="ENvironment/Floor/Ensemble Sol" unique_id=406362351 instance=ExtResource("7_ysgxm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 40)
-
-[node name="Node3D7" parent="ENvironment/Floor/Ensemble Sol" unique_id=1998737162 instance=ExtResource("7_ysgxm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
-
-[node name="Node3D8" parent="ENvironment/Floor/Ensemble Sol" unique_id=1992462546 instance=ExtResource("7_ysgxm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 20)
-
-[node name="Node3D9" parent="ENvironment/Floor/Ensemble Sol" unique_id=426418514 instance=ExtResource("7_ysgxm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 40)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="ENvironment" unique_id=1906453172]
 environment = SubResource("Environment_d1ilt")
@@ -138,6 +107,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_wsu2k")
 
 [node name="Fences" parent="ENvironment" unique_id=123485950 instance=ExtResource("13_0wxkg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.49749, 9.536743e-07, -13.549052)
+visible = false
 
 [node name="Mur1" type="Node3D" parent="ENvironment/Fences" unique_id=1072364506]
 
@@ -421,6 +391,76 @@ item_0/text = "Aucun"
 item_1/text = "Protanopia"
 item_2/text = "Deuteranopia"
 item_3/text = "Tritanopia"
+
+[node name="Floor" type="Node3D" parent="." unique_id=1703163994]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=1181043810]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -1, -8)
+collision_layer = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=1720685406]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
+shape = SubResource("BoxShape3D_riqfo")
+debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
+
+[node name="Ensemble Sol" type="Node3D" parent="Floor" unique_id=620642450]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
+script = ExtResource("11_8e205")
+density_per_m2 = 20.0
+grass_mesh = SubResource("QuadMesh_yxkem")
+grass_material = ExtResource("12_7467j")
+far_visibility_end = 16.0
+
+[node name="Node3D" parent="Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ysgxm")]
+
+[node name="Node3D2" parent="Floor/Ensemble Sol" unique_id=398037681 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
+
+[node name="Node3D3" parent="Floor/Ensemble Sol" unique_id=1695366214 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+
+[node name="Node3D10" parent="Floor/Ensemble Sol" unique_id=1940929798 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 18)
+
+[node name="Node3D4" parent="Floor/Ensemble Sol" unique_id=430579409 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+
+[node name="Node3D5" parent="Floor/Ensemble Sol" unique_id=1329622366 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 6)
+
+[node name="Node3D6" parent="Floor/Ensemble Sol" unique_id=404326300 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 12)
+
+[node name="Node3D12" parent="Floor/Ensemble Sol" unique_id=1467434897 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 18)
+
+[node name="Node3D7" parent="Floor/Ensemble Sol" unique_id=701947788 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
+
+[node name="Node3D8" parent="Floor/Ensemble Sol" unique_id=204913191 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 6)
+
+[node name="Node3D9" parent="Floor/Ensemble Sol" unique_id=2034325806 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
+
+[node name="Node3D14" parent="Floor/Ensemble Sol" unique_id=219897125 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 18)
+
+[node name="Node3D16" parent="Floor/Ensemble Sol" unique_id=2062243249 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
+
+[node name="Node3D17" parent="Floor/Ensemble Sol" unique_id=1691137942 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 6)
+
+[node name="Node3D18" parent="Floor/Ensemble Sol" unique_id=852941723 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 12)
+
+[node name="Node3D19" parent="Floor/Ensemble Sol" unique_id=1433284420 instance=ExtResource("7_ysgxm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 18)
+
+[node name="Ground" type="MeshInstance3D" parent="Floor" unique_id=802583270]
+material_override = ExtResource("14_2x1g0")
+mesh = SubResource("PlaneMesh_7v4os")
 
 [connection signal="button_down" from="Interface/Couche 1/MenuPrincipal/VBoxContainer/StartButton" to="Interface" method="_on_start_button_button_down"]
 [connection signal="button_down" from="Interface/Couche 1/MenuPrincipal/VBoxContainer/Quit Button" to="Interface" method="_on_quit_button_button_down"]

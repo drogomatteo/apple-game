@@ -10,6 +10,7 @@
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
 [ext_resource type="Script" uid="uid://cyf1mrcpq47gu" path="res://Scripts/grass_system.gd" id="7_k12tt"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
+[ext_resource type="Texture2D" uid="uid://bjauy7ej6k0a6" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
@@ -118,10 +119,17 @@ debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
 [node name="Ensemble Sol" type="Node3D" parent="Floor" unique_id=426609364]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
 script = ExtResource("7_k12tt")
+distribution_texture = ExtResource("8_b3802")
+distribution_threshold = 0.3
+distribution_softness = 0.3
+invert_distribution_mask = true
+remap_distribution_values = false
 density_per_m2 = 20.0
 grass_mesh = SubResource("QuadMesh_b3802")
 grass_material = ExtResource("8_h1bgf")
-far_visibility_end = 16.0
+near_visibility_end_margin = 0.1
+far_visibility_begin = 7.0
+print_distribution_debug = true
 
 [node name="Node3D" parent="Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ynf5e")]
 
