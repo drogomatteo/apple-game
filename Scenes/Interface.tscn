@@ -64,7 +64,6 @@ shader_parameter/twist_frequency = 1.0
 shader_parameter/loop_radius = 1.0
 shader_parameter/loop_count = 0.5
 
-<<<<<<< HEAD:Scenes/MainMenu.tscn
 [sub_resource type="LabelSettings" id="LabelSettings_yygyf"]
 font = ExtResource("8_cmrfp")
 font_size = 100
@@ -96,55 +95,10 @@ size = Vector3(26, 1, 26)
 size = Vector2(24, 24)
 center_offset = Vector3(4.2, 0, 4)
 
-=======
->>>>>>> 6e31a85 (enfin fini):Scenes/Interface.tscn
 [node name="World" type="Node3D" unique_id=1297503563]
 
 [node name="ENvironment" type="Node" parent="." unique_id=1831146782]
 
-<<<<<<< HEAD:Scenes/MainMenu.tscn
-=======
-[node name="Floor" type="Node3D" parent="ENvironment" unique_id=1406393240]
-
-[node name="StaticBody3D" type="StaticBody3D" parent="ENvironment/Floor" unique_id=1466840344]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-collision_layer = 6
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ENvironment/Floor/StaticBody3D" unique_id=2104309237]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
-shape = SubResource("BoxShape3D_6bp64")
-debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
-
-[node name="Ensemble Sol" type="Node3D" parent="ENvironment/Floor" unique_id=426609364]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
-
-[node name="Node3D" parent="ENvironment/Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("1_rtqjj")]
-
-[node name="Node3D2" parent="ENvironment/Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
-
-[node name="Node3D3" parent="ENvironment/Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
-
-[node name="Node3D4" parent="ENvironment/Floor/Ensemble Sol" unique_id=1869510594 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
-
-[node name="Node3D5" parent="ENvironment/Floor/Ensemble Sol" unique_id=444045714 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 20)
-
-[node name="Node3D6" parent="ENvironment/Floor/Ensemble Sol" unique_id=406362351 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 40)
-
-[node name="Node3D7" parent="ENvironment/Floor/Ensemble Sol" unique_id=1998737162 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
-
-[node name="Node3D8" parent="ENvironment/Floor/Ensemble Sol" unique_id=1992462546 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 20)
-
-[node name="Node3D9" parent="ENvironment/Floor/Ensemble Sol" unique_id=426418514 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 40)
-
->>>>>>> 6e31a85 (enfin fini):Scenes/Interface.tscn
 [node name="WorldEnvironment" type="WorldEnvironment" parent="ENvironment" unique_id=1906453172]
 environment = SubResource("Environment_d1ilt")
 
@@ -295,7 +249,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-<<<<<<< HEAD:Scenes/MainMenu.tscn
 mouse_filter = 2
 
 [node name="BackButton" type="Button" parent="Interface/Couche 2/Options" unique_id=659578420]
@@ -437,5 +390,3 @@ mesh = SubResource("PlaneMesh_7v4os")
 [connection signal="button_down" from="Interface/Couche 2/Options/BackButton" to="Interface" method="_on_back_button_button_down"]
 [connection signal="toggled" from="Interface/Couche 2/Options/VBoxContainer/Sound" to="Interface" method="_on_sound_toggled"]
 [connection signal="item_selected" from="Interface/Couche 2/Options/VBoxContainer/Daltonien" to="Interface" method="_on_daltonien_item_selected"]
-=======
->>>>>>> 6e31a85 (enfin fini):Scenes/Interface.tscn
