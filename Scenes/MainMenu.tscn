@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/menu_principal.gd" id="7_2hlom"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ysgxm"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="8_cmrfp"]
-[ext_resource type="Texture2D" uid="uid://dggx8knfvp5qv" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
+[ext_resource type="Texture2D" uid="uid://ctwc11wic5low" path="res://Assets/UI-UX/Images/images.png" id="8_loo7a"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="9_if7li"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_fbs3s"]
 [ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="10_loo7a"]

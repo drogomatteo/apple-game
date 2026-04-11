@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://ddp6q8ogqv3m"]
+
+[ext_resource type="Script" uid="uid://ch4kx0pyviu0t" path="res://Scripts/user_form.gd" id="1_8yq43"]
+
+[node name="UserForm" type="Control" unique_id=1594275488]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8yq43")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2117507266]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PseudoInput" type="LineEdit" parent="VBoxContainer" unique_id=790643127]
+layout_mode = 2
+
+[node name="TokenInput" type="LineEdit" parent="VBoxContainer" unique_id=541479370]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="VBoxContainer" unique_id=704778937]
+layout_mode = 2
+
+[node name="GuestButton" type="Button" parent="VBoxContainer" unique_id=35647051]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer" unique_id=487769718]
+layout_mode = 2
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1472082945]
+
+[connection signal="text_changed" from="VBoxContainer/PseudoInput" to="." method="_on_input_changed"]
+[connection signal="text_changed" from="VBoxContainer/TokenInput" to="." method="_on_input_changed"]
+[connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/GuestButton" to="." method="_on_guest_button_pressed"]
