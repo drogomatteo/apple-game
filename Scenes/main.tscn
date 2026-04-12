@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://ddrom61vk22oy"]
 
-[ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/world.gd" id="1_jjgbg"]
+[ext_resource type="Script" uid="uid://bat22g0l160bb" path="res://Scripts/main.gd" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_6bp64"]
 [ext_resource type="PackedScene" uid="uid://ob5imiystqoc" path="res://Scenes/player.tscn" id="2_bo1nx"]
 [ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="3_344ge"]
-[ext_resource type="Script" uid="uid://26ij6miojb1w" path="res://Scripts/api.gd" id="4_jjvhh"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
@@ -206,7 +205,6 @@ mesh = SubResource("PlaneMesh_b3802")
 environment = SubResource("Environment_d1ilt")
 
 [node name="API" type="Node" parent="." unique_id=1739315456]
-script = ExtResource("4_jjvhh")
 
 [node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1622927938]
 process_mode = 3

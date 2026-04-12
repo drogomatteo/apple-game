@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="1_rtqjj"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="2_7wbmf"]
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="3_tc1k7"]
-[ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="4_gnic8"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="5_xxbeb"]
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/interface.gd" id="6_lh1gk"]
 
@@ -63,33 +62,24 @@ shape = SubResource("BoxShape3D_6bp64")
 debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
 
 [node name="Ensemble Sol" type="Node3D" parent="ENvironment/Floor" unique_id=426609364]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6041408, 0, -5.021124)
 
 [node name="Node3D" parent="ENvironment/Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("1_rtqjj")]
 
-[node name="Node3D2" parent="ENvironment/Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+[node name="Node3D2" parent="ENvironment/Floor/Ensemble Sol" unique_id=286581056 instance=ExtResource("1_rtqjj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.7112093)
 
-[node name="Node3D3" parent="ENvironment/Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+[node name="Node3D3" parent="ENvironment/Floor/Ensemble Sol" unique_id=159105316 instance=ExtResource("1_rtqjj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9067426, 0, 0)
 
-[node name="Node3D4" parent="ENvironment/Floor/Ensemble Sol" unique_id=1869510594 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
+[node name="Node3D4" parent="ENvironment/Floor/Ensemble Sol" unique_id=485632148 instance=ExtResource("1_rtqjj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9067426, 0, 5.780305)
 
-[node name="Node3D5" parent="ENvironment/Floor/Ensemble Sol" unique_id=444045714 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 20)
+[node name="Node3D5" parent="ENvironment/Floor/Ensemble Sol" unique_id=1220260699 instance=ExtResource("1_rtqjj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.693951, 0, 0)
 
-[node name="Node3D6" parent="ENvironment/Floor/Ensemble Sol" unique_id=406362351 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 40)
-
-[node name="Node3D7" parent="ENvironment/Floor/Ensemble Sol" unique_id=1998737162 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
-
-[node name="Node3D8" parent="ENvironment/Floor/Ensemble Sol" unique_id=1992462546 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 20)
-
-[node name="Node3D9" parent="ENvironment/Floor/Ensemble Sol" unique_id=426418514 instance=ExtResource("1_rtqjj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 40)
+[node name="Node3D6" parent="ENvironment/Floor/Ensemble Sol" unique_id=119151621 instance=ExtResource("1_rtqjj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.693951, 0, 5.546449)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="ENvironment" unique_id=1906453172]
 environment = SubResource("Environment_d1ilt")
@@ -109,118 +99,11 @@ custom_aabb = AABB(0, 0, 0, 0, 20, 0)
 mesh = SubResource("TubeTrailMesh_jkdf5")
 surface_material_override/0 = SubResource("ShaderMaterial_wsu2k")
 
-[node name="Fences" parent="ENvironment" unique_id=123485950 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.49749, 9.536743e-07, -13.549052)
-
-[node name="Mur1" type="Node3D" parent="ENvironment/Fences" unique_id=1072364506]
-
-[node name="Fences2" parent="ENvironment/Fences/Mur1" unique_id=483271512 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
-
-[node name="Fences7" parent="ENvironment/Fences/Mur1" unique_id=277977158 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
-
-[node name="Fences8" parent="ENvironment/Fences/Mur1" unique_id=1037869701 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
-
-[node name="Fences9" parent="ENvironment/Fences/Mur1" unique_id=300569312 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
-
-[node name="Fences4" parent="ENvironment/Fences/Mur1" unique_id=1311991728 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
-
-[node name="Fences5" parent="ENvironment/Fences/Mur1" unique_id=1166814163 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
-
-[node name="Fences6" parent="ENvironment/Fences/Mur1" unique_id=1830918025 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
-
-[node name="Mur2" type="Node3D" parent="ENvironment/Fences" unique_id=1523063634]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.8553295, 0, 54.30452)
-
-[node name="Fences2" parent="ENvironment/Fences/Mur2" unique_id=352287005 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
-
-[node name="Fences3" parent="ENvironment/Fences/Mur2" unique_id=20877721 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4765892, 0, -0.043210983)
-
-[node name="Fences7" parent="ENvironment/Fences/Mur2" unique_id=1125211690 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
-
-[node name="Fences8" parent="ENvironment/Fences/Mur2" unique_id=132473483 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
-
-[node name="Fences9" parent="ENvironment/Fences/Mur2" unique_id=1269545971 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
-
-[node name="Fences4" parent="ENvironment/Fences/Mur2" unique_id=701706382 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
-
-[node name="Fences5" parent="ENvironment/Fences/Mur2" unique_id=1234389138 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
-
-[node name="Fences6" parent="ENvironment/Fences/Mur2" unique_id=457937861 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
-
-[node name="Mur3" type="Node3D" parent="ENvironment/Fences" unique_id=157625582]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 54.795727, 0, 53.721317)
-
-[node name="Fences2" parent="ENvironment/Fences/Mur3" unique_id=900552699 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
-
-[node name="Fences3" parent="ENvironment/Fences/Mur3" unique_id=711720510 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1697998, 0, -0.08567047)
-
-[node name="Fences7" parent="ENvironment/Fences/Mur3" unique_id=1101290456 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
-
-[node name="Fences8" parent="ENvironment/Fences/Mur3" unique_id=548654919 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
-
-[node name="Fences9" parent="ENvironment/Fences/Mur3" unique_id=5357105 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
-
-[node name="Fences4" parent="ENvironment/Fences/Mur3" unique_id=1681154689 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
-
-[node name="Fences5" parent="ENvironment/Fences/Mur3" unique_id=1467701185 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
-
-[node name="Fences6" parent="ENvironment/Fences/Mur3" unique_id=1166219814 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
-
-[node name="Mur4" type="Node3D" parent="ENvironment/Fences" unique_id=1340352826]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 55.977177)
-
-[node name="Fences7" parent="ENvironment/Fences/Mur4" unique_id=1801717015 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
-
-[node name="Fences2" parent="ENvironment/Fences/Mur4" unique_id=1815360553 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
-
-[node name="Fences3" parent="ENvironment/Fences/Mur4" unique_id=1989504474 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3866043, 0, -0.08567047)
-
-[node name="Fences8" parent="ENvironment/Fences/Mur4" unique_id=1740953867 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
-
-[node name="Fences9" parent="ENvironment/Fences/Mur4" unique_id=1069234368 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
-
-[node name="Fences4" parent="ENvironment/Fences/Mur4" unique_id=1982114446 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
-
-[node name="Fences5" parent="ENvironment/Fences/Mur4" unique_id=1084892469 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
-
-[node name="Fences6" parent="ENvironment/Fences/Mur4" unique_id=40612797 instance=ExtResource("4_gnic8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
-
 [node name="AppleTree" parent="ENvironment" unique_id=1176812865 instance=ExtResource("5_xxbeb")]
-transform = Transform3D(0.5946082, 0, -0.08025672, 0, 0.59999996, 0, 0.08025672, 0, 0.5946082, 0.9146309, 0.14274561, 0.012308121)
+transform = Transform3D(0.5946082, 0, -0.08025672, 0, 0.59999996, 0, 0.08025672, 0, 0.5946082, 2.763411, 0.14274561, -1.7965856)
 
 [node name="Camera3D" type="Camera3D" parent="ENvironment" unique_id=211906111]
-transform = Transform3D(0.7625035, -0.1539145, -0.6284097, -0.005938984, 0.96958476, -0.2446838, 0.64695674, 0.19030437, 0.7383977, 0.6706778, 1.0877607, 4.2089725)
+transform = Transform3D(0.76250356, -0.1539145, -0.6284097, -0.0059389845, 0.96958476, -0.24468377, 0.6469568, 0.19030437, 0.7383977, 2.5194578, 1.0877607, 2.4000788)
 fov = 81.041435
 metadata/_edit_lock_ = true
 
