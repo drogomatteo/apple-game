@@ -126,7 +126,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		})
 		return
 
-	var user_id = response["id"]
+	var user_id = 1 if is_guest_mode else response["id"]
 	var pseudo_backend = response.get("pseudo", "guest")
 
 	if is_guest_mode:
@@ -150,7 +150,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 func _offline_login(data):
 
-	var local_id = randi() % 1000000
+	var local_id = 1 if is_guest_mode else randi() % 1000000
 
 	if is_guest_mode:
 		PlayerData.set_guest(local_id)
