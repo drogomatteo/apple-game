@@ -16,16 +16,16 @@ config/features=PackedStringArray("4.6", "Mobile")
 
 [autoload]
 
-PlayerData="*uid://bnt3vxow8rqq7"
 "Paramètre"="*uid://ci78nbf2nkdwv"
 Transition="*uid://ciiarbj0qn64p"
 Daltonien="*uid://8y5yuplw0kyy"
 GestionFichier="*uid://dh3mvqhnwvgit"
+GameManager="*uid://crrfanuoph3go"
+PlayerData="*uid://cwrvjrtmo4u62"
 
 [display]
 
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/mode="viewport"
 
 [editor]
 
