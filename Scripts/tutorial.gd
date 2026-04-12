@@ -6,10 +6,17 @@ enum TutorialStep {
 	INTRO_2,
 	WAIT_ROTATE,
 	WAIT_FORWARD,
-	FREE_MOVEMENT_MESSAGE,
+	BASKET_INSTRUCTION,
 	WAIT_BASKET,
-	AFTER_BASKET,
-	FINAL_MESSAGE,
+	TREE_INSTRUCTION,
+	WAIT_TREE,
+	APPLE_INSTRUCTION,
+	WAIT_APPLE,
+	RETURN_BASKET_INSTRUCTION_1,
+	RETURN_BASKET_INSTRUCTION_2,
+	RETURN_BASKET_INSTRUCTION_3,
+	WAIT_RETURN_BASKET,
+	FINAL_TUTORIAL_MESSAGE,
 	FINISHED
 }
 
@@ -18,32 +25,37 @@ const REQUIRED_FORWARD_TIME: float = 2.0
 const HIGHLIGHT_COLOR := Color(1.0, 0.95, 0.55, 1.0)
 
 @onready var world = get_parent()
-
 @onready var player = $"../Player"
-@onready var left_button = $"../Player/Left"
-@onready var right_button = $"../Player/Right"
-@onready var forward_button = $"../Player/Forward"
 
-@onready var highlight = $"../UI/TutorialUI/Highlight"
 @onready var tutorial_ui = $"../UI/TutorialUI"
 @onready var boite_message = $"../UI/TutorialUI/BoiteMessage"
 @onready var message_label = $"../UI/TutorialUI/BoiteMessage/Message"
 @onready var next_button = $"../UI/TutorialUI/BoiteMessage/Next"
+@onready var highlight = $"../UI/TutorialUI/Highlight"
+
+# Boutons de la scène Player
+@onready var left_button_ui = $"../Player/Left"
+@onready var right_button_ui = $"../Player/Right"
+@onready var forward_button_ui = $"../Player/Forward"
 
 var messages := [
-	"Bienvenue dans le tutoriel. \n \n Appuyez sur le boutton 'Next' afin de continuer",
-	"Parfait ! \n \n L'apple Game est une façon ludique de diagnostiquer la maladier d'Alzeimer.  \n Commençons sans plus tarder le tutoriel.",
-	"Essayons un peu de regarder aux alentours. \n \n Appuyez sur un des boutons 'Pivoter'",
-	"Superbe paysage !. \n \n Maintenant, avançons en appuyantt sur le bouton 'Flèche'.",
-	"Maintenant que vous êtes libre de vos mouvements, passons à l'étape suivante. \n \n Cliquez sur 'Next' suivez les insctuctions notées au dessus de votre écran. \n Avancez-vous jusqu'à toucher l'objet recherché",
-	"Continuez comme ça, cherchons maintenant les arbres",
-	"Nous arrivons à l'étape finale. \n Vous souvenez-vous de la position du pannier ? \n \n Retrouvez la position initiale du Pannier"
+	"Bienvenue dans le tutoriel de l'Apple Game.\n\nAppuyez sur le bouton 'Next' afin de continuer.",
+	"Parfait !\n\nCommençons sans plus tarder.",
+	"Essayons un peu de regarder aux alentours.\n\nAppuyez sur un des boutons 'Pivoter'.",
+	"Super !\n\nMaintenant, avançons en appuyant sur le bouton 'Flèche'.",
+	"Vous êtes prêt !\n\nPassons désormais à l'étape suivante.\n\nSuivez les instructions notées au dessus de votre écran.",
+	"Continuez comme ça.\n\nCherchons maintenant l'arbre.",
+	"Très bien.\n\nAu tour du pommier.",
+	"Nous arrivons à l'étape finale.\n\nConnaissez-vous le principe de l'Apple Game ?",
+	"Le but du jeu est de retrouver la position initiale du panier sur la map.\n\nVous en souvenez-vous ?",
+	"Positionnez-vous là où le panier était et confirmez à l'aide du bouton 'Confirmer position'.\n\nVous avez 30 secondes !",
+	"Bravo !\n\nLe tutoriel est terminé.\n\nVous allez maintenant voir votre résultat pour cette partie."
 ]
 
-var current_message_index: int = 0
 var tutorial_active: bool = false
 var current_step: TutorialStep = TutorialStep.NONE
 var action_timer: float = 0.0
+var waiting_final_popup: bool = false
 
 var left_default_modulate: Color = Color.WHITE
 var right_default_modulate: Color = Color.WHITE
@@ -63,7 +75,10 @@ func _ready() -> void:
 
 func start_tutorial() -> void:
 	tutorial_active = true
+	current_step = TutorialStep.NONE
 	action_timer = 0.0
+	waiting_final_popup = false
+
 	_disable_all_player_actions()
 	_stop_player_motion()
 	_show_intro_1()
@@ -84,11 +99,22 @@ func _process(delta: float) -> void:
 			if player.avance:
 				action_timer += delta
 				if action_timer >= REQUIRED_FORWARD_TIME:
-					_show_free_movement_message()
+					_show_basket_instruction()
 
 		TutorialStep.WAIT_BASKET:
 			if world.phase >= 1:
-				_show_after_basket_message()
+				_show_tree_instruction()
+
+		TutorialStep.WAIT_TREE:
+			if world.phase >= 2:
+				_show_apple_instruction()
+
+		TutorialStep.WAIT_APPLE:
+			if world.phase >= 3:
+				_show_return_basket_instruction()
+
+		TutorialStep.WAIT_RETURN_BASKET:
+			pass
 
 
 func _on_next_button_pressed() -> void:
@@ -102,102 +128,151 @@ func _on_next_button_pressed() -> void:
 		TutorialStep.INTRO_2:
 			_show_rotate_step()
 
-		TutorialStep.FREE_MOVEMENT_MESSAGE:
+		TutorialStep.BASKET_INSTRUCTION:
 			_start_basket_search()
 
-		TutorialStep.AFTER_BASKET:
-			_show_final_message()
+		TutorialStep.TREE_INSTRUCTION:
+			_start_tree_search()
 
-		TutorialStep.FINAL_MESSAGE:
+		TutorialStep.APPLE_INSTRUCTION:
+			_start_apple_search()
+
+		TutorialStep.RETURN_BASKET_INSTRUCTION_1:
+			current_step = TutorialStep.RETURN_BASKET_INSTRUCTION_2
+			show_tutorial_box(messages[8], true)
+
+		TutorialStep.RETURN_BASKET_INSTRUCTION_2:
+			current_step = TutorialStep.RETURN_BASKET_INSTRUCTION_3
+			show_tutorial_box(messages[9], true)
+
+		TutorialStep.RETURN_BASKET_INSTRUCTION_3:
+			_start_return_basket_search()
+
+		TutorialStep.FINAL_TUTORIAL_MESSAGE:
 			finish_tutorial()
 
 
 func _show_intro_1() -> void:
 	current_step = TutorialStep.INTRO_1
-	current_message_index = 0
 	_disable_all_player_actions()
 	_stop_player_motion()
 	clear_highlight()
 	_reset_button_emphasis()
-	show_tutorial_box(messages[current_message_index], true)
+	show_tutorial_box(messages[0], true)
 
 
 func _show_intro_2() -> void:
 	current_step = TutorialStep.INTRO_2
-	current_message_index = 1
 	_disable_all_player_actions()
 	_stop_player_motion()
 	clear_highlight()
 	_reset_button_emphasis()
-	show_tutorial_box(messages[current_message_index], true)
+	show_tutorial_box(messages[1], true)
 
 
 func _show_rotate_step() -> void:
 	current_step = TutorialStep.WAIT_ROTATE
-	current_message_index = 2
 	action_timer = 0.0
-
 	_allow_only_rotation()
 	_stop_player_motion()
 	clear_highlight()
 	_highlight_rotation_buttons()
-
-	show_tutorial_box(messages[current_message_index], false)
+	show_tutorial_box(messages[2], false)
 
 
 func _show_forward_step() -> void:
 	current_step = TutorialStep.WAIT_FORWARD
-	current_message_index = 3
 	action_timer = 0.0
-
 	_allow_only_forward()
 	_stop_player_motion()
 	clear_highlight()
 	_highlight_forward_button()
+	show_tutorial_box(messages[3], false)
 
-	show_tutorial_box(messages[current_message_index], false)
 
-
-func _show_free_movement_message() -> void:
-	current_step = TutorialStep.FREE_MOVEMENT_MESSAGE
-	current_message_index = 4
-
+func _show_basket_instruction() -> void:
+	current_step = TutorialStep.BASKET_INSTRUCTION
 	_allow_all_player_actions()
 	clear_highlight()
 	_reset_button_emphasis()
-
-	show_tutorial_box(messages[current_message_index], true)
+	show_tutorial_box(messages[4], true)
 
 
 func _start_basket_search() -> void:
 	current_step = TutorialStep.WAIT_BASKET
-
-	_allow_all_player_actions()
-	clear_highlight()
-	_reset_button_emphasis()
 	hide_tutorial_box()
-
-
-func _show_after_basket_message() -> void:
-	current_step = TutorialStep.AFTER_BASKET
-	current_message_index = 5
-
 	_allow_all_player_actions()
 	clear_highlight()
 	_reset_button_emphasis()
 
-	show_tutorial_box(messages[current_message_index], true)
+
+func _show_tree_instruction() -> void:
+	current_step = TutorialStep.TREE_INSTRUCTION
+	_allow_all_player_actions()
+	clear_highlight()
+	_reset_button_emphasis()
+	show_tutorial_box(messages[5], true)
 
 
-func _show_final_message() -> void:
-	current_step = TutorialStep.FINAL_MESSAGE
-	current_message_index = 6
-
+func _start_tree_search() -> void:
+	current_step = TutorialStep.WAIT_TREE
+	hide_tutorial_box()
 	_allow_all_player_actions()
 	clear_highlight()
 	_reset_button_emphasis()
 
-	show_tutorial_box(messages[current_message_index], true)
+
+func _show_apple_instruction() -> void:
+	current_step = TutorialStep.APPLE_INSTRUCTION
+	_allow_all_player_actions()
+	clear_highlight()
+	_reset_button_emphasis()
+	show_tutorial_box(messages[6], true)
+
+
+func _start_apple_search() -> void:
+	current_step = TutorialStep.WAIT_APPLE
+	hide_tutorial_box()
+	_allow_all_player_actions()
+	clear_highlight()
+	_reset_button_emphasis()
+
+
+func _show_return_basket_instruction() -> void:
+	current_step = TutorialStep.RETURN_BASKET_INSTRUCTION_1
+	_allow_all_player_actions()
+	clear_highlight()
+	_reset_button_emphasis()
+	# Pause du chrono tant que le joueur lit l'explication
+	world.max_timer.paused = true
+	world.temps_restant.visible = false
+	world.validate_button.visible = false
+
+	show_tutorial_box(messages[7], true)
+
+
+func _start_return_basket_search() -> void:
+	current_step = TutorialStep.WAIT_RETURN_BASKET
+	waiting_final_popup = true
+	hide_tutorial_box()
+	_allow_all_player_actions()
+	clear_highlight()
+	_reset_button_emphasis()
+	# Reprise du chrono seulement quand le joueur a fini de lire
+	world.validate_button.visible = true
+	world.temps_restant.visible = true
+	world.max_timer.paused = false
+
+
+func show_final_message_before_score() -> void:
+	if not tutorial_active:
+		return
+	if not waiting_final_popup:
+		return
+
+	waiting_final_popup = false
+	current_step = TutorialStep.FINAL_TUTORIAL_MESSAGE
+	show_tutorial_box(messages[10], true)
 
 
 func show_tutorial_box(text: String, show_next: bool = true) -> void:
@@ -212,13 +287,6 @@ func hide_tutorial_box() -> void:
 	tutorial_ui.hide()
 
 
-func highlight_control(target: Control, padding: int = 8) -> void:
-	var rect: Rect2 = target.get_global_rect()
-	highlight.show()
-	highlight.global_position = rect.position - Vector2(padding, padding)
-	highlight.size = rect.size + Vector2(padding * 2, padding * 2)
-
-
 func clear_highlight() -> void:
 	highlight.hide()
 
@@ -227,6 +295,7 @@ func finish_tutorial() -> void:
 	tutorial_active = false
 	current_step = TutorialStep.FINISHED
 	action_timer = 0.0
+	waiting_final_popup = false
 
 	hide_tutorial_box()
 	clear_highlight()
@@ -234,6 +303,8 @@ func finish_tutorial() -> void:
 	_allow_all_player_actions()
 
 	Paramètre.definir_tutorial_seen(true)
+	if world.pending_end_results:
+		world.continuer_fin_apres_tuto()
 
 
 func _disable_all_player_actions() -> void:
@@ -272,34 +343,34 @@ func _stop_player_motion() -> void:
 
 
 func _cache_default_button_modulates() -> void:
-	if left_button is CanvasItem:
-		left_default_modulate = left_button.modulate
-	if right_button is CanvasItem:
-		right_default_modulate = right_button.modulate
-	if forward_button is CanvasItem:
-		forward_default_modulate = forward_button.modulate
+	if left_button_ui is CanvasItem:
+		left_default_modulate = left_button_ui.modulate
+	if right_button_ui is CanvasItem:
+		right_default_modulate = right_button_ui.modulate
+	if forward_button_ui is CanvasItem:
+		forward_default_modulate = forward_button_ui.modulate
 
 
 func _highlight_rotation_buttons() -> void:
 	_reset_button_emphasis()
 
-	if left_button is CanvasItem:
-		left_button.modulate = HIGHLIGHT_COLOR
-	if right_button is CanvasItem:
-		right_button.modulate = HIGHLIGHT_COLOR
+	if left_button_ui is CanvasItem:
+		left_button_ui.modulate = HIGHLIGHT_COLOR
+	if right_button_ui is CanvasItem:
+		right_button_ui.modulate = HIGHLIGHT_COLOR
 
 
 func _highlight_forward_button() -> void:
 	_reset_button_emphasis()
 
-	if forward_button is CanvasItem:
-		forward_button.modulate = HIGHLIGHT_COLOR
+	if forward_button_ui is CanvasItem:
+		forward_button_ui.modulate = HIGHLIGHT_COLOR
 
 
 func _reset_button_emphasis() -> void:
-	if left_button is CanvasItem:
-		left_button.modulate = left_default_modulate
-	if right_button is CanvasItem:
-		right_button.modulate = right_default_modulate
-	if forward_button is CanvasItem:
-		forward_button.modulate = forward_default_modulate
+	if left_button_ui is CanvasItem:
+		left_button_ui.modulate = left_default_modulate
+	if right_button_ui is CanvasItem:
+		right_button_ui.modulate = right_default_modulate
+	if forward_button_ui is CanvasItem:
+		forward_button_ui.modulate = forward_default_modulate
