@@ -16,23 +16,26 @@ func _ready():
 
 
 func clear():
-	if current_scene:
-		current_scene.queue_free()
+	for child in container.get_children():
+		child.queue_free()
 
 
 func show_menu():
 	clear()
+	await get_tree().process_frame
 	current_scene = menu_scene.instantiate()
 	container.add_child(current_scene)
 
 
 func show_options():
 	clear()
+	await get_tree().process_frame
 	current_scene = options_scene.instantiate()
 	container.add_child(current_scene)
 
 
 func show_user():
 	clear()
+	await get_tree().process_frame
 	current_scene = user_scene.instantiate()
 	container.add_child(current_scene)

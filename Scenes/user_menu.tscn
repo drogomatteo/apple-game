@@ -501,11 +501,21 @@ layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
+[node name="PseudoLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1204866199]
+layout_mode = 2
+text = "Pseudo"
+
 [node name="PseudoInput" type="LineEdit" parent="CenterContainer/VBoxContainer" unique_id=935196009]
 layout_mode = 2
+placeholder_text = "Entrez votre pseudo"
+
+[node name="TokenLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=409879351]
+layout_mode = 2
+text = "Clé du patient"
 
 [node name="TokenInput" type="LineEdit" parent="CenterContainer/VBoxContainer" unique_id=546875884]
 layout_mode = 2
+placeholder_text = "Entrez votre clé"
 
 [node name="SaveButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=916444429]
 z_index = 1
@@ -550,6 +560,6 @@ text = "Retour"
 
 [connection signal="text_changed" from="CenterContainer/VBoxContainer/PseudoInput" to="." method="_on_input_changed"]
 [connection signal="text_changed" from="CenterContainer/VBoxContainer/TokenInput" to="." method="_on_input_changed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/SaveButton" to="." method="_on_save_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/GuestButton" to="." method="_on_guest_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/GuestButton" to="." method="_on_guest_button_pressed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

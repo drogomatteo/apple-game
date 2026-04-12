@@ -1,7 +1,7 @@
 extends Control
 
 func _ready():
-	print("MAIN MENU READY")
+	return
 	
 func _on_start_button_pressed():
 	if PlayerData.user_id == -1:
