@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://coc1pgkhrg6j1"]
+
+[sub_resource type="CurveTexture" id="CurveTexture_4d4bv"]
+
+[sub_resource type="Curve" id="Curve_8h14w"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_sl4p3"]
+curve = SubResource("Curve_8h14w")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4d4bv"]
+emission_shape_scale = Vector3(2, 2, 1)
+direction = Vector3(10, 10, 0)
+spread = 0.5
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+angular_velocity_min = -1.6093254e-05
+angular_velocity_max = 436.36
+angular_velocity_curve = SubResource("CurveTexture_4d4bv")
+gravity = Vector3(0, 2, 0)
+linear_accel_min = -2.2351742e-06
+linear_accel_max = -2.2351742e-06
+radial_accel_min = -2.2351742e-06
+radial_accel_max = 6.9999976
+tangential_accel_min = -2.2351742e-06
+tangential_accel_max = 9.999997
+damping_max = 8.0
+scale_curve = SubResource("CurveTexture_sl4p3")
+scale_over_velocity_max = 55.559998
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8h14w"]
+load_path = "res://.godot/imported/star_07.png-a4770710b2cb06c87c80177aeb8b353e.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sl4p3"]
+transparency = 1
+blend_mode = 4
+shading_mode = 0
+albedo_color = Color(0.8784314, 0.88235295, 0.7607843, 1)
+albedo_texture = SubResource("CompressedTexture2D_8h14w")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_4d4bv"]
+material = SubResource("StandardMaterial3D_sl4p3")
+
+[node name="ParticlesPannier" type="Node3D" unique_id=603993398]
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=897461984]
+transform = Transform3D(0.5287346, -0.8487872, 0, 0.8487872, 0.5287346, 0, 0, 0, 1, 0, 0, 0)
+cast_shadow = 0
+amount = 7
+amount_ratio = 0.8233
+lifetime = 1.8499999999999999
+speed_scale = 0.25
+explosiveness = 0.19
+collision_base_size = 0.0
+process_material = SubResource("ParticleProcessMaterial_4d4bv")
+draw_pass_1 = SubResource("QuadMesh_4d4bv")

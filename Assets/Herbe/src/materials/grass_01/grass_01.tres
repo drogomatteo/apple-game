@@ -2,8 +2,8 @@
 
 [ext_resource type="Shader" uid="uid://jqrwa1d8fqbj" path="res://Assets/Herbe/src/shader/grass.gdshader" id="1_yhg1o"]
 [ext_resource type="Texture2D" uid="uid://di62ixsr75dl2" path="res://Assets/Herbe/src/palette/palette_01.tres" id="2_yhg1o"]
-[ext_resource type="Texture2D" uid="uid://bd1gbnruujeou" path="res://Assets/Herbe/src/texture/basic/grass_basic_atlas.png" id="3_2tyb0"]
-[ext_resource type="Texture2D" uid="uid://c7gmtqn4xfixx" path="res://Assets/Herbe/src/texture/basic/grass_basic_02.png" id="4_n6ev7"]
+[ext_resource type="Texture2D" uid="uid://q5d0mijla6el" path="res://Assets/Herbe/src/texture/basic/grass_basic_atlas.png" id="3_2tyb0"]
+[ext_resource type="Texture2D" uid="uid://c224g1fw1i2db" path="res://Assets/Herbe/src/texture/basic/grass_basic_02.png" id="4_n6ev7"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_1bvp3"]
 seed = 6
@@ -34,7 +34,7 @@ shader = ExtResource("1_yhg1o")
 shader_parameter/billboard = true
 shader_parameter/shape_texture = ExtResource("4_n6ev7")
 shader_parameter/shape_atlas = ExtResource("3_2tyb0")
-shader_parameter/use_atlas = true
+shader_parameter/use_atlas = false
 shader_parameter/noise_texture = SubResource("NoiseTexture2D_lquwl")
 shader_parameter/color_gradient = ExtResource("2_yhg1o")
 shader_parameter/random_variation = 0.0

@@ -2,10 +2,21 @@
 
 [ext_resource type="ArrayMesh" uid="uid://bv85okuojpra2" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/CommonTree_2.obj" id="2_l3oha"]
 [ext_resource type="Material" uid="uid://b4tpa6tt1wy8p" path="res://Assets/Tree/tronc.tres" id="3_m36md"]
+[ext_resource type="ArrayMesh" uid="uid://dcrvfkf2ao2x" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/Pebble_Round_1.obj" id="4_81a3x"]
 [ext_resource type="Material" uid="uid://c6we64s4fjxp4" path="res://Assets/Tree/Feuillage.tres" id="4_q8wpw"]
+[ext_resource type="Material" uid="uid://dfmrfwacnch0x" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/Roche matériaux.tres" id="5_obiyg"]
+[ext_resource type="ArrayMesh" uid="uid://dtbillyjxllpm" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/Pebble_Round_5.obj" id="6_or8i5"]
+[ext_resource type="ArrayMesh" uid="uid://wqtylkb21wlw" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/Pebble_Square_3.obj" id="7_slv16"]
+[ext_resource type="ArrayMesh" uid="uid://dmulu6wmk6lq" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/Pebble_Square_2.obj" id="8_iq41b"]
+[ext_resource type="ArrayMesh" uid="uid://bbb7xev5oivrb" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/Mushroom_Common.obj" id="9_xpjr8"]
+[ext_resource type="Texture2D" uid="uid://dlq4efld2x78v" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/glTF/Mushrooms.png" id="10_hspbw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rsuno"]
 size = Vector3(1.7551575, 6.4902954, 1.4898529)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jrweb"]
+albedo_color = Color(0.7863807, 0.70350784, 0.46845925, 1)
+albedo_texture = ExtResource("10_hspbw")
 
 [node name="Tree" type="StaticBody3D" unique_id=187056187]
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
@@ -17,7 +28,42 @@ transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, -0
 shape = SubResource("BoxShape3D_rsuno")
 
 [node name="CommonTree2" type="MeshInstance3D" parent="." unique_id=667216349]
-transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.021809932, -0.081065886, -0.0012461336)
+transform = Transform3D(0.99999976, 0, 0, 0, 0.99999976, 0, 0, 0, 0.99999976, 0.022, 0, -0.001)
 mesh = ExtResource("2_l3oha")
 surface_material_override/0 = ExtResource("3_m36md")
 surface_material_override/1 = ExtResource("4_q8wpw")
+
+[node name="PebbleRound1" type="MeshInstance3D" parent="." unique_id=1676885457]
+transform = Transform3D(1.6666664, 0, 0, 0, 1.6666664, 0, 0, 0, 1.6666664, 0.8085553, 0, -0.039568342)
+mesh = ExtResource("4_81a3x")
+surface_material_override/0 = ExtResource("5_obiyg")
+
+[node name="PebbleRound2" type="MeshInstance3D" parent="." unique_id=2133631156]
+transform = Transform3D(0.14440802, 0, -0.98951817, 0, 0.99999994, 0, 0.98951817, 0, 0.14440802, -0.5440512, -0.09644875, -0.12354201)
+mesh = ExtResource("4_81a3x")
+surface_material_override/0 = ExtResource("5_obiyg")
+
+[node name="PebbleRound5" type="MeshInstance3D" parent="." unique_id=1585506747]
+transform = Transform3D(1.6666664, 0, 0, 0, 1.6666664, 0, 0, 0, 1.6666664, -0.609, 0, 0.856)
+mesh = ExtResource("6_or8i5")
+surface_material_override/0 = ExtResource("5_obiyg")
+
+[node name="PebbleSquare3" type="MeshInstance3D" parent="." unique_id=1139765094]
+transform = Transform3D(1.6666665, 0, 0, 0, 1.6666665, 0, 0, 0, 1.6666665, -0.059, 0, 0.833)
+mesh = ExtResource("7_slv16")
+surface_material_override/0 = ExtResource("5_obiyg")
+
+[node name="PebbleSquare2" type="MeshInstance3D" parent="." unique_id=1010066997]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0.9679096, 0, 0.28435728)
+mesh = ExtResource("8_iq41b")
+surface_material_override/0 = ExtResource("5_obiyg")
+
+[node name="PebbleSquare4" type="MeshInstance3D" parent="." unique_id=1332058898]
+transform = Transform3D(0.7999999, 0, 0, 0, 0.7999999, 0, 0, 0, 0.7999999, 0.6803078, 0, 0.5255596)
+mesh = ExtResource("7_slv16")
+surface_material_override/0 = ExtResource("5_obiyg")
+
+[node name="MushroomCommon" type="MeshInstance3D" parent="." unique_id=1292048096]
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, -0.31999996, 0, -0.64832145)
+mesh = ExtResource("9_xpjr8")
+surface_material_override/0 = SubResource("StandardMaterial3D_jrweb")

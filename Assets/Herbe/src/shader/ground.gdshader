@@ -21,7 +21,7 @@ void fragment() {
 	ALBEDO = color.rgb;
 }
 
-void light(){
-	float ndotl = dot(LIGHT, NORMAL) * ATTENUATION;
-	DIFFUSE_LIGHT += ndotl;
-}
+//void light(){
+//	float ndotl = dot(LIGHT, NORMAL) * ATTEN&UATION;
+//	DIFFUSE_LIGHT += ndotl;
+//}
