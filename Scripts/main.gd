@@ -318,7 +318,6 @@ func save_level(i):
 	var level = ""
 	level += "===================\n"
 	level += "level"+str(i)+"\n"
-<<<<<<< HEAD
 	level += "===================\n"
 	
 	level += "Graine de génération :"+str(graine)+"\n"
@@ -333,25 +332,6 @@ func save_level(i):
 	#On stocke la distance entre le joueur et le panier
 	level += "Distance entre le panier et le joueur : "+str(distance)+"m\n"
 	level += "Score obtenue "+str(score)+"\n"
-	
-=======
-	level += str(graine)+"\n"
-	level += "Position du joueur :\n"
-
-	var k = 0
-	level += "0.0 "+str(Objet["player0"].x)+" "+str(Objet["player0"].z)+"\n"
-	k += 1
-
-	for vecteur in position_joueur:
-		level += str(k*0.2)+" "+str(vecteur.x)+" "+str(vecteur.z)+"\n"
-		k += 1
-
-	level += str(k*0.2)+" "+str(position_Finale.x)+" "+str(position_Finale.z)+"\n"
-	level += "Résultats :\n"
-	level += str(distance)+"\n"
-	level += str(score)+"\n"
-
->>>>>>> f01a45e (ajout breakmenu)
 	return level
 
 
@@ -373,8 +353,6 @@ func _on_timer_timeout() -> void:
 
 func _on_sampling_timeout() -> void:
 	position_joueur.append(player_cell())
-<<<<<<< HEAD
-
 
 func _on_pause_pressed() -> void:
 	if not paused:

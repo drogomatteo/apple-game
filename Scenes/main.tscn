@@ -12,12 +12,9 @@
 [ext_resource type="Texture2D" uid="uid://bjauy7ej6k0a6" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
-<<<<<<< HEAD
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
-=======
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_6iyac"]
 [ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="11_fdnlq"]
->>>>>>> f01a45e (ajout breakmenu)
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
 
@@ -44,8 +41,6 @@ ambient_light_source = 2
 ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
 ambient_light_energy = 0.3
 
-<<<<<<< HEAD
-=======
 [sub_resource type="Curve" id="Curve_fdnlq"]
 _data = [Vector2(0.067003794, 0.024412274), 0.0, 0.0, 0, 0, Vector2(0.49431103, 0.8589511), 0.0, 0.0, 0, 0, Vector2(0.91150445, 0.0067812204), 0.0, 0.0, 0, 0]
 point_count = 3
@@ -70,13 +65,6 @@ shader_parameter/twist_frequency = 1.0
 shader_parameter/loop_radius = 1.0
 shader_parameter/loop_count = 0.5
 
-<<<<<<< HEAD
->>>>>>> 0fa413a (ajout breakmenu)
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k12tt"]
-shader = ExtResource("14_jkdf5")
-shader_parameter/blur_amount = 2.50000011875
-shader_parameter/mix_color = Color(0.19607843, 0.23529412, 0.19607843, 0.23529412)
-
 [sub_resource type="LabelSettings" id="LabelSettings_k12tt"]
 font = ExtResource("12_fdnlq")
 font_size = 40
@@ -85,8 +73,6 @@ shadow_size = 5
 shadow_color = Color(0, 0, 0, 0.17254902)
 shadow_offset = Vector2(3, 3)
 
-=======
->>>>>>> f01a45e (ajout breakmenu)
 [sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
 font = ExtResource("12_fdnlq")
 font_size = 40
@@ -238,131 +224,7 @@ mesh = SubResource("PlaneMesh_b3802")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1906453172]
 environment = SubResource("Environment_d1ilt")
 
-<<<<<<< HEAD
 [node name="API" type="Node" parent="." unique_id=1739315456]
-=======
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment" unique_id=629879536]
-transform = Transform3D(-0.40055937, -0.7401756, -0.5400853, -0.6929114, -0.14097442, 0.70710677, -0.5995214, 0.6574695, -0.4564075, -1.0428352, 21.82301, 0.33849716)
-light_color = Color(1, 0.8951667, 0.63, 1)
-light_energy = 0.875
-shadow_enabled = true
-shadow_opacity = 0.63
-directional_shadow_max_distance = 50.0
-sky_mode = 1
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment" unique_id=615579134]
-transform = Transform3D(0.66913056, -0.74314487, 3.2483893e-08, 0, -4.371139e-08, -1, 0.74314487, 0.66913056, -2.9248627e-08, -0.27680564, 0.7001449, 2.3841858e-07)
-custom_aabb = AABB(0, 0, 0, 0, 20, 0)
-mesh = SubResource("TubeTrailMesh_jkdf5")
-surface_material_override/0 = SubResource("ShaderMaterial_wsu2k")
-
-[node name="Fences" parent="." unique_id=123485950 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.49749, 9.536743e-07, -13.549052)
-
-[node name="Mur1" type="Node3D" parent="Fences" unique_id=1072364506]
-
-[node name="Fences2" parent="Fences/Mur1" unique_id=483271512 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
-
-[node name="Fences7" parent="Fences/Mur1" unique_id=277977158 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
-
-[node name="Fences8" parent="Fences/Mur1" unique_id=1037869701 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
-
-[node name="Fences9" parent="Fences/Mur1" unique_id=300569312 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
-
-[node name="Fences4" parent="Fences/Mur1" unique_id=1311991728 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
-
-[node name="Fences5" parent="Fences/Mur1" unique_id=1166814163 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
-
-[node name="Fences6" parent="Fences/Mur1" unique_id=1830918025 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
-
-[node name="Mur2" type="Node3D" parent="Fences" unique_id=1523063634]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.8553295, 0, 54.30452)
-
-[node name="Fences2" parent="Fences/Mur2" unique_id=352287005 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
-
-[node name="Fences3" parent="Fences/Mur2" unique_id=20877721 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4765892, 0, -0.043210983)
-
-[node name="Fences7" parent="Fences/Mur2" unique_id=1125211690 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
-
-[node name="Fences8" parent="Fences/Mur2" unique_id=132473483 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
-
-[node name="Fences9" parent="Fences/Mur2" unique_id=1269545971 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
-
-[node name="Fences4" parent="Fences/Mur2" unique_id=701706382 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
-
-[node name="Fences5" parent="Fences/Mur2" unique_id=1234389138 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
-
-[node name="Fences6" parent="Fences/Mur2" unique_id=457937861 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
-
-[node name="Mur3" type="Node3D" parent="Fences" unique_id=157625582]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 54.795727, 0, 53.721317)
-
-[node name="Fences2" parent="Fences/Mur3" unique_id=900552699 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
-
-[node name="Fences3" parent="Fences/Mur3" unique_id=711720510 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1697998, 0, -0.08567047)
-
-[node name="Fences7" parent="Fences/Mur3" unique_id=1101290456 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
-
-[node name="Fences8" parent="Fences/Mur3" unique_id=548654919 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
-
-[node name="Fences9" parent="Fences/Mur3" unique_id=5357105 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
-
-[node name="Fences4" parent="Fences/Mur3" unique_id=1681154689 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
-
-[node name="Fences5" parent="Fences/Mur3" unique_id=1467701185 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
-
-[node name="Fences6" parent="Fences/Mur3" unique_id=1166219814 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
-
-[node name="Mur4" type="Node3D" parent="Fences" unique_id=1340352826]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 55.977177)
-
-[node name="Fences7" parent="Fences/Mur4" unique_id=1801717015 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.18153, 0, -0.4535942)
-
-[node name="Fences2" parent="Fences/Mur4" unique_id=1815360553 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4442177, 0, -0.08567047)
-
-[node name="Fences3" parent="Fences/Mur4" unique_id=1989504474 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3866043, 0, -0.08567047)
-
-[node name="Fences8" parent="Fences/Mur4" unique_id=1740953867 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.625748, 0, -0.5392647)
-
-[node name="Fences9" parent="Fences/Mur4" unique_id=1069234368 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.904816, 0, -0.6459551)
-
-[node name="Fences4" parent="Fences/Mur4" unique_id=1982114446 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.830488, -9.536743e-07, -0.21677208)
-
-[node name="Fences5" parent="Fences/Mur4" unique_id=1084892469 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.30244255)
-
-[node name="Fences6" parent="Fences/Mur4" unique_id=40612797 instance=ExtResource("13_fdnlq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
->>>>>>> 0fa413a (ajout breakmenu)
 
 [node name="Zone de texte" type="Control" parent="." unique_id=584328298]
 layout_mode = 3
@@ -494,7 +356,6 @@ one_shot = true
 wait_time = 0.2
 autostart = true
 
-<<<<<<< HEAD
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
 transform = Transform3D(-0.4005594, -0.74017566, -0.5400854, -0.69291145, -0.14097443, 0.7071068, -0.59952146, 0.6574696, -0.45640755, -1.0428352, 21.82301, 0.33849716)
 light_color = Color(1, 0.8951667, 0.63, 1)
@@ -567,13 +428,6 @@ transform = Transform3D(-0.8766931, 0, -0.48104998, 0, 1, 0, 0.48104998, 0, -0.8
 [node name="Fences4" parent="Fences/Mur4" unique_id=1893188153 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(-0.7998419, 0, 0.6002108, 0, 1, 0, -0.6002108, 0, -0.7998419, 13.549419, 0, 2.8024821)
 
-[connection signal="pressed" from="PauseMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
-[connection signal="button_down" from="PauseMenu/Retour" to="." method="_on_retour_button_down"]
 [connection signal="pressed" from="Bouton/Pause" to="." method="_on_pause_pressed"]
-=======
-[node name="BreakMenu" parent="." unique_id=504863998 instance=ExtResource("11_fdnlq")]
-
-[connection signal="pressed" from="Bouton/BreakButton" to="." method="_on_pause_pressed"]
->>>>>>> f01a45e (ajout breakmenu)
 [connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Temps/Sampling" to="." method="_on_sampling_timeout"]
