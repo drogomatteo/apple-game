@@ -3,20 +3,10 @@
 [ext_resource type="Script" uid="uid://cl31bj3wv04u4" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="2_6t5aa"]
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_cvnsp"]
-[ext_resource type="AudioStream" uid="uid://q7aoprqau4ud" path="res://Assets/Sound/walkGrass1.mp3" id="2_f1ek2"]
 [ext_resource type="Texture2D" uid="uid://c63yel6wntstw" path="res://Assets/UI-UX/Images/Left.png" id="2_fkybt"]
-[ext_resource type="AudioStream" uid="uid://bacx0ootfjat1" path="res://Assets/Sound/walkGrass2.mp3" id="3_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://cs40qy3tf5ywq" path="res://Assets/UI-UX/Images/avant.png" id="4_3smsa"]
-[ext_resource type="AudioStream" uid="uid://ocwfwq4sekqy" path="res://Assets/Sound/walkGrass3.mp3" id="4_gymyn"]
 [ext_resource type="Texture2D" uid="uid://cgb1l38autjou" path="res://Assets/UI-UX/Images/Right.png" id="4_x3wgy"]
 [ext_resource type="Script" uid="uid://bbcdtfa638wx" path="res://Scripts/basket.gd" id="9_tx1dd"]
-
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_pu2lt"]
-random_pitch = 1.0293022
-streams_count = 3
-stream_0/stream = ExtResource("2_f1ek2")
-stream_1/stream = ExtResource("3_tx1dd")
-stream_2/stream = ExtResource("4_gymyn")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v0iea"]
 radius = 0.4
@@ -25,7 +15,6 @@ height = 1.8
 [node name="Player" type="CharacterBody3D" unique_id=506067122]
 collision_mask = 6
 script = ExtResource("1_v0iea")
-bruitPas = SubResource("AudioStreamRandomizer_pu2lt")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1677382866]
 shape = SubResource("CapsuleShape3D_v0iea")

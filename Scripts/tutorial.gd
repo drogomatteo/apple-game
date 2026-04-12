@@ -20,6 +20,9 @@ enum TutorialStep {
 	FINISHED
 }
 
+var next_default_scale: Vector2 = Vector2.ONE
+var next_tween: Tween
+
 const REQUIRED_ROTATE_TIME: float = 2.0
 const REQUIRED_FORWARD_TIME: float = 2.0
 const HIGHLIGHT_COLOR := Color(1.0, 0.95, 0.55, 1.0)
@@ -57,16 +60,14 @@ var current_step: TutorialStep = TutorialStep.NONE
 var action_timer: float = 0.0
 var waiting_final_popup: bool = false
 
-var left_default_modulate: Color = Color.WHITE
-var right_default_modulate: Color = Color.WHITE
-var forward_default_modulate: Color = Color.WHITE
 
 
 func _ready() -> void:
 	tutorial_ui.hide()
 	boite_message.hide()
 	clear_highlight()
-	_cache_default_button_modulates()
+	if next_button is Control:
+		next_default_scale = next_button.scale
 
 	var next_callable := Callable(self, "_on_next_button_pressed")
 	if not next_button.pressed.is_connected(next_callable):
@@ -91,12 +92,14 @@ func _process(delta: float) -> void:
 	match current_step:
 		TutorialStep.WAIT_ROTATE:
 			if player.tourner_gauche or player.tourner_droite:
+				_reset_button_emphasis()
 				action_timer += delta
 				if action_timer >= REQUIRED_ROTATE_TIME:
 					_show_forward_step()
 
 		TutorialStep.WAIT_FORWARD:
 			if player.avance:
+				_reset_button_emphasis()
 				action_timer += delta
 				if action_timer >= REQUIRED_FORWARD_TIME:
 					_show_basket_instruction()
@@ -116,8 +119,8 @@ func _process(delta: float) -> void:
 		TutorialStep.WAIT_RETURN_BASKET:
 			pass
 
-
 func _on_next_button_pressed() -> void:
+	_stop_next_pulse()
 	if not tutorial_active:
 		return
 
@@ -159,6 +162,7 @@ func _show_intro_1() -> void:
 	clear_highlight()
 	_reset_button_emphasis()
 	show_tutorial_box(messages[0], true)
+	_start_next_pulse()
 
 
 func _show_intro_2() -> void:
@@ -283,6 +287,7 @@ func show_tutorial_box(text: String, show_next: bool = true) -> void:
 
 
 func hide_tutorial_box() -> void:
+	_stop_next_pulse()
 	boite_message.hide()
 	tutorial_ui.hide()
 
@@ -342,35 +347,38 @@ func _stop_player_motion() -> void:
 	player.temp_sens = 0.0
 
 
-func _cache_default_button_modulates() -> void:
-	if left_button_ui is CanvasItem:
-		left_default_modulate = left_button_ui.modulate
-	if right_button_ui is CanvasItem:
-		right_default_modulate = right_button_ui.modulate
-	if forward_button_ui is CanvasItem:
-		forward_default_modulate = forward_button_ui.modulate
-
 
 func _highlight_rotation_buttons() -> void:
-	_reset_button_emphasis()
-
-	if left_button_ui is CanvasItem:
-		left_button_ui.modulate = HIGHLIGHT_COLOR
-	if right_button_ui is CanvasItem:
-		right_button_ui.modulate = HIGHLIGHT_COLOR
-
+	player.clear_tutorial_highlights()
+	player.highlight_rotation_buttons(true)
 
 func _highlight_forward_button() -> void:
-	_reset_button_emphasis()
+	player.clear_tutorial_highlights()
+	player.highlight_forward_button(true)
 
-	if forward_button_ui is CanvasItem:
-		forward_button_ui.modulate = HIGHLIGHT_COLOR
 
 
 func _reset_button_emphasis() -> void:
-	if left_button_ui is CanvasItem:
-		left_button_ui.modulate = left_default_modulate
-	if right_button_ui is CanvasItem:
-		right_button_ui.modulate = right_default_modulate
-	if forward_button_ui is CanvasItem:
-		forward_button_ui.modulate = forward_default_modulate
+	player.clear_tutorial_highlights()
+
+func _start_next_pulse() -> void:
+	_stop_next_pulse()
+
+	if not next_button is Control:
+		return
+
+	next_button.scale = next_default_scale
+
+	next_tween = create_tween()
+	next_tween.set_loops()
+	next_tween.tween_property(next_button, "scale", next_default_scale * 1.10, 0.45)
+	next_tween.tween_property(next_button, "scale", next_default_scale, 0.45)
+
+
+func _stop_next_pulse() -> void:
+	if next_tween:
+		next_tween.kill()
+		next_tween = null
+
+	if next_button is Control:
+		next_button.scale = next_default_scale

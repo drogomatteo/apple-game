@@ -1,116 +1,200 @@
 extends CharacterBody3D
 
-#Déplacement du joueur
-const SPEED = 2
-const acceleration = 8
-const deceleration = 10
-const sensivity = PI/2
-const GRAVITY = 9.8
+# Déplacement du joueur
+const SPEED := 2.0
+const ACCELERATION := 8.0
+const DECELERATION := 10.0
+const SENSITIVITY := PI / 2.0
+const GRAVITY := 9.8
 
-#Tutoriel:
+# Tutoriel
 var controls_locked: bool = false
 var allow_forward: bool = true
 var allow_left: bool = true
 var allow_right: bool = true
 
-#Balancement de tête
+# Balancement de tête
 @export_category("Balancement de tête")
-@export var bobFreq = 4.5
-@export var bobAmp = 0.025
-@export var tBob = 0.0
+@export var bob_freq: float = 4.5
+@export var bob_amp: float = 0.025
+@export var t_bob: float = 0.0
 
-#Noeuds
-@onready var Left = $Left
-@onready var Right = $Right
-@onready var Forward = $Forward
-@onready var camera = $Camera3D
-
-#Gestion des bruits de pas
+# Bruits de pas
 @export_category("Bruit Pas")
-@export var bruitPas : AudioStreamRandomizer
+@export var bruit_pas: AudioStreamRandomizer
 
-#Variable utilisé que dans le code
-var temp_vel : float = 0
-var temp_sens : float = 0
-var horizontal_velocity : Vector3
-var direction_rot : int
+# Nœuds
+@onready var left_button = $Left
+@onready var right_button = $Right
+@onready var forward_button = $Forward
+@onready var camera = $Camera3D
+@onready var footstep_player = $AudioStreamPlayer2D
 
-var avance : bool
-var tourner_gauche : bool
-var tourner_droite : bool
+# Variables internes
+var temp_vel: float = 0.0
+var temp_sens: float = 0.0
+var horizontal_velocity: Vector3 = Vector3.ZERO
+var direction_rot: int = 0
+
+var avance: bool = false
+var tourner_gauche: bool = false
+var tourner_droite: bool = false
+
+# Animation tuto
+var left_default_scale: Vector2 = Vector2.ONE
+var right_default_scale: Vector2 = Vector2.ONE
+var forward_default_scale: Vector2 = Vector2.ONE
+
+var left_tween: Tween
+var right_tween: Tween
+var forward_tween: Tween
+
+
+func _ready() -> void:
+	if left_button is Control:
+		left_default_scale = left_button.scale
+	if right_button is Control:
+		right_default_scale = right_button.scale
+	if forward_button is Control:
+		forward_default_scale = forward_button.scale
 
 
 func _physics_process(delta: float) -> void:
-	var direction = Vector3.ZERO
-	avance = Forward.is_pressed() and allow_forward and not controls_locked
-	tourner_gauche = Left.is_pressed() and allow_left and not controls_locked
-	tourner_droite = Right.is_pressed() and allow_right and not controls_locked
-	
+	var direction := Vector3.ZERO
+
+	avance = forward_button.is_pressed() and allow_forward and not controls_locked
+	tourner_gauche = left_button.is_pressed() and allow_left and not controls_locked
+	tourner_droite = right_button.is_pressed() and allow_right and not controls_locked
+
 	if avance:
-		direction.z -= 1
-		#Gestion du son
-		if not $AudioStreamPlayer2D.is_playing() and Paramètre.sound:
-			$AudioStreamPlayer2D.stream = bruitPas
-			$AudioStreamPlayer2D.play()
-		#Animation du panier
+		direction.z -= 1.0
+
+		if not footstep_player.is_playing() and Paramètre.sound:
+			footstep_player.stream = bruit_pas
+			footstep_player.play()
 	else:
-		direction.z += 1
-	
+		direction.z += 1.0
+
 	if tourner_droite:
 		direction_rot = -1
 	elif tourner_gauche:
 		direction_rot = 1
 	else:
 		direction_rot = 0
-	
-	#Déplacement du joueur
+
+	# Déplacement
 	if temp_vel < SPEED and avance:
-		horizontal_velocity = (transform.basis * Vector3(0,0,direction.z)).normalized() * acceleration * delta
+		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * ACCELERATION * delta
 		velocity.x += horizontal_velocity.x
 		velocity.z += horizontal_velocity.z
 		temp_vel = min(temp_vel + sqrt(horizontal_velocity.dot(horizontal_velocity)), SPEED)
 
-	elif temp_vel > 0 and not avance:
-		horizontal_velocity = (transform.basis * Vector3(0,0,direction.z)).normalized() * deceleration * delta
+	elif temp_vel > 0.0 and not avance:
+		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * DECELERATION * delta
 		velocity.x += horizontal_velocity.x
 		velocity.z += horizontal_velocity.z
 		temp_vel = max(temp_vel - sqrt(horizontal_velocity.dot(horizontal_velocity)), 0.0)
-	
-	elif temp_vel == 0.0 and not avance:
-		velocity.x = 0
-		velocity.z = 0
-	
-	elif temp_vel == SPEED and avance:
-		velocity = (transform.basis * Vector3(0,0,direction.z)).normalized() * SPEED
-	
-	
-	#Rotation caméra
-	
-	if temp_sens < sensivity and (tourner_droite or tourner_gauche):
-		temp_sens = min(temp_sens + delta*acceleration, sensivity)
-		
-		rotate_y(direction_rot*temp_sens*delta)
-	elif temp_sens > 0 and not(tourner_droite or tourner_gauche):
-		temp_sens = max(temp_sens - delta*deceleration, 0.0)
-		
-		rotate_y(direction_rot*temp_sens*delta)
-	elif temp_sens == sensivity and (tourner_droite or tourner_gauche):
-		rotate_y(direction_rot*delta*sensivity)
 
-	#Gestion gravité 
+	elif temp_vel == 0.0 and not avance:
+		velocity.x = 0.0
+		velocity.z = 0.0
+
+	elif temp_vel == SPEED and avance:
+		velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * SPEED
+
+	# Rotation
+	if temp_sens < SENSITIVITY and (tourner_droite or tourner_gauche):
+		temp_sens = min(temp_sens + delta * ACCELERATION, SENSITIVITY)
+		rotate_y(direction_rot * temp_sens * delta)
+
+	elif temp_sens > 0.0 and not (tourner_droite or tourner_gauche):
+		temp_sens = max(temp_sens - delta * DECELERATION, 0.0)
+		rotate_y(direction_rot * temp_sens * delta)
+
+	elif temp_sens == SENSITIVITY and (tourner_droite or tourner_gauche):
+		rotate_y(direction_rot * delta * SENSITIVITY)
+
+	# Gravité
 	if not is_on_floor():
 		velocity.y -= GRAVITY * delta
 	else:
-		velocity.y = 0
-	
+		velocity.y = 0.0
+
 	move_and_slide()
 	_handle_head_bob(delta)
 
-func _handle_head_bob(delta):
-	tBob += delta * velocity.length() * float(is_on_floor())
-	
-	var pos = Vector3.ZERO
-	pos.y = sin(tBob * bobFreq) * bobAmp + 0.45
-	pos.x = cos(tBob * bobFreq / 2) * bobAmp 
-	
+
+func _handle_head_bob(delta: float) -> void:
+	t_bob += delta * velocity.length() * float(is_on_floor())
+
+	var pos := Vector3.ZERO
+	pos.y = sin(t_bob * bob_freq) * bob_amp + 0.45
+	pos.x = cos(t_bob * bob_freq / 2.0) * bob_amp
+
 	camera.transform.origin = pos
+
+
+func _start_pulse(button: Control, base_scale: Vector2, tween_name: String) -> void:
+	_stop_pulse_by_name(tween_name)
+
+	button.scale = base_scale
+
+	var tween := create_tween()
+	tween.set_loops()
+	tween.tween_property(button, "scale", base_scale * 1.10, 0.45)
+	tween.tween_property(button, "scale", base_scale, 0.45)
+
+	match tween_name:
+		"left":
+			left_tween = tween
+		"right":
+			right_tween = tween
+		"forward":
+			forward_tween = tween
+
+
+func _stop_pulse_by_name(tween_name: String) -> void:
+	match tween_name:
+		"left":
+			if left_tween:
+				left_tween.kill()
+				left_tween = null
+		"right":
+			if right_tween:
+				right_tween.kill()
+				right_tween = null
+		"forward":
+			if forward_tween:
+				forward_tween.kill()
+				forward_tween = null
+
+
+func highlight_rotation_buttons(active: bool) -> void:
+	if active:
+		if left_button is Control:
+			_start_pulse(left_button, left_default_scale, "left")
+		if right_button is Control:
+			_start_pulse(right_button, right_default_scale, "right")
+	else:
+		clear_tutorial_highlights()
+
+
+func highlight_forward_button(active: bool) -> void:
+	if active:
+		if forward_button is Control:
+			_start_pulse(forward_button, forward_default_scale, "forward")
+	else:
+		clear_tutorial_highlights()
+
+
+func clear_tutorial_highlights() -> void:
+	_stop_pulse_by_name("left")
+	_stop_pulse_by_name("right")
+	_stop_pulse_by_name("forward")
+
+	if left_button is Control:
+		left_button.scale = left_default_scale
+	if right_button is Control:
+		right_button.scale = right_default_scale
+	if forward_button is Control:
+		forward_button.scale = forward_default_scale
