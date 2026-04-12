@@ -44,14 +44,21 @@ func go_to_scene(scene : String):
 	await tween.finished
 
 
-	if scene_name == "game":
-		get_tree().change_scene_to_file("res://Scenes/main.tscn")
-	else:
-		var interface = get_tree().get_meta("interface")
-		if interface:
-			interface.call("show_" + scene_name)
-		else:
-			print("Interface introuvable")
+	match scene_name:
+		"game":
+			get_tree().change_scene_to_file("res://Scenes/main.tscn")
+
+		"main_menu":
+			get_tree().change_scene_to_file("res://Scenes/interface.tscn")
+
+		_:
+			var interface = get_tree().get_meta("interface")
+			if interface:
+				interface.call("show_" + scene_name)
+			else:
+				print("Interface introuvable → fallback")
+				get_tree().change_scene_to_file("res://Scenes/interface.tscn")
+
 
 	# PHASE 2
 	tween = get_tree().create_tween()

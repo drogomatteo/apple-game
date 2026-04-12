@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://k6fu4jt18nip"]
 
+[ext_resource type="Script" uid="uid://3ehle6d77yti" path="res://Scenes/break_menu.gd" id="1_5hdlp"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="1_oixcu"]
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="2_5hdlp"]
 
@@ -23,6 +24,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_5hdlp")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1746775406]
+material = SubResource("ShaderMaterial_n4pmk")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="ResumeButton" type="Button" parent="." unique_id=1022906510]
 z_index = 1
@@ -39,17 +51,25 @@ theme_override_fonts/font = ExtResource("1_oixcu")
 theme_override_font_sizes/font_size = 30
 text = "Reprendre"
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1746775406]
-material = SubResource("ShaderMaterial_n4pmk")
+[node name="BackButton" type="Button" parent="." unique_id=1780628031]
+z_index = 1
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -163.5
+offset_top = 52.0
+offset_right = 163.5
+offset_bottom = 94.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+theme_override_font_sizes/font_size = 24
+text = "Retournez au menu pricipal"
 
 [node name="Label" type="Label" parent="." unique_id=637009513]
+z_index = 1
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -65,18 +85,5 @@ grow_vertical = 2
 text = "PAUSE"
 label_settings = SubResource("LabelSettings_f6h6w")
 
-[node name="Retour" type="Button" parent="." unique_id=1780628031]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -163.5
-offset_top = 52.0
-offset_right = 163.5
-offset_bottom = 94.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 24
-text = "Retournez au menu pricipal"
+[connection signal="pressed" from="ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

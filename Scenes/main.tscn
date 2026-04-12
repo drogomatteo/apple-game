@@ -12,10 +12,14 @@
 [ext_resource type="Texture2D" uid="uid://dbnicgab7e1rs" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
+<<<<<<< HEAD
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
+=======
+[ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_6iyac"]
+[ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="11_fdnlq"]
+>>>>>>> f01a45e (ajout breakmenu)
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
-[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="14_jkdf5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(26, 1, 26)
@@ -66,6 +70,7 @@ shader_parameter/twist_frequency = 1.0
 shader_parameter/loop_radius = 1.0
 shader_parameter/loop_count = 0.5
 
+<<<<<<< HEAD
 >>>>>>> 0fa413a (ajout breakmenu)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k12tt"]
 shader = ExtResource("14_jkdf5")
@@ -80,6 +85,8 @@ shadow_size = 5
 shadow_color = Color(0, 0, 0, 0.17254902)
 shadow_offset = Vector2(3, 3)
 
+=======
+>>>>>>> f01a45e (ajout breakmenu)
 [sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
 font = ExtResource("12_fdnlq")
 font_size = 40
@@ -357,64 +364,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.274706, -9.536743e-07, -0.
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.553776, -9.536743e-07, -0.40913296)
 >>>>>>> 0fa413a (ajout breakmenu)
 
-[node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1622927938]
-process_mode = 3
-layer = 0
-visible = false
-
-[node name="ResumeButton" type="Button" parent="PauseMenu" unique_id=596571604]
-z_index = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -28.0
-offset_top = 12.0
-offset_right = -20.0
-offset_bottom = 20.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("12_fdnlq")
-theme_override_font_sizes/font_size = 30
-text = "Reprendre"
-
-[node name="ColorRect" type="ColorRect" parent="PauseMenu" unique_id=133342472]
-material = SubResource("ShaderMaterial_k12tt")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="Label" type="Label" parent="PauseMenu" unique_id=1695697663]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -62.0
-offset_top = -223.0
-offset_right = 62.0
-offset_bottom = -179.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "PAUSE"
-label_settings = SubResource("LabelSettings_k12tt")
-
-[node name="Retour" type="Button" parent="PauseMenu" unique_id=1806222345]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -163.5
-offset_top = 52.0
-offset_right = 163.5
-offset_bottom = 94.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 24
-text = "Retournez au menu pricipal"
-
 [node name="Zone de texte" type="Control" parent="." unique_id=584328298]
 layout_mode = 3
 anchors_preset = 15
@@ -518,7 +467,7 @@ theme_override_styles/pressed = ExtResource("6_fdnlq")
 theme_override_styles/hover = ExtResource("6_fdnlq")
 text = "ˇ"
 
-[node name="Pause" type="Button" parent="Bouton" unique_id=635311221]
+[node name="BreakButton" type="Button" parent="Bouton" unique_id=635311221 groups=["break_button"]]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -545,6 +494,7 @@ one_shot = true
 wait_time = 0.2
 autostart = true
 
+<<<<<<< HEAD
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=629879536]
 transform = Transform3D(-0.4005594, -0.74017566, -0.5400854, -0.69291145, -0.14097443, 0.7071068, -0.59952146, 0.6574696, -0.45640755, -1.0428352, 21.82301, 0.33849716)
 light_color = Color(1, 0.8951667, 0.63, 1)
@@ -620,5 +570,10 @@ transform = Transform3D(-0.7998419, 0, 0.6002108, 0, 1, 0, -0.6002108, 0, -0.799
 [connection signal="pressed" from="PauseMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="button_down" from="PauseMenu/Retour" to="." method="_on_retour_button_down"]
 [connection signal="pressed" from="Bouton/Pause" to="." method="_on_pause_pressed"]
+=======
+[node name="BreakMenu" parent="." unique_id=504863998 instance=ExtResource("11_fdnlq")]
+
+[connection signal="pressed" from="Bouton/BreakButton" to="." method="_on_pause_pressed"]
+>>>>>>> f01a45e (ajout breakmenu)
 [connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Temps/Sampling" to="." method="_on_sampling_timeout"]
