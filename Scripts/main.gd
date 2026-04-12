@@ -71,10 +71,18 @@ var Difficulté_actuel : Array
 @onready var ResmueButton = $PauseMenu/ResumeButton
 var paused = false
 
-func _ready() -> void:
-	Initialisation()
-	
+#Tuto désactivé de base:
 
+
+func _ready() -> void:
+	$UI/TutorialUI/Highlight.visible = false
+	Initialisation()
+	if not Paramètre.tutorial_seen:
+		$TutorialController.start_tutorial()
+	
+func end_tutorial() -> void:
+	Paramètre.set_tutorial_seen(true)
+	# cacher l'overlay, rendre le contrôle normal au joueur, etc.
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
 func _physics_process(_delta: float) -> void:

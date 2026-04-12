@@ -7,6 +7,12 @@ const deceleration = 10
 const sensivity = PI/2
 const GRAVITY = 9.8
 
+#Tutoriel:
+var controls_locked: bool = false
+var allow_forward: bool = true
+var allow_left: bool = true
+var allow_right: bool = true
+
 #Balancement de tête
 @export_category("Balancement de tête")
 @export var bobFreq = 4.5
@@ -36,9 +42,9 @@ var tourner_droite : bool
 
 func _physics_process(delta: float) -> void:
 	var direction = Vector3.ZERO
-	avance = Forward.is_pressed()
-	tourner_gauche = Left.is_pressed()
-	tourner_droite = Right.is_pressed()
+	avance = Forward.is_pressed() and allow_forward
+	tourner_gauche = Left.is_pressed() and allow_left
+	tourner_droite = Right.is_pressed() and allow_right
 	
 	if avance:
 		direction.z -= 1
