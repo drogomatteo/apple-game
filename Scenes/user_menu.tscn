@@ -558,6 +558,7 @@ theme_override_styles/pressed = ExtResource("3_klneb")
 theme_override_styles/hover = ExtResource("3_klneb")
 text = "Retour"
 
+[connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
 [connection signal="text_changed" from="CenterContainer/VBoxContainer/PseudoInput" to="." method="_on_input_changed"]
 [connection signal="text_changed" from="CenterContainer/VBoxContainer/TokenInput" to="." method="_on_input_changed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]

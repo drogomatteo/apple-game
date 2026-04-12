@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://vicdlypsxa16"]
 
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="1_o2kya"]
+[ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="1_su4i2"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7dm0k"]
 size = Vector2(6, 6)
@@ -26,7 +27,7 @@ buffer = PackedFloat32Array(-1.0038617, 0.06553604, 0.0141631095, 0.35595787, 0.
 [node name="Node3D" type="Node3D" unique_id=4845252]
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=195583803]
-visible = false
+material_override = ExtResource("1_su4i2")
 mesh = SubResource("PlaneMesh_7dm0k")
 
 [node name="GrassBlade" type="MeshInstance3D" parent="." unique_id=1867917215]

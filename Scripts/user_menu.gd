@@ -14,8 +14,6 @@ var is_guest_mode = false
 
 
 func _ready():
-	http.request_completed.connect(_on_request_completed)
-
 	if PlayerData.user_id != -1:
 		pseudo_input.text = PlayerData.pseudo
 		token_input.text = PlayerData.token
@@ -94,7 +92,7 @@ func _on_guest_button_pressed():
 	)
 
 
-func _on_request_completed(result, response_code, headers, body):
+func _on_http_request_request_completed(result, response_code, headers, body):
 	is_request_running = false
 
 	var text = body.get_string_from_utf8()
