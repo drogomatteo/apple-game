@@ -74,8 +74,6 @@ var paused = false
 func _ready() -> void:
 	Initialisation()
 
-	print(PlayerData.nom)
-	print(PlayerData.prenom)
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
 func _physics_process(_delta: float) -> void:
