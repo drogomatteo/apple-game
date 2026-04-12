@@ -413,5 +413,6 @@ func _on_resume_button_pressed() -> void:
 
 
 func _on_retour_button_down() -> void:
-	get_tree().paused = false
-	Transition.go_to_scene("Interface")
+	Transition.go_to_scene("main_menu")
+
+	
