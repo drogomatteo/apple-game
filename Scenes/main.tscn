@@ -9,27 +9,36 @@
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
 [ext_resource type="Script" uid="uid://cyf1mrcpq47gu" path="res://Scripts/grass_system.gd" id="7_k12tt"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
-[ext_resource type="Texture2D" uid="uid://bjauy7ej6k0a6" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
+[ext_resource type="Texture2D" uid="uid://dbnicgab7e1rs" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
-[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="14_jkdf5"]
-[ext_resource type="Script" uid="uid://dlt2pb4isvmm8" path="res://Scripts/tutoriel.gd" id="17_h1bgf"]
+[ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="16_k12tt"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_k12tt"]
-shader = ExtResource("14_jkdf5")
-shader_parameter/blur_amount = 2.50000011875
-shader_parameter/mix_color = Color(0.19607843, 0.23529412, 0.19607843, 0.23529412)
+[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
+size = Vector3(26, 1, 26)
 
-[sub_resource type="LabelSettings" id="LabelSettings_k12tt"]
-font = ExtResource("12_fdnlq")
-font_size = 40
-font_color = Color(0, 0, 0, 1)
-shadow_size = 5
-shadow_color = Color(0, 0, 0, 0.17254902)
-shadow_offset = Vector2(3, 3)
+[sub_resource type="QuadMesh" id="QuadMesh_b3802"]
+size = Vector2(0.7, 0.7)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_b3802"]
+size = Vector2(60, 60)
+center_offset = Vector3(4.2, 0, 4)
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_k12tt"]
+panorama = ExtResource("8_wsu2k")
+
+[sub_resource type="Sky" id="Sky_hptm8"]
+sky_material = SubResource("PanoramaSkyMaterial_k12tt")
+
+[sub_resource type="Environment" id="Environment_d1ilt"]
+background_mode = 2
+sky = SubResource("Sky_hptm8")
+ambient_light_source = 2
+ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
+ambient_light_energy = 0.3
 
 [sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
 font = ExtResource("12_fdnlq")
@@ -84,65 +93,129 @@ visual = ExtResource("5_hptm8")
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -4.78409, 1.88428, 11.871809)
 
-[node name="API" type="Node" parent="." unique_id=1739315456]
+[node name="Floor" type="Node3D" parent="." unique_id=1406393240]
 
-[node name="PauseMenu" type="CanvasLayer" parent="." unique_id=1622927938]
-process_mode = 3
-layer = 0
-visible = false
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=1466840344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -1, -8)
+collision_layer = 6
 
-[node name="ResumeButton" type="Button" parent="PauseMenu" unique_id=596571604]
-z_index = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -28.0
-offset_top = 12.0
-offset_right = -20.0
-offset_bottom = 20.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("12_fdnlq")
-theme_override_font_sizes/font_size = 30
-text = "Reprendre"
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=2104309237]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
+shape = SubResource("BoxShape3D_6bp64")
+debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
 
-[node name="ColorRect" type="ColorRect" parent="PauseMenu" unique_id=133342472]
-material = SubResource("ShaderMaterial_k12tt")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
+[node name="Ensemble Sol" type="Node3D" parent="Floor" unique_id=426609364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
+script = ExtResource("7_k12tt")
+distribution_texture = ExtResource("8_b3802")
+distribution_threshold = 0.3
+distribution_softness = 0.1
+invert_distribution_mask = true
+remap_distribution_values = false
+density_per_m2 = 10.0
+grass_mesh = SubResource("QuadMesh_b3802")
+grass_material = ExtResource("8_h1bgf")
+near_density_multiplier = 1.2
+near_visibility_end_margin = 0.1
+far_scale_multiplier = 1.2
+far_visibility_begin = 7.0
+print_distribution_debug = true
 
-[node name="Label" type="Label" parent="PauseMenu" unique_id=1695697663]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -62.0
-offset_top = -223.0
-offset_right = 62.0
-offset_bottom = -179.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "PAUSE"
-label_settings = SubResource("LabelSettings_k12tt")
+[node name="Node3D" parent="Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ynf5e")]
 
-[node name="Retour" type="Button" parent="PauseMenu" unique_id=1806222345]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -163.5
-offset_top = 52.0
-offset_right = 163.5
-offset_bottom = 94.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 24
-text = "Retournez au menu pricipal"
+[node name="Node3D2" parent="Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
+
+[node name="Node3D3" parent="Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+
+[node name="Node3D10" parent="Floor/Ensemble Sol" unique_id=1130719551 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 18)
+
+[node name="Node3D11" parent="Floor/Ensemble Sol" unique_id=1484061169 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
+
+[node name="Node3D13" parent="Floor/Ensemble Sol" unique_id=2069788634 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 6)
+
+[node name="Node3D15" parent="Floor/Ensemble Sol" unique_id=836267138 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 12)
+
+[node name="Node3D20" parent="Floor/Ensemble Sol" unique_id=1929113582 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 18)
+
+[node name="Node3D21" parent="Floor/Ensemble Sol" unique_id=929470858 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 0)
+
+[node name="Node3D22" parent="Floor/Ensemble Sol" unique_id=588857297 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 6)
+
+[node name="Node3D23" parent="Floor/Ensemble Sol" unique_id=1191143649 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 12)
+
+[node name="Node3D24" parent="Floor/Ensemble Sol" unique_id=190929698 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 18)
+
+[node name="Node3D4" parent="Floor/Ensemble Sol" unique_id=179543784 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
+
+[node name="Node3D5" parent="Floor/Ensemble Sol" unique_id=1359805284 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 6)
+
+[node name="Node3D6" parent="Floor/Ensemble Sol" unique_id=620084641 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 12)
+
+[node name="Node3D12" parent="Floor/Ensemble Sol" unique_id=176907512 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 18)
+
+[node name="Node3D7" parent="Floor/Ensemble Sol" unique_id=1394284664 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
+
+[node name="Node3D8" parent="Floor/Ensemble Sol" unique_id=1810276722 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 6)
+
+[node name="Node3D9" parent="Floor/Ensemble Sol" unique_id=912886912 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
+
+[node name="Node3D14" parent="Floor/Ensemble Sol" unique_id=697644848 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 18)
+
+[node name="Node3D25" parent="Floor/Ensemble Sol" unique_id=199844807 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
+
+[node name="Node3D26" parent="Floor/Ensemble Sol" unique_id=1546112433 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 24)
+
+[node name="Node3D27" parent="Floor/Ensemble Sol" unique_id=1599129324 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 24)
+
+[node name="Node3D28" parent="Floor/Ensemble Sol" unique_id=1328437259 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
+
+[node name="Node3D29" parent="Floor/Ensemble Sol" unique_id=384494397 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -6)
+
+[node name="Node3D30" parent="Floor/Ensemble Sol" unique_id=1986178866 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -6)
+
+[node name="Node3D16" parent="Floor/Ensemble Sol" unique_id=446660227 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
+
+[node name="Node3D17" parent="Floor/Ensemble Sol" unique_id=900406900 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 6)
+
+[node name="Node3D18" parent="Floor/Ensemble Sol" unique_id=1784722520 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 12)
+
+[node name="Node3D19" parent="Floor/Ensemble Sol" unique_id=1276527557 instance=ExtResource("7_ynf5e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 18)
+
+[node name="Ground" type="MeshInstance3D" parent="Floor" unique_id=133471086]
+material_override = ExtResource("9_h1bgf")
+mesh = SubResource("PlaneMesh_b3802")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1906453172]
+environment = SubResource("Environment_d1ilt")
 
 [node name="Zone de texte" type="Control" parent="." unique_id=584328298]
 layout_mode = 3
@@ -247,7 +320,7 @@ theme_override_styles/pressed = ExtResource("6_fdnlq")
 theme_override_styles/hover = ExtResource("6_fdnlq")
 text = "ˇ"
 
-[node name="Pause" type="Button" parent="Bouton" unique_id=635311221]
+[node name="BreakButton" type="Button" parent="Bouton" unique_id=635311221 groups=["break_button"]]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -472,66 +545,9 @@ transform = Transform3D(-0.8766931, 0, -0.48104998, 0, 1, 0, 0.48104998, 0, -0.8
 [node name="Fences4" parent="Monde/Fences/Mur4" unique_id=1893188153 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(-0.7998419, 0, 0.6002108, 0, 1, 0, -0.6002108, 0, -0.7998419, 13.549419, 0, 2.8024821)
 
-[node name="UI" type="Node" parent="." unique_id=559665256]
+[node name="BreakMenu" parent="." unique_id=504863998 instance=ExtResource("16_k12tt")]
 
-[node name="TutorialUI" type="CanvasLayer" parent="UI" unique_id=429056121]
-
-[node name="Highlight" type="Panel" parent="UI/TutorialUI" unique_id=687891646]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="BoiteMessage" type="Panel" parent="UI/TutorialUI" unique_id=301292252]
-anchors_preset = -1
-anchor_left = 0.492
-anchor_top = 0.43500003
-anchor_right = 0.492
-anchor_bottom = 0.43500003
-offset_left = -425.784
-offset_top = -154.88004
-offset_right = 426.216
-offset_bottom = 145.11996
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-
-[node name="Message" type="Label" parent="UI/TutorialUI/BoiteMessage" unique_id=1953760531]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -388.0
-offset_top = -113.0
-offset_right = 389.0
-offset_bottom = 81.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "test"
-label_settings = SubResource("LabelSettings_h1bgf")
-horizontal_alignment = 1
-
-[node name="Next" type="Button" parent="UI/TutorialUI/BoiteMessage" unique_id=1777171303]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -67.0
-offset_top = -64.0
-offset_right = 68.0
-offset_bottom = -13.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="TutorialController" type="Node" parent="." unique_id=1901632180]
-script = ExtResource("17_h1bgf")
-
-[connection signal="pressed" from="PauseMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
-[connection signal="button_down" from="PauseMenu/Retour" to="." method="_on_retour_button_down"]
-[connection signal="pressed" from="Bouton/Pause" to="." method="_on_pause_pressed"]
+[connection signal="pressed" from="Bouton/BreakButton" to="." method="_on_break_button_pressed"]
 [connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Temps/Sampling" to="." method="_on_sampling_timeout"]
 [connection signal="pressed" from="UI/TutorialUI/BoiteMessage/Next" to="TutorialController" method="_on_next_button_pressed"]

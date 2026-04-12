@@ -1,30 +1,22 @@
 extends Node
 
+var user_id = -1
+var pseudo = ""
+var token = ""
+var is_guest = true
 
-var user_id : int = -1
-var pseudo : String = ""
-var token : String = ""
-var is_guest : bool = true
-
-func reset():
-	user_id = -1
-	pseudo = ""
-	token = ""
-	is_guest = true
-
-
-
-func set_user(_user_id, _pseudo, _token):
-	user_id = _user_id
-	pseudo = _pseudo
-	token = _token
+func set_user(id, p, t):
+	user_id = id
+	pseudo = p
+	token = t
 	is_guest = false
 
-func set_guest(_user_id):
-	user_id = _user_id
+func set_guest(id):
+	user_id = id
 	pseudo = "guest"
 	token = ""
 	is_guest = true
+
 
 
 # DEBUG

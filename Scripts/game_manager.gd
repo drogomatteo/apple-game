@@ -2,16 +2,18 @@ extends Node
 
 var BASE_URL = "http://100.111.28.32:8000/api/"
 
-
 func send_file(filepath, url):
 
 	if PlayerData.user_id == -1:
-		print("Erreur : user_id invalide")
+		SyncManager.add_action({
+			"type": "file",
+			"path": filepath,
+			"url": url
+		})
 		return
 
 	var file = FileAccess.open(filepath, FileAccess.READ)
 	if file == null:
-		print("Fichier introuvable :", filepath)
 		return
 
 	var file_bytes = file.get_buffer(file.get_length())
@@ -19,12 +21,10 @@ func send_file(filepath, url):
 	var boundary = "----GodotBoundary"
 	var body = ""
 
-	# USER ID
 	body += "--" + boundary + "\r\n"
 	body += 'Content-Disposition: form-data; name="user"\r\n\r\n'
 	body += str(PlayerData.user_id) + "\r\n"
 
-	# FILE
 	body += "--" + boundary + "\r\n"
 	body += 'Content-Disposition: form-data; name="fichier"; filename="rapport.dat"\r\n'
 	body += "Content-Type: application/octet-stream\r\n\r\n"
@@ -41,7 +41,24 @@ func send_file(filepath, url):
 	var http = HTTPRequest.new()
 	add_child(http)
 
-	http.request(url, headers, HTTPClient.METHOD_POST, final_body)
+	var err = http.request(url, headers, HTTPClient.METHOD_POST, final_body)
+
+	if err != OK:
+		SyncManager.add_action({
+			"type": "file",
+			"path": filepath,
+			"url": url
+		})
+		return
+
+	http.request_completed.connect(func(result, code, headers, body):
+		if code != 200 and code != 201:
+			SyncManager.add_action({
+				"type": "file",
+				"path": filepath,
+				"url": url
+			})
+	)
 
 
 func send_rapport_complet():

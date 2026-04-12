@@ -1,8 +1,8 @@
 extends Control
 
 @onready var http = $HTTPRequest
-@onready var pseudo_input = $CenterContainer/VBoxContainer/PseudoInput
-@onready var token_input = $CenterContainer/VBoxContainer/TokenInput
+@onready var pseudo_input = $VBoxContainer/PseudoInput
+@onready var token_input = $VBoxContainer2/TokenInput
 @onready var save_button = $CenterContainer/VBoxContainer/SaveButton
 @onready var guest_button = $CenterContainer/VBoxContainer/GuestButton
 @onready var status_label = $CenterContainer/VBoxContainer/StatusLabel
@@ -67,12 +67,15 @@ func _on_save_button_pressed():
 	is_request_running = true
 	status_label.text = "Connexion..."
 
-	http.request(
+	var err = http.request(
 		BASE_URL + "user/",
 		["Content-Type: application/json"],
 		HTTPClient.METHOD_POST,
 		body
 	)
+
+	if err != OK:
+		_offline_login(data)
 
 
 func _on_guest_button_pressed():
@@ -84,42 +87,47 @@ func _on_guest_button_pressed():
 	is_request_running = true
 	status_label.text = "Mode invité..."
 
-	http.request(
+	var err = http.request(
 		BASE_URL + "user/",
 		["Content-Type: application/json"],
 		HTTPClient.METHOD_POST,
 		"{}"
 	)
 
+	if err != OK:
+		_offline_login({"pseudo": "guest", "token": ""})
+
 
 func _on_http_request_request_completed(result, response_code, headers, body):
 	is_request_running = false
 
-	var text = body.get_string_from_utf8()
-	print("CODE:", response_code)
-	print("RAW:", text)
+	if response_code != 200 and response_code != 201:
+		var data = {
+			"pseudo": pseudo_input.text.strip_edges(),
+			"token": token_input.text.strip_edges() if not is_guest_mode else ""
+		}
+		_offline_login(data)
+		return
 
+	var text = body.get_string_from_utf8()
 	var response = JSON.parse_string(text)
 
-	if response_code != 200 and response_code != 201:
-		status_label.text = "Erreur serveur"
-		return
-
 	if typeof(response) != TYPE_DICTIONARY:
-		status_label.text = "Réponse invalide"
+		_offline_login({
+			"pseudo": pseudo_input.text.strip_edges(),
+			"token": token_input.text.strip_edges()
+		})
 		return
 
-	var user_data = response
-
-	if "user" in response:
-		user_data = response["user"]
-
-	if not user_data.has("id"):
-		status_label.text = "ID manquant"
+	if not response.has("id"):
+		_offline_login({
+			"pseudo": pseudo_input.text.strip_edges(),
+			"token": token_input.text.strip_edges()
+		})
 		return
 
-	var user_id = user_data["id"]
-	var pseudo_backend = user_data.get("pseudo", "Guest")
+	var user_id = 1 if is_guest_mode else response["id"]
+	var pseudo_backend = response.get("pseudo", "guest")
 
 	if is_guest_mode:
 		PlayerData.set_guest(user_id)
@@ -135,7 +143,28 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 			pseudo_input.text = pseudo_backend
 
 	PlayerData.print_data()
+	GestionFichier.save_data()
 
+	call_deferred("_go_to_menu")
+
+
+func _offline_login(data):
+
+	var local_id = 1 if is_guest_mode else randi() % 1000000
+
+	if is_guest_mode:
+		PlayerData.set_guest(local_id)
+	else:
+		PlayerData.set_user(local_id, data["pseudo"], data["token"])
+
+	SyncManager.add_action({
+		"type": "login",
+		"data": data
+	})
+
+	status_label.text = "Mode hors ligne"
+
+	PlayerData.print_data()
 	GestionFichier.save_data()
 
 	call_deferred("_go_to_menu")
