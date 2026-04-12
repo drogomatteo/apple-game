@@ -16,6 +16,7 @@
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="16_k12tt"]
+[ext_resource type="Script" uid="uid://cwsl8pmxw0wfj" path="res://Scripts/tutoriel.gd" id="17_h1bgf"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(26, 1, 26)
@@ -56,32 +57,6 @@ shadow_color = Color(0, 0, 0, 0.48235294)
 font = ExtResource("12_fdnlq")
 font_size = 36
 font_color = Color(0, 0, 0, 1)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
-size = Vector3(26, 1, 26)
-
-[sub_resource type="QuadMesh" id="QuadMesh_b3802"]
-size = Vector2(0.7, 0.7)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_b3802"]
-size = Vector2(60, 60)
-center_offset = Vector3(4.2, 0, 4)
-
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_k12tt"]
-panorama = ExtResource("8_wsu2k")
-
-[sub_resource type="Sky" id="Sky_hptm8"]
-sky_material = SubResource("PanoramaSkyMaterial_k12tt")
-
-[sub_resource type="Environment" id="Environment_d1ilt"]
-background_mode = 2
-sky = SubResource("Sky_hptm8")
-ambient_light_source = 2
-ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
-ambient_light_energy = 0.3
-
-[sub_resource type="LabelSettings" id="LabelSettings_h1bgf"]
-font_size = 35
 
 [node name="World" type="Node3D" unique_id=1297503563]
 script = ExtResource("1_jjgbg")
@@ -349,18 +324,18 @@ autostart = true
 
 [node name="Monde" type="Node" parent="." unique_id=684713200]
 
-[node name="Floor" type="Node3D" parent="Monde" unique_id=1406393240]
+[node name="Floor" type="Node3D" parent="Monde" unique_id=1551295387]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Monde/Floor" unique_id=1466840344]
+[node name="StaticBody3D" type="StaticBody3D" parent="Monde/Floor" unique_id=1029623270]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -1, -8)
 collision_layer = 6
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Monde/Floor/StaticBody3D" unique_id=2104309237]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Monde/Floor/StaticBody3D" unique_id=1923008851]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
 shape = SubResource("BoxShape3D_6bp64")
 debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
 
-[node name="Ensemble Sol" type="Node3D" parent="Monde/Floor" unique_id=426609364]
+[node name="Ensemble Sol" type="Node3D" parent="Monde/Floor" unique_id=1071502265]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
 script = ExtResource("7_k12tt")
 distribution_texture = ExtResource("8_b3802")
@@ -377,100 +352,100 @@ far_scale_multiplier = 1.2
 far_visibility_begin = 7.0
 print_distribution_debug = true
 
-[node name="Node3D" parent="Monde/Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ynf5e")]
+[node name="Node3D" parent="Monde/Floor/Ensemble Sol" unique_id=700647268 instance=ExtResource("7_ynf5e")]
 
-[node name="Node3D2" parent="Monde/Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("7_ynf5e")]
+[node name="Node3D2" parent="Monde/Floor/Ensemble Sol" unique_id=196835124 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
 
-[node name="Node3D3" parent="Monde/Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("7_ynf5e")]
+[node name="Node3D3" parent="Monde/Floor/Ensemble Sol" unique_id=2038462690 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
 
-[node name="Node3D10" parent="Monde/Floor/Ensemble Sol" unique_id=1130719551 instance=ExtResource("7_ynf5e")]
+[node name="Node3D10" parent="Monde/Floor/Ensemble Sol" unique_id=1305474940 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 18)
 
-[node name="Node3D11" parent="Monde/Floor/Ensemble Sol" unique_id=1484061169 instance=ExtResource("7_ynf5e")]
+[node name="Node3D11" parent="Monde/Floor/Ensemble Sol" unique_id=1634903072 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
 
-[node name="Node3D13" parent="Monde/Floor/Ensemble Sol" unique_id=2069788634 instance=ExtResource("7_ynf5e")]
+[node name="Node3D13" parent="Monde/Floor/Ensemble Sol" unique_id=773544634 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 6)
 
-[node name="Node3D15" parent="Monde/Floor/Ensemble Sol" unique_id=836267138 instance=ExtResource("7_ynf5e")]
+[node name="Node3D15" parent="Monde/Floor/Ensemble Sol" unique_id=2041957063 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 12)
 
-[node name="Node3D20" parent="Monde/Floor/Ensemble Sol" unique_id=1929113582 instance=ExtResource("7_ynf5e")]
+[node name="Node3D20" parent="Monde/Floor/Ensemble Sol" unique_id=1570226951 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 18)
 
-[node name="Node3D21" parent="Monde/Floor/Ensemble Sol" unique_id=929470858 instance=ExtResource("7_ynf5e")]
+[node name="Node3D21" parent="Monde/Floor/Ensemble Sol" unique_id=1067875635 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 0)
 
-[node name="Node3D22" parent="Monde/Floor/Ensemble Sol" unique_id=588857297 instance=ExtResource("7_ynf5e")]
+[node name="Node3D22" parent="Monde/Floor/Ensemble Sol" unique_id=1641908028 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 6)
 
-[node name="Node3D23" parent="Monde/Floor/Ensemble Sol" unique_id=1191143649 instance=ExtResource("7_ynf5e")]
+[node name="Node3D23" parent="Monde/Floor/Ensemble Sol" unique_id=406039000 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 12)
 
-[node name="Node3D24" parent="Monde/Floor/Ensemble Sol" unique_id=190929698 instance=ExtResource("7_ynf5e")]
+[node name="Node3D24" parent="Monde/Floor/Ensemble Sol" unique_id=1477028945 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 18)
 
-[node name="Node3D4" parent="Monde/Floor/Ensemble Sol" unique_id=179543784 instance=ExtResource("7_ynf5e")]
+[node name="Node3D4" parent="Monde/Floor/Ensemble Sol" unique_id=1973811159 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
 
-[node name="Node3D5" parent="Monde/Floor/Ensemble Sol" unique_id=1359805284 instance=ExtResource("7_ynf5e")]
+[node name="Node3D5" parent="Monde/Floor/Ensemble Sol" unique_id=296994502 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 6)
 
-[node name="Node3D6" parent="Monde/Floor/Ensemble Sol" unique_id=620084641 instance=ExtResource("7_ynf5e")]
+[node name="Node3D6" parent="Monde/Floor/Ensemble Sol" unique_id=1234210701 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 12)
 
-[node name="Node3D12" parent="Monde/Floor/Ensemble Sol" unique_id=176907512 instance=ExtResource("7_ynf5e")]
+[node name="Node3D12" parent="Monde/Floor/Ensemble Sol" unique_id=528336339 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 18)
 
-[node name="Node3D7" parent="Monde/Floor/Ensemble Sol" unique_id=1394284664 instance=ExtResource("7_ynf5e")]
+[node name="Node3D7" parent="Monde/Floor/Ensemble Sol" unique_id=1122865432 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
 
-[node name="Node3D8" parent="Monde/Floor/Ensemble Sol" unique_id=1810276722 instance=ExtResource("7_ynf5e")]
+[node name="Node3D8" parent="Monde/Floor/Ensemble Sol" unique_id=674150538 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 6)
 
-[node name="Node3D9" parent="Monde/Floor/Ensemble Sol" unique_id=912886912 instance=ExtResource("7_ynf5e")]
+[node name="Node3D9" parent="Monde/Floor/Ensemble Sol" unique_id=685546483 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
 
-[node name="Node3D14" parent="Monde/Floor/Ensemble Sol" unique_id=697644848 instance=ExtResource("7_ynf5e")]
+[node name="Node3D14" parent="Monde/Floor/Ensemble Sol" unique_id=206645869 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 18)
 
-[node name="Node3D25" parent="Monde/Floor/Ensemble Sol" unique_id=199844807 instance=ExtResource("7_ynf5e")]
+[node name="Node3D25" parent="Monde/Floor/Ensemble Sol" unique_id=1580252788 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
 
-[node name="Node3D26" parent="Monde/Floor/Ensemble Sol" unique_id=1546112433 instance=ExtResource("7_ynf5e")]
+[node name="Node3D26" parent="Monde/Floor/Ensemble Sol" unique_id=1387252824 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 24)
 
-[node name="Node3D27" parent="Monde/Floor/Ensemble Sol" unique_id=1599129324 instance=ExtResource("7_ynf5e")]
+[node name="Node3D27" parent="Monde/Floor/Ensemble Sol" unique_id=256245350 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 24)
 
-[node name="Node3D28" parent="Monde/Floor/Ensemble Sol" unique_id=1328437259 instance=ExtResource("7_ynf5e")]
+[node name="Node3D28" parent="Monde/Floor/Ensemble Sol" unique_id=523043427 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
 
-[node name="Node3D29" parent="Monde/Floor/Ensemble Sol" unique_id=384494397 instance=ExtResource("7_ynf5e")]
+[node name="Node3D29" parent="Monde/Floor/Ensemble Sol" unique_id=1335132271 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -6)
 
-[node name="Node3D30" parent="Monde/Floor/Ensemble Sol" unique_id=1986178866 instance=ExtResource("7_ynf5e")]
+[node name="Node3D30" parent="Monde/Floor/Ensemble Sol" unique_id=173714247 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -6)
 
-[node name="Node3D16" parent="Monde/Floor/Ensemble Sol" unique_id=446660227 instance=ExtResource("7_ynf5e")]
+[node name="Node3D16" parent="Monde/Floor/Ensemble Sol" unique_id=245106220 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
 
-[node name="Node3D17" parent="Monde/Floor/Ensemble Sol" unique_id=900406900 instance=ExtResource("7_ynf5e")]
+[node name="Node3D17" parent="Monde/Floor/Ensemble Sol" unique_id=1368119699 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 6)
 
-[node name="Node3D18" parent="Monde/Floor/Ensemble Sol" unique_id=1784722520 instance=ExtResource("7_ynf5e")]
+[node name="Node3D18" parent="Monde/Floor/Ensemble Sol" unique_id=2075866975 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 12)
 
-[node name="Node3D19" parent="Monde/Floor/Ensemble Sol" unique_id=1276527557 instance=ExtResource("7_ynf5e")]
+[node name="Node3D19" parent="Monde/Floor/Ensemble Sol" unique_id=2024381756 instance=ExtResource("7_ynf5e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 18)
 
-[node name="Ground" type="MeshInstance3D" parent="Monde/Floor" unique_id=133471086]
+[node name="Ground" type="MeshInstance3D" parent="Monde/Floor" unique_id=179795347]
 material_override = ExtResource("9_h1bgf")
 mesh = SubResource("PlaneMesh_b3802")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Monde" unique_id=1906453172]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Monde" unique_id=1227926649]
 environment = SubResource("Environment_d1ilt")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Monde" unique_id=629879536]
@@ -547,7 +522,58 @@ transform = Transform3D(-0.7998419, 0, 0.6002108, 0, 1, 0, -0.6002108, 0, -0.799
 
 [node name="BreakMenu" parent="." unique_id=504863998 instance=ExtResource("16_k12tt")]
 
+[node name="UI" type="Node" parent="." unique_id=1112396103]
+
+[node name="TutorialUI" type="CanvasLayer" parent="UI" unique_id=359413544]
+
+[node name="Highlight" type="Panel" parent="UI/TutorialUI" unique_id=160683626]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BoiteMessage" type="Panel" parent="UI/TutorialUI" unique_id=716527475]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -495.0
+offset_top = -242.5
+offset_right = 495.0
+offset_bottom = 242.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Message" type="Label" parent="UI/TutorialUI/BoiteMessage" unique_id=461640129]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -457.0
+offset_top = -188.0
+offset_right = 455.0
+offset_bottom = 112.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Next" type="Button" parent="UI/TutorialUI/BoiteMessage" unique_id=23478084]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -66.0
+offset_top = -92.5
+offset_right = 68.0
+offset_bottom = -31.5
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="TutorialController" type="Node" parent="." unique_id=1832623938]
+script = ExtResource("17_h1bgf")
+
 [connection signal="pressed" from="Bouton/BreakButton" to="." method="_on_break_button_pressed"]
 [connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Temps/Sampling" to="." method="_on_sampling_timeout"]
-[connection signal="pressed" from="UI/TutorialUI/BoiteMessage/Next" to="TutorialController" method="_on_next_button_pressed"]

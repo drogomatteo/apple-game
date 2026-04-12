@@ -65,8 +65,18 @@ var Difficulté_actuel : Array
 @onready var BreakButton = $Bouton/BreakButton
 @onready var BreakMenu = $BreakMenu
 
+#Tuto
+@onready var TutorialUI = $UI/TutorialUI
+@onready var TutorialHighlight = $UI/TutorialUI/Highlight
+@onready var TutorialController = $TutorialController
+
 
 #Tuto désactivé de base:
+func _ready() -> void:
+	TutorialHighlight.visible = false
+	Initialisation()
+	if not Paramètre.tutorial_seen:
+		TutorialController.start_tutorial()
 
 func _physics_process(_delta: float) -> void:
 	textToDo.set_text(toDo())

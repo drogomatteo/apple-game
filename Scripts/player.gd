@@ -42,9 +42,9 @@ var tourner_droite : bool
 
 func _physics_process(delta: float) -> void:
 	var direction = Vector3.ZERO
-	avance = Forward.is_pressed() and allow_forward
-	tourner_gauche = Left.is_pressed() and allow_left
-	tourner_droite = Right.is_pressed() and allow_right
+	avance = Forward.is_pressed() and allow_forward and not controls_locked
+	tourner_gauche = Left.is_pressed() and allow_left and not controls_locked
+	tourner_droite = Right.is_pressed() and allow_right and not controls_locked
 	
 	if avance:
 		direction.z -= 1
@@ -60,6 +60,8 @@ func _physics_process(delta: float) -> void:
 		direction_rot = -1
 	elif tourner_gauche:
 		direction_rot = 1
+	else:
+		direction_rot = 0
 	
 	#Déplacement du joueur
 	if temp_vel < SPEED and avance:

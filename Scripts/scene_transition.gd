@@ -49,7 +49,7 @@ func go_to_scene(scene : String):
 			get_tree().change_scene_to_file("res://Scenes/main.tscn")
 
 		"main_menu":
-			get_tree().change_scene_to_file("res://Scenes/interface.tscn")
+			get_tree().change_scene_to_file("res://Scenes/Interface.tscn")
 
 		_:
 			var interface = get_tree().get_meta("interface")
