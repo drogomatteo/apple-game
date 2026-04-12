@@ -9,9 +9,6 @@ var apple_colors : Array[Color] = [
 	Color("14a014")
 ]
 
-@onready var color_rect = $ColorRect
-
-<<<<<<< HEAD
 
 func _ready():
 	$ColorRect.visible = false
