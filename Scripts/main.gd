@@ -73,6 +73,7 @@ var paused = false
 
 func _ready() -> void:
 	Initialisation()
+	
 
 
 # Il faut séparer la position du joueur et le retraçage du joueur (avec f = 5 Hz)
@@ -410,5 +411,8 @@ func _on_resume_button_pressed() -> void:
 		ButtonPause.set_visible(true)
 		PauseMenu.set_visible(false)
 
+
 func _on_retour_button_down() -> void:
-	Transition.go_to_scene("MainMenu")
+	Transition.go_to_scene("main_menu")
+
+	
