@@ -96,10 +96,6 @@ func _on_guest_button_pressed():
 
 	if err != OK:
 		_offline_login({"pseudo": "guest", "token": ""})
-<<<<<<< HEAD
-=======
-
->>>>>>> 5d27dc5 (ajout offline)
 
 
 func _on_http_request_request_completed(result, response_code, headers, body):
