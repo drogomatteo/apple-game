@@ -9,12 +9,10 @@
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
 [ext_resource type="Script" uid="uid://cyf1mrcpq47gu" path="res://Scripts/grass_system.gd" id="7_k12tt"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
-[ext_resource type="Texture2D" uid="uid://bjauy7ej6k0a6" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
+[ext_resource type="Texture2D" uid="uid://dbnicgab7e1rs" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
-[ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="10_6iyac"]
-[ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="11_fdnlq"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
 
@@ -40,38 +38,6 @@ sky = SubResource("Sky_hptm8")
 ambient_light_source = 2
 ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
 ambient_light_energy = 0.3
-
-[sub_resource type="Curve" id="Curve_fdnlq"]
-_data = [Vector2(0.067003794, 0.024412274), 0.0, 0.0, 0, 0, Vector2(0.49431103, 0.8589511), 0.0, 0.0, 0, 0, Vector2(0.91150445, 0.0067812204), 0.0, 0.0, 0, 0]
-point_count = 3
-
-[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_jkdf5"]
-radius = 0.001
-section_length = 1.0
-curve = SubResource("Curve_fdnlq")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wsu2k"]
-render_priority = 0
-shader = ExtResource("10_6iyac")
-shader_parameter/color = Color(1, 1, 1, 1)
-shader_parameter/fade_time = 5.0
-shader_parameter/time_scale = 3.0
-shader_parameter/wave_amplitude = 0.1
-shader_parameter/wave_frequency = 1.0
-shader_parameter/wave_length = 2.0
-shader_parameter/wave_count = 1.0
-shader_parameter/twist_amplitude = 0.1
-shader_parameter/twist_frequency = 1.0
-shader_parameter/loop_radius = 1.0
-shader_parameter/loop_count = 0.5
-
-[sub_resource type="LabelSettings" id="LabelSettings_k12tt"]
-font = ExtResource("12_fdnlq")
-font_size = 40
-font_color = Color(0, 0, 0, 1)
-shadow_size = 5
-shadow_color = Color(0, 0, 0, 0.17254902)
-shadow_offset = Vector2(3, 3)
 
 [sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
 font = ExtResource("12_fdnlq")
@@ -428,6 +394,5 @@ transform = Transform3D(-0.8766931, 0, -0.48104998, 0, 1, 0, 0.48104998, 0, -0.8
 [node name="Fences4" parent="Fences/Mur4" unique_id=1893188153 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(-0.7998419, 0, 0.6002108, 0, 1, 0, -0.6002108, 0, -0.7998419, 13.549419, 0, 2.8024821)
 
-[connection signal="pressed" from="Bouton/Pause" to="." method="_on_pause_pressed"]
 [connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Temps/Sampling" to="." method="_on_sampling_timeout"]

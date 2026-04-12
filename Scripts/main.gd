@@ -226,6 +226,9 @@ func Initialisation() -> void:
 	Difficulté_actuel = Gestion_Difficulté()
 	Player.set_collision_mask(6)
 
+	Player.get_child(2).set_visible(true)
+	Player.get_child(3).set_visible(true)
+	Player.get_child(4).set_visible(true)
 	validate_button.visible = false
 	next_level.visible = false
 	message_label.visible = false
@@ -266,6 +269,11 @@ func Initialisation() -> void:
 
 	if use_generated_spawn:
 		Player.position = Vector3(Objet["player0"].x,spawn_height,Objet["player0"].z)
+	
+	Basket.set_visible(true)
+	for child in Arbre:
+		child.set_visible(false)
+	Apple_tree.set_visible(false)
 
 
 func player_cell():
@@ -353,24 +361,3 @@ func _on_timer_timeout() -> void:
 
 func _on_sampling_timeout() -> void:
 	position_joueur.append(player_cell())
-
-func _on_pause_pressed() -> void:
-	if not paused:
-		paused = true
-		get_tree().paused = true
-		ButtonPause.set_visible(false)
-		PauseMenu.set_visible(true)
-
-
-func _on_resume_button_pressed() -> void:
-	if paused:
-		paused = false
-		get_tree().paused = false
-		ButtonPause.set_visible(true)
-		PauseMenu.set_visible(false)
-
-
-func _on_retour_button_down() -> void:
-	Transition.go_to_scene("main_menu")
-
-	
