@@ -1,8 +1,8 @@
 extends Control
 
 @onready var http = $HTTPRequest
-@onready var pseudo_input = $CenterContainer/VBoxContainer/PseudoInput
-@onready var token_input = $CenterContainer/VBoxContainer/TokenInput
+@onready var pseudo_input = $VBoxContainer/PseudoInput
+@onready var token_input = $VBoxContainer2/TokenInput
 @onready var save_button = $CenterContainer/VBoxContainer/SaveButton
 @onready var guest_button = $CenterContainer/VBoxContainer/GuestButton
 @onready var status_label = $CenterContainer/VBoxContainer/StatusLabel
