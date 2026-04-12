@@ -61,7 +61,7 @@ var Difficile = 20
 var Difficulté_actuel : Array
 @export var use_generated_spawn := true
 
-#Pause (MODIFIÉ)
+#Pause
 @onready var BreakButton = $Bouton/BreakButton
 @onready var BreakMenu = $BreakMenu
 
@@ -69,11 +69,6 @@ var Difficulté_actuel : Array
 func _ready() -> void:
 	Initialisation()
 	
-
-
-# =========================
-# GAME LOOP (INCHANGÉ)
-# =========================
 
 func _physics_process(_delta: float) -> void:
 	textToDo.set_text(toDo())
@@ -197,25 +192,6 @@ func _physics_process(_delta: float) -> void:
 			temps_restant.visible = true
 			break
 
-
-# =========================
-# PAUSE (MODIFIÉ UNIQUEMENT)
-# =========================
-
-func _on_pause_pressed() -> void:
-	if not get_tree().paused:
-		BreakButton.visible = false
-		BreakMenu.open()
-
-
-func _on_retour_button_down() -> void:
-	get_tree().paused = false
-	Transition.go_to_scene("main_menu")
-
-
-# =========================
-# INIT + UTIL (INCHANGÉ)
-# =========================
 
 func Initialisation() -> void:
 	graine = randi()%10000000
@@ -361,3 +337,9 @@ func _on_timer_timeout() -> void:
 
 func _on_sampling_timeout() -> void:
 	position_joueur.append(player_cell())
+
+
+func _on_break_button_pressed() -> void:
+	if not get_tree().paused:
+		BreakButton.visible = false
+		BreakMenu.open()

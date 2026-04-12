@@ -15,6 +15,7 @@
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
+[ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="16_k12tt"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(26, 1, 26)
@@ -189,8 +190,6 @@ mesh = SubResource("PlaneMesh_b3802")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1906453172]
 environment = SubResource("Environment_d1ilt")
-
-[node name="API" type="Node" parent="." unique_id=1739315456]
 
 [node name="Zone de texte" type="Control" parent="." unique_id=584328298]
 layout_mode = 3
@@ -394,5 +393,8 @@ transform = Transform3D(-0.8766931, 0, -0.48104998, 0, 1, 0, 0.48104998, 0, -0.8
 [node name="Fences4" parent="Fences/Mur4" unique_id=1893188153 instance=ExtResource("13_fdnlq")]
 transform = Transform3D(-0.7998419, 0, 0.6002108, 0, 1, 0, -0.6002108, 0, -0.7998419, 13.549419, 0, 2.8024821)
 
+[node name="BreakMenu" parent="." unique_id=504863998 instance=ExtResource("16_k12tt")]
+
+[connection signal="pressed" from="Bouton/BreakButton" to="." method="_on_break_button_pressed"]
 [connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Temps/Sampling" to="." method="_on_sampling_timeout"]
