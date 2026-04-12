@@ -354,24 +354,22 @@ func Placer_Objet_sur_map(mot : String, indice : String = "0"):
 
 func save_level(i):
 	var level = ""
+	level += "===================\n"
 	level += "level"+str(i)+"\n"
+	level += "===================\n"
 	
-	level += str(graine)+"\n"
+	level += "Graine de génération :"+str(graine)+"\n"
 	
 	level += "Position du joueur :\n"
-	var k = 0
 	# On rajoute la position de départ
-	level += "0.0 "+str(Objet["player0"].x)+" "+str(Objet["player0"].z)+"\n"
-	k += 1
+	level += "("+str(Objet["player0"].x)+","+str(Objet["player0"].z)+")\n"
 	for vecteur in position_joueur:
-		level += str(k*0.2)+" "+str(vecteur.x)+" "+str(vecteur.z)+"\n"
-		k += 1
+		level += "("+str(vecteur.x)+","+str(vecteur.z)+")\n"
 	#On stocke la position finale
-	level += str(k*0.2)+" "+str(position_Finale.x)+" "+str(position_Finale.z)+"\n"
+	level += "("+str(position_Finale.x)+","+str(position_Finale.z)+")\n"
 	#On stocke la distance entre le joueur et le panier
-	level += "Résultats :\n"
-	level += str(distance)+"\n"
-	level += str(score)+"\n"
+	level += "Distance entre le panier et le joueur : "+str(distance)+"m\n"
+	level += "Score obtenue "+str(score)+"\n"
 	
 	return level
 
