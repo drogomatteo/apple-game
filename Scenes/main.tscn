@@ -9,7 +9,7 @@
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
 [ext_resource type="Script" uid="uid://cyf1mrcpq47gu" path="res://Scripts/grass_system.gd" id="7_k12tt"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
-[ext_resource type="Texture2D" uid="uid://bjauy7ej6k0a6" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
+[ext_resource type="Texture2D" uid="uid://dbnicgab7e1rs" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]

@@ -28,13 +28,8 @@ func _on_start_pressed():
 	if PlayerData.user_id == -1:
 		get_tree().get_meta("interface").show_user()
 		return
-
-	var transition = get_tree().get_first_node_in_group("transition")
-
-	if transition:
-		transition.go_to_scene("game")
-	else:
-		get_tree().get_meta("interface").show_game()
+	
+	Transition.go_to_scene("game")
 
 
 func _on_option_button_pressed():
