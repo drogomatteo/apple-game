@@ -5,6 +5,7 @@
 [ext_resource type="Shader" uid="uid://brk3mt0fuy8gx" path="res://Assets/Shader/WindEffect.gdshader" id="3_tc1k7"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="5_xxbeb"]
 [ext_resource type="Script" uid="uid://d37jomn3rap1r" path="res://Scripts/interface.gd" id="6_lh1gk"]
+[ext_resource type="PackedScene" uid="uid://ciiarbj0qn64p" path="res://Scenes/transition.tscn" id="7_xn8c0"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(70, 1, 70)
@@ -123,3 +124,5 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Transition" parent="Interface" unique_id=1988619540 instance=ExtResource("7_xn8c0")]
