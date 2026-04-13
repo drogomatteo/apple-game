@@ -19,7 +19,7 @@
 [ext_resource type="Script" uid="uid://n36a3eclwoit" path="res://Scripts/tutorial.gd" id="17_h1bgf"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
-size = Vector3(26, 1, 26)
+size = Vector3(35.937653, 1, 35.554764)
 
 [sub_resource type="QuadMesh" id="QuadMesh_b3802"]
 size = Vector2(0.7, 0.7)
@@ -337,7 +337,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -1, -8)
 collision_layer = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Monde/Floor/StaticBody3D" unique_id=1923008851]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.287487, 0, 12.723354)
 shape = SubResource("BoxShape3D_6bp64")
 debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
 
@@ -532,6 +532,7 @@ visibility_layer = 4
 [node name="UI" type="Node" parent="." unique_id=1112396103]
 
 [node name="TutorialUI" type="CanvasLayer" parent="UI" unique_id=359413544]
+layer = -1
 
 [node name="Highlight" type="Panel" parent="UI/TutorialUI" unique_id=160683626]
 offset_right = 40.0
