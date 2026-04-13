@@ -59,7 +59,8 @@ func _on_save_button_pressed():
 
 	var data = {
 		"pseudo": pseudo,
-		"token": token
+		"token": token,
+		"device_local_ip": get_device_local_ip()
 	}
 
 	var body = JSON.stringify(data)
@@ -77,7 +78,6 @@ func _on_save_button_pressed():
 	if err != OK:
 		_offline_login(data)
 
-
 func _on_guest_button_pressed():
 	if is_request_running:
 		return
@@ -87,16 +87,19 @@ func _on_guest_button_pressed():
 	is_request_running = true
 	status_label.text = "Mode invité..."
 
+	var data = {
+		"device_local_ip": get_device_local_ip()
+	}
+
 	var err = http.request(
 		BASE_URL + "user/",
 		["Content-Type: application/json"],
 		HTTPClient.METHOD_POST,
-		"{}"
+		JSON.stringify(data)
 	)
 
 	if err != OK:
-		_offline_login({"pseudo": "guest", "token": ""})
-
+		_offline_login({"pseudo": "guest", "token": "", "device_local_ip": get_device_local_ip()})
 
 func _on_http_request_request_completed(result, response_code, headers, body):
 	is_request_running = false
@@ -178,3 +181,18 @@ func _go_to_menu():
 
 func _on_back_button_pressed():
 	get_tree().get_meta("interface").show_menu()
+
+func get_device_local_ip() -> String:
+	var addresses = IP.get_local_addresses()
+
+	# On préfère une IPv4 locale non loopback
+	for addr in addresses:
+		if "." in addr and not addr.begins_with("127."):
+			return addr
+
+	# Sinon on prend une IPv6 non loopback
+	for addr in addresses:
+		if ":" in addr and addr != "::1":
+			return addr
+
+	return ""
