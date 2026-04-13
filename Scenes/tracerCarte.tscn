@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dvjmg6kxrphrs"]
+
+[ext_resource type="Script" uid="uid://blqaj5vsw5nrj" path="res://Scripts/tracer_carte.gd" id="1_lrq8w"]
+
+[node name="TracerCarte" type="Control" unique_id=1276571138]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lrq8w")
