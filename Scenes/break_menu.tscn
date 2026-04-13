@@ -11,7 +11,7 @@ shader_parameter/mix_color = Color(0.19607843, 0.23529412, 0.19607843, 0.2352941
 
 [sub_resource type="LabelSettings" id="LabelSettings_f6h6w"]
 font = ExtResource("1_oixcu")
-font_size = 40
+font_size = 79
 font_color = Color(0, 0, 0, 1)
 shadow_size = 5
 shadow_color = Color(0, 0, 0, 0.17254902)
@@ -38,6 +38,7 @@ mouse_filter = 2
 
 [node name="ResumeButton" type="Button" parent="." unique_id=1022906510]
 z_index = 1
+custom_minimum_size = Vector2(200, 60)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -48,28 +49,30 @@ offset_right = -20.0
 offset_bottom = 20.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("1_oixcu")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 36
 text = "Reprendre"
 
 [node name="BackButton" type="Button" parent="." unique_id=1780628031]
 z_index = 1
+custom_minimum_size = Vector2(500, 60)
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -163.5
-offset_top = 52.0
-offset_right = 163.5
-offset_bottom = 94.0
+anchor_bottom = 1.0
+offset_left = -163.0
+offset_top = -104.0
+offset_right = 164.0
+offset_bottom = -62.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 24
-text = "Retournez au menu pricipal"
+grow_vertical = 0
+theme_override_font_sizes/font_size = 34
+text = "Retourner au menu pricipal"
 
 [node name="Label" type="Label" parent="." unique_id=637009513]
 z_index = 1
+custom_minimum_size = Vector2(400, 100)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -84,6 +87,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "PAUSE"
 label_settings = SubResource("LabelSettings_f6h6w")
+horizontal_alignment = 1
 
 [connection signal="pressed" from="ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

@@ -11,7 +11,7 @@ shader_parameter/blur_amount = 2.50000011875
 shader_parameter/mix_color = Color(0, 0, 0, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_aeafk"]
-font_size = 24
+font_size = 40
 font_color = Color(0, 0, 0, 1)
 
 [node name="OptionMenu" type="Control" unique_id=588671567]
@@ -42,18 +42,20 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=1489609315]
+custom_minimum_size = Vector2(400, 500)
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
 [node name="Sound" type="CheckButton" parent="CenterContainer/VBoxContainer" unique_id=995335893]
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 40
 button_pressed = true
 text = "Bruits de pas"
 
@@ -62,15 +64,16 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Daltonisme"
 label_settings = SubResource("LabelSettings_aeafk")
-horizontal_alignment = 1
 
 [node name="Daltonien" type="ItemList" parent="CenterContainer/VBoxContainer" unique_id=14817107]
+custom_minimum_size = Vector2(6.27, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.65, 0.65, 0.65, 1)
+theme_override_font_sizes/font_size = 29
 allow_search = false
 auto_height = true
 item_count = 4
+icon_scale = 1.2
 item_0/text = "Aucun"
 item_1/text = "Protanopia"
 item_2/text = "Deuteranopia"
@@ -82,9 +85,12 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -187.0
-offset_bottom = 34.0
+offset_left = -298.0
+offset_top = 36.999996
+offset_right = -111.0
+offset_bottom = 71.0
 grow_horizontal = 0
+scale = Vector2(1.3432018, 1.3432018)
 theme_override_fonts/font = ExtResource("2_47jcy")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = ExtResource("3_gg4yi")
