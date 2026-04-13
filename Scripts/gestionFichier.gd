@@ -16,10 +16,6 @@ func save_data():
 			"token": PlayerData.token,
 			"user_id": PlayerData.user_id,
 			"is_guest": PlayerData.is_guest,
-			"options": {
-				"sound" : Paramètre.sound,
-				"daltonien" : Paramètre.daltonien
-			},
 			"nombreDeRapportLocal": i
 		}
 		file.store_var(player_data)
@@ -42,5 +38,3 @@ func load_game():
 		PlayerData.pseudo = player_data.get("pseudo", "")
 		PlayerData.token = player_data.get("token", "")
 		PlayerData.is_guest = player_data.get("is_guest", true)
-		Paramètre.definir_mode_daltonien(player_data.get("options", true).get("daltonien", 0))
-		Paramètre.definir_sound(player_data.get("options", 0).get("sound", true))

@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bgub81fhtsdig" path="res://Scripts/main_menu.gd" id="1_n45e2"]
 [ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="2_n45e2"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="3_opfnp"]
-[ext_resource type="Texture2D" uid="uid://dggx8knfvp5qv" path="res://Assets/UI-UX/Images/images.png" id="4_cp0ys"]
+[ext_resource type="Texture2D" uid="uid://ctwc11wic5low" path="res://Assets/UI-UX/Images/images.png" id="4_cp0ys"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yhxw7"]
 font = ExtResource("1_ce3w2")
@@ -89,11 +89,13 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1236421359]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 2
 
 [node name="OptionButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=841365345]
+custom_minimum_size = Vector2(120, 70)
 layout_mode = 2
 theme_override_icons/icon = ExtResource("2_n45e2")
 theme_override_styles/normal = ExtResource("3_opfnp")

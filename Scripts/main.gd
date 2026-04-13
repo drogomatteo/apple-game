@@ -61,19 +61,24 @@ var Difficile = 20
 var Difficulté_actuel : Array
 @export var use_generated_spawn := true
 
-#Pause (MODIFIÉ)
+#Pause
 @onready var BreakButton = $Bouton/BreakButton
 @onready var BreakMenu = $BreakMenu
 
+#Tuto
+@onready var TutorialUI = $UI/TutorialUI
+@onready var TutorialHighlight = $UI/TutorialUI/Highlight
+@onready var TutorialController = $TutorialController
+var pending_end_results: bool = false
 
+
+#Tuto désactivé de base:
 func _ready() -> void:
+	TutorialHighlight.visible = false
 	Initialisation()
-	
-
-
-# =========================
-# GAME LOOP (INCHANGÉ)
-# =========================
+	Paramètre.definir_tutorial_seen(false)
+	if not Paramètre.tutorial_seen:
+		TutorialController.start_tutorial()
 
 func _physics_process(_delta: float) -> void:
 	textToDo.set_text(toDo())
@@ -104,6 +109,11 @@ func _physics_process(_delta: float) -> void:
 	
 	if (validate_button.is_pressed() or timeout) and phase == 3:
 		phase += 1
+		if TutorialController.tutorial_active and TutorialController.waiting_final_popup:
+			pending_end_results = true
+			TutorialController.show_final_message_before_score()
+			return
+		
 		validate_button.visible = false
 		Player.get_child(2).visible = false
 		Player.get_child(3).visible = false
@@ -197,25 +207,6 @@ func _physics_process(_delta: float) -> void:
 			temps_restant.visible = true
 			break
 
-
-# =========================
-# PAUSE (MODIFIÉ UNIQUEMENT)
-# =========================
-
-func _on_pause_pressed() -> void:
-	if not get_tree().paused:
-		BreakButton.visible = false
-		BreakMenu.open()
-
-
-func _on_retour_button_down() -> void:
-	get_tree().paused = false
-	Transition.go_to_scene("main_menu")
-
-
-# =========================
-# INIT + UTIL (INCHANGÉ)
-# =========================
 
 func Initialisation() -> void:
 	graine = randi()%10000000
@@ -342,6 +333,63 @@ func save_level(i):
 	level += "Score obtenue "+str(score)+"\n"
 	return level
 
+func continuer_fin_apres_tuto() -> void:
+	if not pending_end_results:
+		return
+
+	pending_end_results = false
+
+	validate_button.visible = false
+	Player.get_child(2).visible = false
+	Player.get_child(3).visible = false
+	Player.get_child(4).visible = false
+	Player.get_child(5).visible = false
+	next_level.visible = true
+
+	if niveau == niveau_max:
+		next_level.text = "Voici votre score : " + str(score) + "\nAppuyez sur le bouton pour quitter"
+
+	if timeout:
+		message_alerte.visible = true
+
+	max_timer.stop()
+	temps_restant.visible = false
+	
+	position_Finale = player_cell()
+
+	distance = sqrt((position_Finale.x - Objet["basket0"].x) ** 2 + (position_Finale.z - Objet["basket0"].z) ** 2)
+	distanceAParcourir = sqrt((Objet["apple_tree0"].x - Objet["basket0"].x) ** 2 + (Objet["apple_tree0"].z - Objet["basket0"].z) ** 2)
+
+	var seuil1 = PI / 9
+	var seuil2 = 2 * seuil1
+
+	if distance <= distanceAParcourir * sin(seuil1):
+		message_label.text = "Vous avez 3 étoiles"
+		score += 1
+	elif distance <= distanceAParcourir * sin(seuil2):
+		message_label.text = "Vous avez 2 étoiles"
+	else:
+		message_label.text = "Vous avez 1 étoile"
+		score = max(score - 1, 0)
+
+	message_label.visible = true
+	string_to_save += save_level(niveau)
+
+	if niveau == niveau_max:
+		var file = FileAccess.open("user://rapport_complet.dat", FileAccess.WRITE)
+		file.store_string(string_to_save)
+		file.close()
+
+		var file2 = FileAccess.open("user://rapport_medecin.dat", FileAccess.WRITE)
+		file2.store_string("Score: " + str(score))
+		file2.close()
+
+		GameManager.send_rapport_complet()
+
+		if not PlayerData.is_guest:
+			GameManager.send_rapport_medecin()
+
+		Transition.go_to_scene("main_menu")
 
 func toDo():
 	if phase == 0:
@@ -361,3 +409,10 @@ func _on_timer_timeout() -> void:
 
 func _on_sampling_timeout() -> void:
 	position_joueur.append(player_cell())
+
+
+func _on_break_button_pressed() -> void:
+	if not get_tree().paused:
+		BreakButton.visible = false
+		BreakMenu.open()
+		
