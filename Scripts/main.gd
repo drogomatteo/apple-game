@@ -321,6 +321,18 @@ func save_level(i):
 	
 	level += "Graine de génération :"+str(graine)+"\n"
 	
+	level += "Position du panier :"+str(Objet["basket0"])+"\n"
+	level += "Position du pommier :"+str(Objet["apple_tree0"])+"\n"
+	if Difficulté_actuel[0]:
+		level += "Position du repère visuel :"+str(Objet["visual0"])+"\n"
+	
+	if Difficulté_actuel[1] or Difficulté_actuel[0]:
+		level += "Position de l'arbre :"+str(Objet["tree0"])+"\n"
+	else:
+		level += "Position du/des arbre(s) :\n"
+		for j in range(max_tree):
+			level += str(Objet["tree"+str(j)])+"\n"
+	
 	level += "Position du joueur :\n"
 	# On rajoute la position de départ
 	level += "("+str(Objet["player0"].x)+","+str(Objet["player0"].z)+")\n"
