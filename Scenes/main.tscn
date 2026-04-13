@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="16_k12tt"]
 [ext_resource type="Script" uid="uid://n36a3eclwoit" path="res://Scripts/tutorial.gd" id="17_h1bgf"]
+[ext_resource type="Script" uid="uid://blqaj5vsw5nrj" path="res://Scripts/tracer_carte.gd" id="18_b3802"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(35.937653, 1, 35.554764)
@@ -587,6 +588,15 @@ text = "NEXT"
 
 [node name="TutorialController" type="Node" parent="." unique_id=1832623938]
 script = ExtResource("17_h1bgf")
+
+[node name="TopView" type="Camera3D" parent="." unique_id=131537080]
+transform = Transform3D(-3.7855173e-08, 0.8660254, -0.49999997, -2.1855694e-08, 0.49999997, 0.8660254, 1, 4.3711385e-08, 1.7763568e-15, -7.2628803, 19.536087, 4.769162)
+projection = 1
+current = true
+size = 31.818386
+
+[node name="Parcours3D" type="Node3D" parent="." unique_id=1597878405]
+script = ExtResource("18_b3802")
 
 [connection signal="pressed" from="Bouton/BreakButton" to="." method="_on_break_button_pressed"]
 [connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
