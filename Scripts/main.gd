@@ -108,9 +108,6 @@ func _physics_process(_delta: float) -> void:
 			for child in Arbre:
 				child.queue_free()
 			Apple_tree.queue_free()
-			
-			if $Parcours3D.get_child_count() > 0:
-				$Parcours3D.get_child(0).queue_free()
 
 			Initialisation()
 			niveau += 1
@@ -146,19 +143,12 @@ func _physics_process(_delta: float) -> void:
 
 
 		$TopView.make_current()
+
 		Basket.visible = true
 		for i in range(max_tree):
 			Arbre[i].visible = true
 		Apple_tree.visible = true
-		
-		var liste_Arbre = []
-		for i in range(max_tree):
-			liste_Arbre.append(Objet["tree"+str(i)])
-		
-		if Difficulté_actuel[0]:
-			await $Parcours3D.launch(position_joueur, Objet["basket0"], Objet["apple_tree0"], liste_Arbre, Objet["visual0"])
-		else:
-			await $Parcours3D.launch(position_joueur, Objet["basket0"], Objet["apple_tree0"], liste_Arbre)
+
 
 		if niveau == niveau_max:
 			next_level.text = "Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour quitter"
