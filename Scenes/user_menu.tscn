@@ -1450,29 +1450,6 @@ theme_override_styles/pressed = ExtResource("3_klneb")
 theme_override_styles/hover = ExtResource("3_klneb")
 text = "Retour"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=754005470]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -427.0
-offset_top = 111.0
-offset_right = -27.0
-offset_bottom = 217.0
-grow_horizontal = 2
-
-[node name="PseudoLabel" type="Label" parent="VBoxContainer" unique_id=1204866199]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "Pseudo"
-
-[node name="PseudoInput" type="LineEdit" parent="VBoxContainer" unique_id=935196009]
-custom_minimum_size = Vector2(400, 60)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 25
-placeholder_text = "Entrez votre pseudo"
-
 [node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=337637506]
 layout_mode = 1
 anchors_preset = 5
@@ -1499,5 +1476,4 @@ placeholder_text = "Entrez votre clé"
 [connection signal="pressed" from="CenterContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/GuestButton" to="." method="_on_guest_button_pressed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="text_changed" from="VBoxContainer/PseudoInput" to="." method="_on_input_changed"]
 [connection signal="text_changed" from="VBoxContainer2/TokenInput" to="." method="_on_input_changed"]
