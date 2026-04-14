@@ -57,6 +57,7 @@ var phase : int = 0
 
 #Temps
 @onready var max_timer = $Temps/Timer
+@onready var sampling = $Temps/Sampling
 var timeout : bool
 
 #Score
@@ -149,7 +150,7 @@ func _physics_process(_delta: float) -> void:
 
 		max_timer.stop()
 		temps_restant.visible = false
-		
+		sampling.stop()
 		position_Finale = player_cell()
 
 		distance = sqrt((position_Finale.x-Objet["basket0"].x)**2+(position_Finale.z-Objet["basket0"].z)**2)
