@@ -7,7 +7,7 @@ extends Control
 @onready var status_label = $CenterContainer/VBoxContainer/StatusLabel
 @onready var back_button = $BackButton
 
-var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/"
+var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 var is_request_running = false
 var is_guest_mode = false
 
@@ -135,12 +135,14 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		_offline_login({"token": token_input.text.strip_edges()})
 		return
 
-	var user_id = response["id"]
+	var user_id = int(response["id"])
 
 	print("[SUCCESS] Connected → user_id:", user_id)
 
 	if is_guest_mode:
-		PlayerData.set_guest(1) 
+		PlayerData.set_guest(1)
+		PlayerData.token = "guest"
+		PlayerData.uuid = "none"
 		status_label.text = "Mode invité ✔"
 	else:
 		PlayerData.set_user(

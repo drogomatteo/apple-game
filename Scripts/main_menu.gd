@@ -21,7 +21,7 @@ func _on_start_pressed():
 
 	print("----- USER DEBUG -----")
 	print("ID:", PlayerData.user_id)
-	print("Pseudo:", PlayerData.pseudo)
+	print("uuid:", PlayerData.uuid)
 	print("Guest:", PlayerData.is_guest)
 	print("----------------------")
 

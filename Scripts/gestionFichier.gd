@@ -12,7 +12,7 @@ func save_data():
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
 	if file:
 		player_data = {
-			"pseudo": PlayerData.pseudo,
+			"uuid": PlayerData.uuid,
 			"token": PlayerData.token,
 			"user_id": PlayerData.user_id,
 			"is_guest": PlayerData.is_guest,
@@ -35,6 +35,6 @@ func load_game():
 			return
 
 		PlayerData.user_id = player_data.get("user_id", -1)
-		PlayerData.pseudo = player_data.get("pseudo", "")
+		PlayerData.uuid = player_data.get("uuid", "")
 		PlayerData.token = player_data.get("token", "")
 		PlayerData.is_guest = player_data.get("is_guest", true)

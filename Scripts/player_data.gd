@@ -1,19 +1,19 @@
 extends Node
 
 var user_id = -1
-var pseudo = ""
 var token = ""
+var uuid = ""
 var is_guest = true
 
-func set_user(id, p, t):
+func set_user(id, u, t):
 	user_id = id
-	pseudo = p
+	uuid =u
 	token = t
 	is_guest = false
 
 func set_guest(id):
 	user_id = id
-	pseudo = "guest"
+	uuid = ""
 	token = ""
 	is_guest = true
 
@@ -22,6 +22,6 @@ func set_guest(id):
 # DEBUG
 func print_data():
 	print("User ID:", user_id)
-	print("Pseudo:", pseudo)
+	print("uuid:", uuid)
 	print("Token:", token)
 	print("Guest:", is_guest)

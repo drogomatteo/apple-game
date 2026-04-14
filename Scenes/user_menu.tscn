@@ -1450,7 +1450,7 @@ theme_override_styles/pressed = ExtResource("3_klneb")
 theme_override_styles/hover = ExtResource("3_klneb")
 text = "Retour"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=337637506]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=337637506]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -1461,12 +1461,12 @@ offset_right = 433.0
 offset_bottom = 216.0
 grow_horizontal = 2
 
-[node name="TokenLabel" type="Label" parent="VBoxContainer2" unique_id=409879351]
+[node name="TokenLabel" type="Label" parent="VBoxContainer" unique_id=409879351]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Clé du patient"
 
-[node name="TokenInput" type="LineEdit" parent="VBoxContainer2" unique_id=546875884]
+[node name="TokenInput" type="LineEdit" parent="VBoxContainer" unique_id=546875884]
 custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
@@ -1476,4 +1476,4 @@ placeholder_text = "Entrez votre clé"
 [connection signal="pressed" from="CenterContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/GuestButton" to="." method="_on_guest_button_pressed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="text_changed" from="VBoxContainer2/TokenInput" to="." method="_on_input_changed"]
+[connection signal="text_changed" from="VBoxContainer/TokenInput" to="." method="_on_input_changed"]
