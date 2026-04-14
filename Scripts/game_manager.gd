@@ -1,6 +1,6 @@
 extends Node
 
-var BASE_URL = "http://100.111.28.32:8000/api/"
+var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api"
 
 func send_file(filepath, url):
 

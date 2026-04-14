@@ -8,7 +8,7 @@ extends Control
 @onready var status_label = $CenterContainer/VBoxContainer/StatusLabel
 @onready var back_button = $BackButton
 
-var BASE_URL = "http://100.111.28.32:8000/api/"
+var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/"
 var is_request_running = false
 var is_guest_mode = false
 
