@@ -4,6 +4,7 @@ extends Node3D
 @onready var validate_button = $Bouton/ValidateButton
 @onready var message_label = $"Zone de texte/MessageLabel"
 @onready var next_level = $Bouton/NextLevel
+@onready var voir_recap = $Bouton/Recap
 @onready var message_alerte = $"Zone de texte/AlertMessage"
 @onready var temps_restant = $"Zone de texte/TempsRestant"
 @onready var textToDo = $"Zone de texte/ToDo"
@@ -44,6 +45,10 @@ var Objet : Dictionary
 var position_Finale : Vector3
 var distance : float
 var distanceAParcourir : float
+var seuil1 = PI/9
+var seuil2 = 2*seuil1
+var Rayon1
+var Rayon2
 
 #Niveaux
 var niveau : int = 1
@@ -102,13 +107,16 @@ func _physics_process(_delta: float) -> void:
 			for child in Arbre:
 				child.queue_free()
 			Apple_tree.queue_free()
-			
-			if $Parcours3D.get_child_count() > 0:
-				$Parcours3D.get_child(0).queue_free()
 
 			Initialisation()
 			niveau += 1
 			phase = 0
+	
+	if voir_recap.is_pressed():
+		voir_recap.visible = false
+		next_level.visible = false
+		message_label.visible = false
+		$Parcours3D.launch(position_joueur, Objet["basket0"], Rayon1, Rayon2)
 	
 	if (validate_button.is_pressed() or timeout) and phase == 3:
 		phase += 1
@@ -123,21 +131,15 @@ func _physics_process(_delta: float) -> void:
 		Player.get_child(4).visible = false
 		Player.get_child(5).visible = false
 		next_level.visible = true
-
+		voir_recap.visible = true
+		
 		$TopView.make_current()
+
 		Basket.visible = true
 		for i in range(max_tree):
 			Arbre[i].visible = true
 		Apple_tree.visible = true
-		
-		var liste_Arbre = []
-		for i in range(max_tree):
-			liste_Arbre.append(Objet["tree"+str(i)])
-		
-		if Difficulté_actuel[0]:
-			await $Parcours3D.launch(position_joueur, Objet["basket0"], Objet["apple_tree0"], liste_Arbre, Objet["visual0"])
-		else:
-			await $Parcours3D.launch(position_joueur, Objet["basket0"], Objet["apple_tree0"], liste_Arbre)
+
 
 		if niveau == niveau_max:
 			next_level.text = "Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour quitter"
@@ -153,13 +155,13 @@ func _physics_process(_delta: float) -> void:
 		distance = sqrt((position_Finale.x-Objet["basket0"].x)**2+(position_Finale.z-Objet["basket0"].z)**2)
 		distanceAParcourir = sqrt((Objet["apple_tree0"].x-Objet["basket0"].x)**2+(Objet["apple_tree0"].z-Objet["basket0"].z)**2)
 
-		var seuil1 = PI/9
-		var seuil2 = 2*seuil1
+		Rayon1 = distanceAParcourir*sin(seuil1)
+		Rayon2 = distanceAParcourir*sin(seuil2)
 
-		if distance <= distanceAParcourir*sin(seuil1):
+		if distance <= Rayon1:
 			message_label.text = "Vous avez 3 étoiles"
 			score += 1
-		elif distance <= distanceAParcourir*sin(seuil2):
+		elif distance <= Rayon2:
 			message_label.text = "Vous avez 2 étoiles"
 		else:
 			message_label.text = "Vous avez 1 étoile"
@@ -241,6 +243,7 @@ func Initialisation() -> void:
 	message_label.visible = false
 	message_alerte.visible = false
 	temps_restant.visible = false
+	voir_recap.visible = false
 
 	Player.get_child(1).make_current()
 
@@ -432,6 +435,10 @@ func toDo():
 		return "Déposez le panier"
 	return ""
 
+func animation_end():
+	voir_recap.visible = true
+	next_level.visible = true
+	message_label.visible = true
 
 func _on_timer_timeout() -> void:
 	timeout = true
