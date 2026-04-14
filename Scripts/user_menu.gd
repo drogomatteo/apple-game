@@ -12,7 +12,6 @@ var is_request_running = false
 var is_guest_mode = false
 
 
-# ================= INIT =================
 func _ready():
 	print("[INIT] User menu loaded")
 
@@ -22,7 +21,6 @@ func _ready():
 	update_button()
 
 
-# ================= UI =================
 func _on_input_changed(_text=""):
 	update_button()
 
@@ -36,14 +34,12 @@ func update_button():
 		status_label.text = ""
 
 
-# ================= DEVICE UUID =================
 func get_device_uuid() -> String:
 	var uuid = OS.get_unique_id()
 	print("[UUID] Device UUID:", uuid)
 	return uuid
 
 
-# ================= LOGIN =================
 func _on_save_button_pressed():
 	if is_request_running:
 		return
@@ -58,7 +54,6 @@ func _on_save_button_pressed():
 		status_label.text = "Token requis"
 		return
 
-	# 👉 si user tape guest → mode invité
 	if token.to_lower() == "guest":
 		print("[LOGIN] Guest token detected → switching to guest mode")
 		_on_guest_button_pressed()
@@ -88,7 +83,6 @@ func _on_save_button_pressed():
 		_offline_login(data)
 
 
-# ================= GUEST =================
 func _on_guest_button_pressed():
 	if is_request_running:
 		return
@@ -116,7 +110,6 @@ func _on_guest_button_pressed():
 		_offline_login(data)
 
 
-# ================= RESPONSE =================
 func _on_http_request_request_completed(result, response_code, headers, body):
 	is_request_running = false
 
@@ -147,12 +140,12 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 	print("[SUCCESS] Connected → user_id:", user_id)
 
 	if is_guest_mode:
-		PlayerData.set_guest(1)  # toujours user 1
+		PlayerData.set_guest(1) 
 		status_label.text = "Mode invité ✔"
 	else:
 		PlayerData.set_user(
 			user_id,
-			"", # plus de pseudo
+			"", 
 			token_input.text.strip_edges()
 		)
 		status_label.text = "Connecté ✔"
@@ -163,7 +156,6 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 	call_deferred("_go_to_menu")
 
 
-# ================= OFFLINE =================
 func _offline_login(data):
 	print("[OFFLINE] Using offline mode")
 
@@ -187,7 +179,6 @@ func _offline_login(data):
 	call_deferred("_go_to_menu")
 
 
-# ================= NAV =================
 func _go_to_menu():
 	print("[NAV] Going to menu")
 
