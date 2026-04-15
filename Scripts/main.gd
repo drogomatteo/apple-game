@@ -67,6 +67,7 @@ var Difficile = 20
 var Difficulté_actuel : Array
 @export var use_generated_spawn := true
 @onready var Fences = $Monde/Fences
+var session_id : String 
 
 #Pause
 @onready var BreakButton = $Bouton/BreakButton
