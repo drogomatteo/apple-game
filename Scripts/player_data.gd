@@ -4,6 +4,7 @@ var user_id = -1
 var token = ""
 var uuid = ""
 var is_guest = true
+var session_id : String
 
 func set_user(id, u, t):
 	user_id = id

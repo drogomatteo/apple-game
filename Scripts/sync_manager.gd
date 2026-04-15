@@ -76,6 +76,7 @@ func process_next():
 
 		var filepath = action["path"]
 		var url = action["url"]
+		var session_id = action.get("session_id", "")
 
 		var file = FileAccess.open(filepath, FileAccess.READ)
 		if file == null:
@@ -86,6 +87,7 @@ func process_next():
 			return
 
 		var file_bytes = file.get_buffer(file.get_length())
+		file.close()
 
 		var boundary = "----GodotBoundary"
 		var body = ""
@@ -93,6 +95,11 @@ func process_next():
 		body += "--" + boundary + "\r\n"
 		body += 'Content-Disposition: form-data; name="user"\r\n\r\n'
 		body += str(PlayerData.user_id) + "\r\n"
+
+		if session_id != "":
+			body += "--" + boundary + "\r\n"
+			body += 'Content-Disposition: form-data; name="session_id"\r\n\r\n'
+			body += session_id + "\r\n"
 
 		body += "--" + boundary + "\r\n"
 		body += 'Content-Disposition: form-data; name="fichier"; filename="rapport.dat"\r\n'
@@ -103,7 +110,7 @@ func process_next():
 
 		var final_body = body_bytes + file_bytes + end
 
-		http.request(
+		http.request_raw(
 			url,
 			["Content-Type: multipart/form-data; boundary=" + boundary],
 			HTTPClient.METHOD_POST,
