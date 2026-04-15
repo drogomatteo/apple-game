@@ -66,6 +66,7 @@ var Normal = 10
 var Difficile = 20
 var Difficulté_actuel : Array
 @export var use_generated_spawn := true
+var session_id : String
 
 #Pause
 @onready var BreakButton = $Bouton/BreakButton
@@ -80,6 +81,8 @@ var pending_end_results: bool = false
 
 #Tuto désactivé de base:
 func _ready() -> void:
+	string_to_save = ""
+	session_id = str(int(Time.get_unix_time_from_system())) + "_" + str(PlayerData.user_id) + "_" + str(randi())
 	TutorialHighlight.visible = false
 	Initialisation()
 	Paramètre.definir_tutorial_seen(false)
@@ -179,21 +182,9 @@ func _physics_process(_delta: float) -> void:
 		message_label.visible = true
 		
 		string_to_save += save_level(niveau)
-
-		if niveau == niveau_max:
-
-			var file = FileAccess.open("user://rapport_complet.dat", FileAccess.WRITE)
-			file.store_string(string_to_save)
-			file.close()
-
-			var file2 = FileAccess.open("user://rapport_medecin.dat", FileAccess.WRITE)
-			file2.store_string("Score: " + str(score))
-			file2.close()
-
-			GameManager.send_rapport_complet()
-
-			if not PlayerData.is_guest:
-				GameManager.send_rapport_medecin()
+		write_local_reports(false)	
+		sync_reports_now()
+		
 
 
 	for index in range(Player.get_slide_collision_count()):
@@ -417,23 +408,15 @@ func continuer_fin_apres_tuto() -> void:
 		score = max(score - 1, 0)
 
 	message_label.visible = true
+	
 	string_to_save += save_level(niveau)
+	write_local_reports(false)
+	sync_reports_now()
 
 	if niveau == niveau_max:
-		var file = FileAccess.open("user://rapport_complet.dat", FileAccess.WRITE)
-		file.store_string(string_to_save)
-		file.close()
-
-		var file2 = FileAccess.open("user://rapport_medecin.dat", FileAccess.WRITE)
-		file2.store_string("Score: " + str(score))
-		file2.close()
-
-		GameManager.send_rapport_complet()
-
-		if not PlayerData.is_guest:
-			GameManager.send_rapport_medecin()
-
 		Transition.go_to_scene("main_menu")
+		
+
 
 func toDo():
 	if phase == 0:
@@ -463,3 +446,85 @@ func _on_break_button_pressed() -> void:
 	if not get_tree().paused:
 		BreakButton.visible = false
 		BreakMenu.open()
+	
+	
+#fonction pour le niveau interrompu
+func save_interrupted_level() -> String:
+	var level = ""
+	level += "===================\n"
+	level += "level" + str(niveau) + " interrompu\n"
+	level += "===================\n"
+
+	level += "Graine de génération :" + str(graine) + "\n"
+	level += "Phase actuelle :" + str(phase) + "\n"
+	level += "Score actuel :" + str(score) + "\n"
+	level += "Position actuelle du joueur : (" + str(player_cell().x) + "," + str(player_cell().z) + ")\n"
+
+	level += "Trajet partiel du joueur :\n"
+	for vecteur in position_joueur:
+		level += "(" + str(vecteur.x) + "," + str(vecteur.z) + ")\n"
+
+	return level	
+	
+#fonction pour mettre les rapports en attente d’envoi	
+func queue_reports_for_sync() -> void:
+	SyncManager.add_action({
+		"type": "file",
+		"path": "user://rapport_complet.dat",
+		"url": GameManager.BASE_URL + "rapport_complet/",
+		"session_id": session_id
+	})
+
+	if not PlayerData.is_guest:
+		SyncManager.add_action({
+			"type": "file",
+			"path": "user://rapport_medecin.dat",
+			"url": GameManager.BASE_URL + "rapport_medecin/"
+		})
+
+
+#fonction pour écrire les rapports localement
+func write_local_reports(interrompue: bool = false) -> void:
+	var contenu = string_to_save
+
+	if interrompue:
+		contenu += save_interrupted_level()
+
+	var file = FileAccess.open("user://rapport_complet.dat", FileAccess.WRITE)
+	if file:
+		file.store_string(contenu)
+		file.close()
+
+	if not PlayerData.is_guest:
+		var file2 = FileAccess.open("user://rapport_medecin.dat", FileAccess.WRITE)
+		if file2:
+			var medecin_content = ""
+			medecin_content += "Score: " + str(score) + "\n"
+			medecin_content += "Niveau atteint: " + str(niveau) + "\n"
+			medecin_content += "Statut: " + ("interrompue" if interrompue else "terminee") + "\n"
+			file2.store_string(medecin_content)
+			file2.close()
+			
+			
+# si le joueur ferme la fenêtre en plein jeu
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		write_local_reports(true)
+		queue_reports_for_sync()
+
+		# tentative immédiate, sans garantie
+		GameManager.send_rapport_complet(session_id)
+		if not PlayerData.is_guest:
+			GameManager.send_rapport_medecin(session_id)
+
+		GestionFichier.save_data()
+		get_tree().quit()
+
+
+# fonction unique d’envoi qui met à jour à la fin de chaque niveau, elle est appelée à la fin de chaque niveau et on tente d'envoyer dans la DB
+func sync_reports_now() -> void:
+	queue_reports_for_sync()
+	GameManager.send_rapport_complet(session_id)
+
+	if not PlayerData.is_guest:
+		GameManager.send_rapport_medecin(session_id)
