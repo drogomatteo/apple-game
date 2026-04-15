@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://ch7v1mqkxobr1"]
+
+[ext_resource type="Script" uid="uid://dnawbdaj13bp2" path="res://rgpd_scene.gd" id="1_pquc7"]
+
+[node name="RgpdMenu" type="Control" unique_id=58320947]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pquc7")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=874616595]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=893256659]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=1459582877]
+layout_mode = 2
+
+[node name="RgpdTexte" type="Label" parent="CenterContainer/VBoxContainer" unique_id=511690892]
+layout_mode = 2
+text = "Cette application collecte certaines données de manière strictement anonyme dans le cadre d’une étude à visée médicale et statistique.
+
+Ces données ne permettent pas de vous identifier personnellement et sont utilisées uniquement pour améliorer la compréhension et la détection des troubles cognitifs.
+
+Aucune information nominative n’est enregistrée ni partagée avec des tiers."
+
+[node name="CheckBox" type="CheckBox" parent="CenterContainer/VBoxContainer" unique_id=364798137]
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2135284888]
+layout_mode = 2
+text = "Continuer"
+
+[node name="RefuseButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2134009511]
+layout_mode = 2
+text = "Refuser"
+
+[connection signal="toggled" from="CenterContainer/VBoxContainer/CheckBox" to="." method="_on_check_box_toggled"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/RefuseButton" to="." method="_on_refuse_button_pressed"]

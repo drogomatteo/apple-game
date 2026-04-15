@@ -19,6 +19,9 @@ shadow_offset = Vector2(3, 3)
 
 [sub_resource type="Theme" id="Theme_16hvj"]
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_n45e2"]
+load_path = "res://.godot/imported/cadenas.png-8747bcf9ba71c324e216846facd11474.ctex"
+
 [node name="MainMenu" type="Control" unique_id=1142539147]
 layout_mode = 3
 anchors_preset = 15
@@ -94,8 +97,18 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 2
 
+[node name="RgpdButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1841035764]
+layout_mode = 2
+theme_override_icons/icon = SubResource("CompressedTexture2D_n45e2")
+theme_override_styles/normal = ExtResource("3_opfnp")
+theme_override_styles/pressed = ExtResource("3_opfnp")
+theme_override_styles/hover = ExtResource("3_opfnp")
+autowrap_mode = 2
+autowrap_trim_flags = 0
+icon_alignment = 1
+expand_icon = true
+
 [node name="OptionButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=841365345]
-custom_minimum_size = Vector2(120, 70)
 layout_mode = 2
 theme_override_icons/icon = ExtResource("2_n45e2")
 theme_override_styles/normal = ExtResource("3_opfnp")
@@ -111,5 +124,6 @@ theme_override_styles/hover = ExtResource("3_opfnp")
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/Quit Button" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/RgpdButton" to="." method="_on_rgpd_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/OptionButton" to="." method="_on_option_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/UserButton" to="." method="_on_user_button_pressed"]

@@ -6,6 +6,7 @@ var menu_scene = preload("res://Scenes/main_menu.tscn")
 var options_scene = preload("res://Scenes/option_menu.tscn")
 var user_scene = preload("res://Scenes/user_menu.tscn")
 var game_scene = preload("res://Scenes/main.tscn")
+var rgpd_scene = preload("res://Scenes/rgpd_menu.tscn")
 
 var current_scene = null
 
@@ -43,4 +44,11 @@ func show_user():
 func show_game():
 	clear()
 	current_scene = game_scene.instantiate()
+	container.add_child(current_scene)
+	
+func show_rgpd():
+	print("[NAV] Show RGPD")
+	clear()
+	current_scene =rgpd_scene.instantiate()
+	current_scene.force_show =true
 	container.add_child(current_scene)

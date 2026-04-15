@@ -48,3 +48,7 @@ func _on_user_button_pressed():
 func _on_quit_button_pressed():
 	GestionFichier.save_data()
 	get_tree().quit()
+
+
+func _on_rgpd_button_pressed() -> void:
+	get_tree().get_meta("interface").show_rgpd()
