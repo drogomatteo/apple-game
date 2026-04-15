@@ -66,6 +66,7 @@ var Normal = 10
 var Difficile = 20
 var Difficulté_actuel : Array
 @export var use_generated_spawn := true
+@onready var Fences = $Monde/Fences
 
 #Pause
 @onready var BreakButton = $Bouton/BreakButton
@@ -240,10 +241,15 @@ func Initialisation() -> void:
 	seed(graine)
 	timeout = false
 	position_joueur = []
+	sampling.start()
 
 	Difficulté_actuel = Gestion_Difficulté()
 	Player.set_collision_mask(6)
 
+	if Difficulté_actuel[2]:
+		Fences.set_visible(false)
+	else:
+		Fences.set_visible(true)
 	Player.get_child(2).set_visible(true)
 	Player.get_child(3).set_visible(true)
 	Player.get_child(4).set_visible(true)
@@ -272,7 +278,7 @@ func Initialisation() -> void:
 
 	Placer_Objet_sur_map("basket")
 
-	max_tree = max(1, int(ceil((score-15)/5)))
+	max_tree = max(1, int(ceil((score-20)/5)))
 
 	for i in range(max_tree):
 		Placer_Objet_sur_map("tree", str(i))
