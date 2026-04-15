@@ -2,6 +2,9 @@ extends Node
 
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/"
 
+func _is_http_success(result: int, code: int) -> bool:
+	return result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
+
 func send_file(filepath, url, session_id := ""):
 	print("=== SEND FILE DEBUG ===")
 	print("filepath =", filepath)
@@ -73,7 +76,7 @@ func send_file(filepath, url, session_id := ""):
 		print("request_completed code =", code)
 		print("request_completed body =", body.get_string_from_utf8())
 
-		if code != 200 and code != 201:
+		if not _is_http_success(result, code):
 			print("Echec envoi, mise en attente")
 			SyncManager.add_action({
 				"type": "file",
@@ -81,6 +84,8 @@ func send_file(filepath, url, session_id := ""):
 				"url": url,
 				"session_id": session_id
 			})
+
+		http.queue_free()
 	)
 
 
@@ -89,4 +94,4 @@ func send_rapport_complet(session_id := ""):
 
 
 func send_rapport_medecin(session_id := ""):
-	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/")
+	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/", session_id)

@@ -523,7 +523,6 @@ func _notification(what):
 
 # fonction unique d’envoi qui met à jour à la fin de chaque niveau, elle est appelée à la fin de chaque niveau et on tente d'envoyer dans la DB
 func sync_reports_now() -> void:
-	queue_reports_for_sync()
 	GameManager.send_rapport_complet(session_id)
 
 	if not PlayerData.is_guest:
