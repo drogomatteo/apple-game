@@ -5,12 +5,13 @@ var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 func _is_http_success(result: int, code: int) -> bool:
 	return result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
 
-func send_file(filepath, url, session_id := ""):
+func send_file(filepath, url, session_id := "", extra_fields := {}):
 	print("=== SEND FILE DEBUG ===")
 	print("filepath =", filepath)
 	print("url =", url)
 	print("user_id =", PlayerData.user_id)
 	print("session_id =", session_id)
+	print("extra_fields =", extra_fields)
 
 	if PlayerData.user_id == -1:
 		print("user_id invalide, mise en attente")
@@ -18,7 +19,8 @@ func send_file(filepath, url, session_id := ""):
 			"type": "file",
 			"path": filepath,
 			"url": url,
-			"session_id": session_id
+			"session_id": session_id,
+			"extra_fields": extra_fields
 		})
 		return
 
@@ -41,6 +43,11 @@ func send_file(filepath, url, session_id := ""):
 		body += "--" + boundary + "\r\n"
 		body += 'Content-Disposition: form-data; name="session_id"\r\n\r\n'
 		body += session_id + "\r\n"
+
+	for field_name in extra_fields.keys():
+		body += "--" + boundary + "\r\n"
+		body += 'Content-Disposition: form-data; name="' + str(field_name) + '"\r\n\r\n'
+		body += str(extra_fields[field_name]) + "\r\n"
 
 	body += "--" + boundary + "\r\n"
 	body += 'Content-Disposition: form-data; name="fichier"; filename="rapport.dat"\r\n'
@@ -67,7 +74,8 @@ func send_file(filepath, url, session_id := ""):
 			"type": "file",
 			"path": filepath,
 			"url": url,
-			"session_id": session_id
+			"session_id": session_id,
+			"extra_fields": extra_fields
 		})
 		return
 
@@ -82,7 +90,8 @@ func send_file(filepath, url, session_id := ""):
 				"type": "file",
 				"path": filepath,
 				"url": url,
-				"session_id": session_id
+				"session_id": session_id,
+				"extra_fields": extra_fields
 			})
 
 		http.queue_free()
@@ -93,5 +102,5 @@ func send_rapport_complet(session_id := ""):
 	send_file("user://rapport_complet.dat", BASE_URL + "rapport_complet/", session_id)
 
 
-func send_rapport_medecin(session_id := ""):
-	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/", session_id)
+func send_rapport_medecin(session_id := "", seed_value := ""):
+	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/", session_id, {"seed": seed_value})

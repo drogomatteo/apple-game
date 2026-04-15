@@ -77,6 +77,7 @@ func process_next():
 		var filepath = action["path"]
 		var url = action["url"]
 		var session_id = action.get("session_id", "")
+		var extra_fields = action.get("extra_fields", {})
 
 		var file = FileAccess.open(filepath, FileAccess.READ)
 		if file == null:
@@ -100,6 +101,11 @@ func process_next():
 			body += "--" + boundary + "\r\n"
 			body += 'Content-Disposition: form-data; name="session_id"\r\n\r\n'
 			body += session_id + "\r\n"
+
+		for field_name in extra_fields.keys():
+			body += "--" + boundary + "\r\n"
+			body += 'Content-Disposition: form-data; name="' + str(field_name) + '"\r\n\r\n'
+			body += str(extra_fields[field_name]) + "\r\n"
 
 		body += "--" + boundary + "\r\n"
 		body += 'Content-Disposition: form-data; name="fichier"; filename="rapport.dat"\r\n'
