@@ -345,18 +345,18 @@ func Placer_Objet_sur_map(mot : String, indice : String = "0"):
 func save_level(i):
 	var level = ""
 	level += "===================\n"
-	level += "level"+str(i)+"\n"
+	level += "level "+str(i)+"\n"
 	level += "===================\n"
 	
-	level += "Graine de génération :"+str(graine)+"\n"
+	level += "Graine de génération : "+str(graine)+"\n"
 	
-	level += "Position du panier :"+str(Objet["basket0"])+"\n"
-	level += "Position du pommier :"+str(Objet["apple_tree0"])+"\n"
+	level += "Position du panier : "+str(Objet["basket0"])+"\n"
+	level += "Position du pommier : "+str(Objet["apple_tree0"])+"\n"
 	if Difficulté_actuel[0]:
-		level += "Position du repère visuel :"+str(Objet["visual0"])+"\n"
+		level += "Position du repère visuel : "+str(Objet["visual0"])+"\n"
 	
 	if Difficulté_actuel[1] or Difficulté_actuel[0]:
-		level += "Position de l'arbre :"+str(Objet["tree0"])+"\n"
+		level += "Position de l'arbre : "+str(Objet["tree0"])+"\n"
 	else:
 		level += "Position du/des arbre(s) :\n"
 		for j in range(max_tree):
@@ -366,11 +366,11 @@ func save_level(i):
 	# On rajoute la position de départ
 	level += "("+str(Objet["player0"].x)+","+str(Objet["player0"].z)+")\n"
 	for vecteur in position_joueur:
-		level += "("+str(vecteur.x)+","+str(vecteur.z)+")\n"
+		level += "("+str(snappedf(vecteur.x,0.01))+","+str(snappedf(vecteur.z,0.01))+")\n"
 	#On stocke la position finale
-	level += "("+str(position_Finale.x)+","+str(position_Finale.z)+")\n"
+	level += "("+str(snappedf(position_Finale.x,0.01))+","+str(snappedf(position_Finale.z,0.01))+")\n"
 	#On stocke la distance entre le joueur et le panier
-	level += "Distance entre le panier et le joueur : "+str(distance)+"m\n"
+	level += "Distance entre le panier et le joueur : "+str(snappedf(distance,0.01))+"m\n"
 	level += "Score obtenue "+str(score)+"\n"
 	return level
 
@@ -400,9 +400,6 @@ func continuer_fin_apres_tuto() -> void:
 
 	distance = sqrt((position_Finale.x - Objet["basket0"].x) ** 2 + (position_Finale.z - Objet["basket0"].z) ** 2)
 	distanceAParcourir = sqrt((Objet["apple_tree0"].x - Objet["basket0"].x) ** 2 + (Objet["apple_tree0"].z - Objet["basket0"].z) ** 2)
-
-	var seuil1 = PI / 9
-	var seuil2 = 2 * seuil1
 
 	if distance <= distanceAParcourir * sin(seuil1):
 		message_label.text = "Vous avez 3 étoiles"
@@ -468,9 +465,9 @@ func save_interrupted_level() -> String:
 
 	level += "Trajet partiel du joueur :\n"
 	for vecteur in position_joueur:
-		level += "(" + str(vecteur.x) + "," + str(vecteur.z) + ")\n"
+		level += "(" + str(snappedf(vecteur.x, 0.01)) + "," + str(snappedf(vecteur.z,0.01)) + ")\n"
 
-	return level	
+	return level
 	
 #fonction pour mettre les rapports en attente d’envoi	
 func queue_reports_for_sync() -> void:
