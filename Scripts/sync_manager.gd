@@ -1,6 +1,6 @@
 extends Node
 
-var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/"
+var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 var file_path = "user://offline_queue.json"
 
 var queue : Array = []

@@ -515,7 +515,7 @@ func _notification(what):
 		# tentative immédiate, sans garantie
 		GameManager.send_rapport_complet(session_id)
 		if not PlayerData.is_guest:
-			GameManager.send_rapport_medecin(session_id)
+			GameManager.send_rapport_medecin()
 
 		GestionFichier.save_data()
 		get_tree().quit()
@@ -526,4 +526,4 @@ func sync_reports_now() -> void:
 	GameManager.send_rapport_complet(session_id)
 
 	if not PlayerData.is_guest:
-		GameManager.send_rapport_medecin(session_id)
+		GameManager.send_rapport_medecin()

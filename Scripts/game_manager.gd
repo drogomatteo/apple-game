@@ -1,6 +1,6 @@
 extends Node
 
-var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/"
+var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 
 func _is_http_success(result: int, code: int) -> bool:
 	return result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
@@ -93,5 +93,5 @@ func send_rapport_complet(session_id := ""):
 	send_file("user://rapport_complet.dat", BASE_URL + "rapport_complet/", session_id)
 
 
-func send_rapport_medecin(session_id := ""):
-	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/", session_id)
+func send_rapport_medecin():
+	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/")
