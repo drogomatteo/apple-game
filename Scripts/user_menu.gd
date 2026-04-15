@@ -136,6 +136,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		return
 
 	var user_id = int(response["id"])
+	var resolved_uuid = ""
 
 	print("[SUCCESS] Connected → user_id:", user_id)
 
@@ -145,9 +146,10 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		PlayerData.uuid = "none"
 		status_label.text = "Mode invité ✔"
 	else:
+		resolved_uuid = str(response.get("uuid", get_device_uuid()))
 		PlayerData.set_user(
 			user_id,
-			"", 
+			resolved_uuid,
 			token_input.text.strip_edges()
 		)
 		status_label.text = "Connecté ✔"
@@ -166,7 +168,7 @@ func _offline_login(data):
 	if is_guest_mode:
 		PlayerData.set_guest(local_id)
 	else:
-		PlayerData.set_user(local_id, "", data["token"])
+		PlayerData.set_user(local_id, str(data.get("uuid", get_device_uuid())), data["token"])
 
 	SyncManager.add_action({
 		"type": "login",
