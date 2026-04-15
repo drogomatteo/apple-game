@@ -48,6 +48,9 @@ func _process(delta: float) -> void:
 	if lancer:
 		if animation_terminee:
 			lancer = false
+			mesh_joueur.material_override.albedo_color = Color.RED
+			await get_tree().create_timer(1).timeout
+			get_parent().animation_end()
 			mesh_joueur.queue_free()
 			Cercle1.queue_free()
 			Cercle2.queue_free()
@@ -68,7 +71,6 @@ func _process(delta: float) -> void:
 				if current_path_index >= len(positions_joueur) - 1:
 					animation_terminee = true
 					position_actuelle = positions_joueur[-1]
-					get_parent().animation_end()
 				else:
 					position_actuelle = positions_joueur[current_path_index]
 			else:
