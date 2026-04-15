@@ -93,5 +93,5 @@ func send_rapport_complet(session_id := ""):
 	send_file("user://rapport_complet.dat", BASE_URL + "rapport_complet/", session_id)
 
 
-func send_rapport_medecin():
-	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/")
+func send_rapport_medecin(session_id := ""):
+	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/", session_id)

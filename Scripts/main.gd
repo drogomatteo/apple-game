@@ -479,7 +479,8 @@ func queue_reports_for_sync() -> void:
 		SyncManager.add_action({
 			"type": "file",
 			"path": "user://rapport_medecin.dat",
-			"url": GameManager.BASE_URL + "rapport_medecin/"
+			"url": GameManager.BASE_URL + "rapport_medecin/",
+			"session_id": session_id
 		})
 
 
@@ -515,7 +516,7 @@ func _notification(what):
 		# tentative immédiate, sans garantie
 		GameManager.send_rapport_complet(session_id)
 		if not PlayerData.is_guest:
-			GameManager.send_rapport_medecin()
+			GameManager.send_rapport_medecin(session_id)
 
 		GestionFichier.save_data()
 		get_tree().quit()
@@ -526,4 +527,4 @@ func sync_reports_now() -> void:
 	GameManager.send_rapport_complet(session_id)
 
 	if not PlayerData.is_guest:
-		GameManager.send_rapport_medecin()
+		GameManager.send_rapport_medecin(session_id)
