@@ -78,6 +78,9 @@ var session_id : String
 @onready var TutorialHighlight = $UI/TutorialUI/Highlight
 @onready var TutorialController = $TutorialController
 var pending_end_results: bool = false
+var next_level_was_pressed := false
+var recap_was_pressed := false
+var validate_was_pressed := false
 
 
 #Tuto désactivé de base:
@@ -92,6 +95,9 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	textToDo.set_text(toDo())
+	var next_level_pressed = next_level.button_pressed
+	var recap_pressed = voir_recap.button_pressed
+	var validate_pressed = validate_button.button_pressed
 	
 	if phase == 3:
 		if max_timer.get_time_left() >= 1:
@@ -101,7 +107,7 @@ func _physics_process(_delta: float) -> void:
 		var Red : float = (max_timer.get_wait_time()-max_timer.get_time_left())/max_timer.get_wait_time()
 		temps_restant.label_settings.font_color = Color(Red, 0.0, 0.0, 1.0)
 
-	if next_level.is_pressed():
+	if next_level_pressed and not next_level_was_pressed:
 		if niveau == niveau_max:
 			Transition.go_to_scene("main_menu")
 		else:
@@ -117,13 +123,13 @@ func _physics_process(_delta: float) -> void:
 			niveau += 1
 			phase = 0
 	
-	if voir_recap.is_pressed():
+	if recap_pressed and not recap_was_pressed:
 		voir_recap.visible = false
 		next_level.visible = false
 		message_label.visible = false
 		$Parcours3D.launch(position_joueur, Objet["basket0"], Rayon1, Rayon2)
 	
-	if (validate_button.is_pressed() or timeout) and phase == 3:
+	if ((validate_pressed and not validate_was_pressed) or timeout) and phase == 3:
 		phase += 1
 		if TutorialController.tutorial_active and TutorialController.waiting_final_popup:
 			pending_end_results = true
@@ -185,6 +191,10 @@ func _physics_process(_delta: float) -> void:
 		string_to_save += save_level(niveau)
 		write_local_reports(false)	
 		sync_reports_now()
+
+	next_level_was_pressed = next_level_pressed
+	recap_was_pressed = recap_pressed
+	validate_was_pressed = validate_pressed
 		
 
 
