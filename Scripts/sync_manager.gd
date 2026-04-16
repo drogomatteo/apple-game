@@ -8,9 +8,8 @@ var http := HTTPRequest.new()
 var is_running = false
 var sync_done = false
 
-var retry_delay = 2.0
-var max_retry_delay = 60.0
-var max_retries = 5
+var retry_delay = 0.5
+var max_retry_delay = 5.0
 
 func _ready():
 	add_child(http)
@@ -45,6 +44,21 @@ func force_sync():
 	sync_done = false
 	process_next()
 
+func _handle_immediate_request_error() -> void:
+	is_running = false
+
+	if queue.is_empty():
+		sync_done = true
+		return
+
+	var action = queue[0]
+	action["retries"] += 1
+
+	save_queue()
+	await get_tree().create_timer(retry_delay).timeout
+	retry_delay = min(retry_delay * 2.0, max_retry_delay)
+	process_next()
+
 func process_next():
 	if queue.is_empty():
 		sync_done = true
@@ -57,20 +71,24 @@ func process_next():
 	var action = queue[0]
 
 	if action["type"] == "login":
-		http.request(
+		var err := http.request(
 			BASE_URL + "user/",
 			["Content-Type: application/json"],
 			HTTPClient.METHOD_POST,
 			JSON.stringify(action["data"])
 		)
+		if err != OK:
+			_handle_immediate_request_error()
 
 	elif action["type"] == "report":
-		http.request(
+		var err := http.request(
 			BASE_URL + "rapport_complet/",
 			["Content-Type: application/json"],
 			HTTPClient.METHOD_POST,
 			JSON.stringify(action["data"])
 		)
+		if err != OK:
+			_handle_immediate_request_error()
 
 	elif action["type"] == "file":
 
@@ -116,12 +134,14 @@ func process_next():
 
 		var final_body = body_bytes + file_bytes + end
 
-		http.request_raw(
+		var err := http.request_raw(
 			url,
 			["Content-Type: multipart/form-data; boundary=" + boundary],
 			HTTPClient.METHOD_POST,
 			final_body
 		)
+		if err != OK:
+			_handle_immediate_request_error()
 
 func _on_request_completed(result, code, headers, body):
 	is_running = false
@@ -134,15 +154,9 @@ func _on_request_completed(result, code, headers, body):
 	if code != 200 and code != 201:
 		action["retries"] += 1
 
-		if action["retries"] >= max_retries:
-			queue.pop_front()
-			save_queue()
-			retry_delay = 2.0
-			process_next()
-			return
-
 		await get_tree().create_timer(retry_delay).timeout
 		retry_delay = min(retry_delay * 2.0, max_retry_delay)
+		save_queue()
 		process_next()
 		return
 

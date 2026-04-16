@@ -527,11 +527,6 @@ func _notification(what):
 		write_local_reports(true)
 		queue_reports_for_sync()
 
-		# tentative immédiate, sans garantie
-		GameManager.send_rapport_complet(session_id)
-		if not PlayerData.is_guest:
-			GameManager.send_rapport_medecin(session_id, str(graine))
-
 		GestionFichier.save_data()
 		get_tree().quit()
 
