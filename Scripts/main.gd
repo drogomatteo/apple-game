@@ -111,8 +111,7 @@ func _physics_process(_delta: float) -> void:
 			Transition.go_to_scene("main_menu")
 		else:
 			Basket.queue_free()
-			if Difficulté_actuel[0]:
-				Visual.queue_free()
+			Visual.queue_free()
 		
 			for child in Arbre:
 				child.queue_free()

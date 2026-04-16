@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://b3gufwc24876p"]
+
+[ext_resource type="PackedScene" uid="uid://b1cdlersim6o6" path="res://Assets/Models/tavern.glb" id="1_a2knh"]
+
+[node name="tavern" unique_id=1016753243 instance=ExtResource("1_a2knh")]
+
+[node name="StaticBody3D" parent="body" parent_id_path=PackedInt32Array(1049176965) index="0" unique_id=24499549]
+collision_layer = 0
+collision_mask = 0
+
+[node name="StaticBody3D" parent="stairs" parent_id_path=PackedInt32Array(2085925486) index="0" unique_id=899624507]
+collision_layer = 0
+collision_mask = 0
