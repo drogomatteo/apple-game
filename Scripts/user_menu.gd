@@ -8,12 +8,15 @@ extends Control
 @onready var back_button = $BackButton
 
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
+const REQUEST_TIMEOUT_SECONDS := 5.0
 var is_request_running = false
 var is_guest_mode = false
+var pending_login_data : Dictionary = {}
 
 
 func _ready():
 	print("[INIT] User menu loaded")
+	http.timeout = REQUEST_TIMEOUT_SECONDS
 
 	if PlayerData.user_id != -1:
 		token_input.text = PlayerData.token
@@ -65,6 +68,7 @@ func _on_save_button_pressed():
 		"token": token,
 		"uuid": uuid
 	}
+	pending_login_data = data.duplicate(true)
 
 	print("[LOGIN] Sending data:", data)
 
@@ -94,6 +98,7 @@ func _on_guest_button_pressed():
 	var data = {
 		"token": "guest"
 	}
+	pending_login_data = data.duplicate(true)
 
 	is_request_running = true
 	status_label.text = "Mode invité..."
@@ -113,11 +118,16 @@ func _on_guest_button_pressed():
 func _on_http_request_request_completed(result, response_code, headers, body):
 	is_request_running = false
 
+	if result != HTTPRequest.RESULT_SUCCESS:
+		print("[ERROR] Network error -> offline mode, result:", result)
+		_offline_login(pending_login_data)
+		return
+
 	print("[HTTP] Response code:", response_code)
 
 	if response_code != 200 and response_code != 201:
 		print("[ERROR] Bad response → offline mode")
-		_offline_login({"token": token_input.text.strip_edges()})
+		_offline_login(pending_login_data)
 		return
 
 	var text = body.get_string_from_utf8()
@@ -127,12 +137,12 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 	if typeof(response) != TYPE_DICTIONARY:
 		print("[ERROR] Invalid JSON")
-		_offline_login({"token": token_input.text.strip_edges()})
+		_offline_login(pending_login_data)
 		return
 
 	if not response.has("id"):
 		print("[ERROR] No ID in response")
-		_offline_login({"token": token_input.text.strip_edges()})
+		_offline_login(pending_login_data)
 		return
 
 	var user_id = int(response["id"])
@@ -141,21 +151,22 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 	print("[SUCCESS] Connected → user_id:", user_id)
 
 	if is_guest_mode:
-		PlayerData.set_guest(1)
+		PlayerData.set_guest(user_id)
 		PlayerData.token = "guest"
 		PlayerData.uuid = "none"
 		status_label.text = "Mode invité ✔"
 	else:
-		resolved_uuid = str(response.get("uuid", get_device_uuid()))
+		resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", get_device_uuid())))
 		PlayerData.set_user(
 			user_id,
 			resolved_uuid,
-			token_input.text.strip_edges()
+			str(pending_login_data.get("token", token_input.text.strip_edges()))
 		)
 		status_label.text = "Connecté ✔"
 
 	PlayerData.print_data()
 	GestionFichier.save_data()
+	pending_login_data.clear()
 
 	call_deferred("_go_to_menu")
 
@@ -179,6 +190,7 @@ func _offline_login(data):
 
 	PlayerData.print_data()
 	GestionFichier.save_data()
+	pending_login_data.clear()
 
 	call_deferred("_go_to_menu")
 

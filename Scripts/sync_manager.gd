@@ -2,6 +2,7 @@ extends Node
 
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 var file_path = "user://offline_queue.json"
+const REQUEST_TIMEOUT_SECONDS := 5.0
 
 var queue : Array = []
 var http := HTTPRequest.new()
@@ -13,6 +14,7 @@ var max_retry_delay = 5.0
 
 func _ready():
 	add_child(http)
+	http.timeout = REQUEST_TIMEOUT_SECONDS
 	http.request_completed.connect(_on_request_completed)
 	load_queue()
 
@@ -151,7 +153,7 @@ func _on_request_completed(result, code, headers, body):
 
 	var action = queue[0]
 
-	if code != 200 and code != 201:
+	if result != HTTPRequest.RESULT_SUCCESS or (code != 200 and code != 201):
 		action["retries"] += 1
 
 		await get_tree().create_timer(retry_delay).timeout
@@ -160,7 +162,7 @@ func _on_request_completed(result, code, headers, body):
 		process_next()
 		return
 
-	retry_delay = 2.0
+	retry_delay = 0.5
 
 	queue.pop_front()
 	save_queue()

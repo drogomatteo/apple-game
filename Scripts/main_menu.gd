@@ -1,20 +1,28 @@
 extends Control
 
 @onready var start_button = $MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/StartButton
+const INITIAL_SYNC_TIMEOUT_SECONDS := 3.0
 
 
 func _ready():
+	if not start_button.pressed.is_connected(_on_start_pressed):
+		start_button.pressed.connect(_on_start_pressed)
+
 	start_button.disabled = true
 	await sync_before_play()
 	start_button.disabled = false
-	start_button.pressed.connect(_on_start_pressed)
 
 
 func sync_before_play():
 	SyncManager.force_sync()
 
-	while not SyncManager.sync_done:
+	var deadline := Time.get_ticks_msec() + int(INITIAL_SYNC_TIMEOUT_SECONDS * 1000.0)
+
+	while not SyncManager.sync_done and Time.get_ticks_msec() < deadline:
 		await get_tree().process_frame
+
+	if not SyncManager.sync_done:
+		push_warning("Initial sync timed out. Keeping play available and continuing sync in background.")
 
 
 func _on_start_pressed():
@@ -35,6 +43,10 @@ func _on_start_pressed():
 		transition.go_to_scene("game")
 	else:
 		get_tree().get_meta("interface").show_game()
+
+
+func _on_start_button_pressed():
+	_on_start_pressed()
 
 
 func _on_option_button_pressed():
