@@ -16,6 +16,8 @@ func save_data():
 			"token": PlayerData.token,
 			"user_id": PlayerData.user_id,
 			"is_guest": PlayerData.is_guest,
+			"is_server_synced": PlayerData.is_server_synced,
+			"medecins": PlayerData.medecins,
 			"nombreDeRapportLocal": i
 		}
 		file.store_var(player_data)
@@ -38,3 +40,5 @@ func load_game():
 		PlayerData.uuid = player_data.get("uuid", "")
 		PlayerData.token = player_data.get("token", "")
 		PlayerData.is_guest = player_data.get("is_guest", true)
+		PlayerData.is_server_synced = player_data.get("is_server_synced", false)
+		PlayerData.medecins = player_data.get("medecins", [])

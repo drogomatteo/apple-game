@@ -13,15 +13,10 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 	print("session_id =", session_id)
 	print("extra_fields =", extra_fields)
 
-	if PlayerData.user_id == -1:
-		print("user_id invalide, mise en attente")
-		SyncManager.add_action({
-			"type": "file",
-			"path": filepath,
-			"url": url,
-			"session_id": session_id,
-			"extra_fields": extra_fields
-		})
+	if PlayerData.user_id == -1 or not PlayerData.is_server_synced or SyncManager.has_action_type("login"):
+		print("user_id non synchronise, mise en attente")
+		SyncManager.enqueue_file_action(filepath, url, session_id, extra_fields)
+		SyncManager.force_sync()
 		return
 
 	var file = FileAccess.open(filepath, FileAccess.READ)
@@ -70,13 +65,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 
 	if err != OK:
 		print("Erreur immédiate HTTPRequest :", err)
-		SyncManager.add_action({
-			"type": "file",
-			"path": filepath,
-			"url": url,
-			"session_id": session_id,
-			"extra_fields": extra_fields
-		})
+		SyncManager.enqueue_file_action(filepath, url, session_id, extra_fields)
 		return
 
 	http.request_completed.connect(func(result, code, headers, body):
@@ -86,13 +75,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 
 		if not _is_http_success(result, code):
 			print("Echec envoi, mise en attente")
-			SyncManager.add_action({
-				"type": "file",
-				"path": filepath,
-				"url": url,
-				"session_id": session_id,
-				"extra_fields": extra_fields
-			})
+			SyncManager.enqueue_file_action(filepath, url, session_id, extra_fields)
 
 		http.queue_free()
 	)

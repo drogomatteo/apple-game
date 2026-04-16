@@ -484,21 +484,19 @@ func save_interrupted_level() -> String:
 	
 #fonction pour mettre les rapports en attente d’envoi	
 func queue_reports_for_sync() -> void:
-	SyncManager.add_action({
-		"type": "file",
-		"path": "user://rapport_complet.dat",
-		"url": GameManager.BASE_URL + "rapport_complet/",
-		"session_id": session_id
-	})
+	SyncManager.enqueue_file_action(
+		"user://rapport_complet.dat",
+		GameManager.BASE_URL + "rapport_complet/",
+		session_id
+	)
 
 	if not PlayerData.is_guest:
-		SyncManager.add_action({
-			"type": "file",
-			"path": "user://rapport_medecin.dat",
-			"url": GameManager.BASE_URL + "rapport_medecin/",
-			"session_id": session_id,
-			"extra_fields": {"seed": graine}
-		})
+		SyncManager.enqueue_file_action(
+			"user://rapport_medecin.dat",
+			GameManager.BASE_URL + "rapport_medecin/",
+			session_id,
+			{"seed": graine}
+		)
 
 
 #fonction pour écrire les rapports localement
