@@ -143,14 +143,6 @@ func _physics_process(_delta: float) -> void:
 		Player.get_child(5).visible = false
 		next_level.visible = true
 		voir_recap.visible = true
-		
-		$TopView.make_current()
-
-		Basket.visible = true
-		for i in range(max_tree):
-			Arbre[i].visible = true
-		Apple_tree.visible = true
-
 
 		$TopView.make_current()
 
@@ -161,7 +153,7 @@ func _physics_process(_delta: float) -> void:
 
 
 		if niveau == niveau_max:
-			next_level.text = "Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour quitter"
+			next_level.text = "Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour retourner au menu principal"
 
 		if timeout:
 			message_alerte.visible = true
@@ -188,14 +180,14 @@ func _physics_process(_delta: float) -> void:
 
 		message_label.visible = true
 		
-		string_to_save += save_level(niveau)
-		write_local_reports(false)	
+		string_to_save += save_level()
+		write_local_reports(false)
 		sync_reports_now()
 
 	next_level_was_pressed = next_level_pressed
 	recap_was_pressed = recap_pressed
 	validate_was_pressed = validate_pressed
-		
+
 
 
 	for index in range(Player.get_slide_collision_count()):
@@ -209,7 +201,10 @@ func _physics_process(_delta: float) -> void:
 			Basket.visible = false
 			Arbre[0].visible = true
 			index_Tree = 0
-			Player.set_collision_mask(10)
+			if Difficulté_actuel[0]:
+				Player.set_collision_mask(10)
+			else:
+				Player.set_collision_mask(8)
 			Player.get_child(5).visible = true
 			break
 		
@@ -218,7 +213,10 @@ func _physics_process(_delta: float) -> void:
 				phase += 1
 				Arbre[-1].visible = false
 				Apple_tree.visible = true
-				Player.set_collision_mask(18)
+				if Difficulté_actuel[0]:
+					Player.set_collision_mask(18)
+				else:
+					Player.set_collision_mask(16)
 			else:
 				var arbre_actuel = collision.get_collider()
 				arbre_actuel.visible = false
@@ -230,7 +228,10 @@ func _physics_process(_delta: float) -> void:
 		elif collision.get_collider().is_in_group("Apple Tree") and phase == 2:
 			phase += 1
 			Apple_tree.visible = false
-			Player.set_collision_mask(2)
+			if Difficulté_actuel[0]:
+				Player.set_collision_mask(2)
+			else:
+				Player.set_collision_mask(0)
 			validate_button.visible = true
 			max_timer.start()
 			temps_restant.visible = true
@@ -274,8 +275,7 @@ func Initialisation() -> void:
 			temp.append(0)
 		map.append(temp)
 
-	if Difficulté_actuel[0]:
-		Placer_Objet_sur_map("visual")
+	Placer_Objet_sur_map("visual")
 
 	Placer_Objet_sur_map("basket")
 
@@ -294,8 +294,7 @@ func Initialisation() -> void:
 
 	Apple_tree = CreateNode(apple_tree, "apple_tree")
 
-	if Difficulté_actuel[0]:
-		Visual = CreateNode(visual, "visual")
+	Visual = CreateNode(visual, "visual")
 
 	if use_generated_spawn:
 		Player.position = Vector3(Objet["player0"].x,spawn_height,Objet["player0"].z)
@@ -304,6 +303,10 @@ func Initialisation() -> void:
 	for child in Arbre:
 		child.set_visible(false)
 	Apple_tree.set_visible(false)
+	
+	if Difficulté_actuel[0]:
+		Player.set_collision_mask(4)
+		Visual.set_visible(false)
 
 
 func player_cell():
@@ -352,36 +355,29 @@ func Placer_Objet_sur_map(mot : String, indice : String = "0"):
 		break
 
 
-func save_level(i):
+func save_level():
 	var level = ""
-	level += "===================\n"
-	level += "level "+str(i)+"\n"
-	level += "===================\n"
+
+	level += str(graine)+"\n"
 	
-	level += "Graine de génération : "+str(graine)+"\n"
-	
-	level += "Position du panier : "+str(Objet["basket0"])+"\n"
-	level += "Position du pommier : "+str(Objet["apple_tree0"])+"\n"
+	level += str(int(Objet["basket0"].x))+" "+str(int(Objet["basket0"].z))+"\n"
+	level += str(int(Objet["apple_tree0"].x))+" "+str(int(Objet["apple_tree0"].z))+"\n"
 	if Difficulté_actuel[0]:
-		level += "Position du repère visuel : "+str(Objet["visual0"])+"\n"
-	
-	if Difficulté_actuel[1] or Difficulté_actuel[0]:
-		level += "Position de l'arbre : "+str(Objet["tree0"])+"\n"
+		level += "1 "
 	else:
-		level += "Position du/des arbre(s) :\n"
-		for j in range(max_tree):
-			level += str(Objet["tree"+str(j)])+"\n"
+		level += "0 "
+	level += str(int(Objet["visual0"].x))+" "+str(int(Objet["visual0"].z))+"\n"
+
+	level += str(max_tree)+"\n"
+	for j in range(max_tree):
+		level += str(int(Objet["tree"+str(j)].x))+" "+str(int(Objet["tree"+str(j)].z))+"\n"
 	
-	level += "Position du joueur :\n"
-	# On rajoute la position de départ
-	level += "("+str(Objet["player0"].x)+","+str(Objet["player0"].z)+")\n"
+	level += str(len(position_joueur))+"\n"
 	for vecteur in position_joueur:
-		level += "("+str(snappedf(vecteur.x,0.01))+","+str(snappedf(vecteur.z,0.01))+")\n"
-	#On stocke la position finale
-	level += "("+str(snappedf(position_Finale.x,0.01))+","+str(snappedf(position_Finale.z,0.01))+")\n"
-	#On stocke la distance entre le joueur et le panier
-	level += "Distance entre le panier et le joueur : "+str(snappedf(distance,0.01))+"m\n"
-	level += "Score obtenue "+str(score)+"\n"
+		level += str(snappedf(vecteur.x, 0.01))+" "+str(snappedf(vecteur.z, 0.01))+"\n"
+
+	level += str(snappedf(distance,0.01))+"\n"
+	level += str(score)+"\n"
 	return level
 
 func continuer_fin_apres_tuto() -> void:
@@ -422,14 +418,12 @@ func continuer_fin_apres_tuto() -> void:
 
 	message_label.visible = true
 	
-	string_to_save += save_level(niveau)
+	string_to_save += save_level()
 	write_local_reports(false)
 	sync_reports_now()
 
 	if niveau == niveau_max:
 		Transition.go_to_scene("main_menu")
-		
-
 
 func toDo():
 	if phase == 0:
