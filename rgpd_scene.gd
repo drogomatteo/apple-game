@@ -46,4 +46,7 @@ func _on_refuse_button_pressed():
 
 func _go_to_menu():
 	print("[NAV] Back to menu")
-	get_tree().change_scene_to_file("res://Scenes/Interface.tscn")
+	if get_parent().get_parent():
+		get_parent().get_parent().show_menu()
+	else:
+		get_tree().change_scene_to_file("res://Scenes/Interface.tscn")
