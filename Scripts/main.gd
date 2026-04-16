@@ -450,7 +450,8 @@ func _on_timer_timeout() -> void:
 func _on_sampling_timeout() -> void:
 	var nouvelle_position = player_cell()
 	var DistanceAComparer = nouvelle_position-position_joueur[-1]
-	if sqrt(DistanceAComparer.x**2+DistanceAComparer.z**2) < 0.1:
+	if sqrt(DistanceAComparer.x**2+DistanceAComparer.z**2) > 0.1:
+		print("Une nouvelle position à ajouter")
 		position_joueur.append(player_cell())
 
 
