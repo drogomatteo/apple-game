@@ -14,7 +14,7 @@ func _ready():
 
 	if accepted and not force_show:
 		print("[RGPD] Already accepted → skip")
-		_go_to_menu()
+		call_deferred("_go_to_menu()")
 		return
 
 	checkbox.button_pressed = accepted
@@ -46,7 +46,11 @@ func _on_refuse_button_pressed():
 
 func _go_to_menu():
 	print("[NAV] Back to menu")
-	if get_parent().get_parent():
-		get_parent().get_parent().show_menu()
+	if get_parent() and get_parent().get_parent():
+		get_parent().get_parent().call_deferred("show_menu")
 	else:
-		get_tree().change_scene_to_file("res://Scenes/Interface.tscn")
+		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
+
+	call_deferred("queue_free") 
+
+	
