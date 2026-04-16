@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://ob5imiystqoc"]
 
 [ext_resource type="Script" uid="uid://cl31bj3wv04u4" path="res://Scripts/player.gd" id="1_v0iea"]
-[ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="2_6t5aa"]
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://j5orbw47ph2b" path="res://Assets/UI-UX/Images/Left.png" id="2_fkybt"]
 [ext_resource type="Texture2D" uid="uid://cs40qy3tf5ywq" path="res://Assets/UI-UX/Images/avant.png" id="4_3smsa"]
@@ -23,53 +22,23 @@ shape = SubResource("CapsuleShape3D_v0iea")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36437988, 0)
 far = 100.0
 
-[node name="Left" type="Button" parent="." unique_id=1732895668]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = -168.0
-offset_right = 180.0
-offset_bottom = -18.0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 40
-theme_override_icons/icon = ExtResource("2_fkybt")
-theme_override_styles/normal = ExtResource("2_6t5aa")
-theme_override_styles/pressed = ExtResource("2_6t5aa")
-theme_override_styles/hover = ExtResource("2_6t5aa")
+[node name="Left" type="TouchScreenButton" parent="." unique_id=756964413]
+position = Vector2(50, 500)
+texture_normal = ExtResource("2_fkybt")
+texture_pressed = ExtResource("2_fkybt")
+action = "Gauche"
 
-[node name="Forward" type="Button" parent="." unique_id=1354974901]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -212.0
-offset_top = -148.0
-offset_right = -112.0
-offset_bottom = -28.0
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 40
-theme_override_icons/icon = ExtResource("4_3smsa")
-theme_override_styles/normal = ExtResource("2_6t5aa")
-theme_override_styles/pressed = ExtResource("2_6t5aa")
-theme_override_styles/hover = ExtResource("2_6t5aa")
+[node name="Forward" type="TouchScreenButton" parent="." unique_id=2126934024]
+position = Vector2(910, 500)
+texture_normal = ExtResource("4_3smsa")
+texture_pressed = ExtResource("4_3smsa")
+action = "Avancer"
 
-[node name="Right" type="Button" parent="." unique_id=1217418213]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 220.0
-offset_top = -168.0
-offset_right = 360.0
-offset_bottom = -18.0
-grow_vertical = 0
-theme_override_font_sizes/font_size = 40
-theme_override_icons/icon = ExtResource("4_x3wgy")
-theme_override_styles/normal = ExtResource("2_6t5aa")
-theme_override_styles/pressed = ExtResource("2_6t5aa")
-theme_override_styles/hover = ExtResource("2_6t5aa")
+[node name="Right" type="TouchScreenButton" parent="." unique_id=919508615]
+position = Vector2(230, 500)
+texture_normal = ExtResource("4_x3wgy")
+texture_pressed = ExtResource("4_x3wgy")
+action = "Droite"
 
 [node name="Node3D" type="Node3D" parent="." unique_id=20595595]
 visible = false

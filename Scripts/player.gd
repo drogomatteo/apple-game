@@ -25,8 +25,8 @@ var allow_right: bool = true
 
 # Nœuds
 @onready var left_button = $Left
-@onready var right_button = $Right
 @onready var forward_button = $Forward
+@onready var right_button = $Right
 @onready var camera = $Camera3D
 @onready var footstep_player = $AudioStreamPlayer2D
 
@@ -51,20 +51,17 @@ var forward_tween: Tween
 
 
 func _ready() -> void:
-	if left_button is Control:
-		left_default_scale = left_button.scale
-	if right_button is Control:
-		right_default_scale = right_button.scale
-	if forward_button is Control:
-		forward_default_scale = forward_button.scale
+	left_default_scale = left_button.scale
+	right_default_scale = right_button.scale
+	forward_default_scale = forward_button.scale
 
 
 func _physics_process(delta: float) -> void:
 	var direction := Vector3.ZERO
 
-	avance = forward_button.is_pressed() and allow_forward and not controls_locked
-	tourner_gauche = left_button.is_pressed() and allow_left and not controls_locked
-	tourner_droite = right_button.is_pressed() and allow_right and not controls_locked
+	avance = Input.is_action_pressed("Avancer") and allow_forward and not controls_locked
+	tourner_gauche = Input.is_action_pressed("Gauche") and allow_left and not controls_locked
+	tourner_droite = Input.is_action_pressed("Droite") and allow_right and not controls_locked
 
 	if avance:
 		direction.z -= 1.0
@@ -134,7 +131,7 @@ func _handle_head_bob(delta: float) -> void:
 	camera.transform.origin = pos
 
 
-func _start_pulse(button: Control, base_scale: Vector2, tween_name: String) -> void:
+func _start_pulse(button: TouchScreenButton, base_scale: Vector2, tween_name: String) -> void:
 	_stop_pulse_by_name(tween_name)
 
 	button.scale = base_scale
@@ -171,18 +168,15 @@ func _stop_pulse_by_name(tween_name: String) -> void:
 
 func highlight_rotation_buttons(active: bool) -> void:
 	if active:
-		if left_button is Control:
-			_start_pulse(left_button, left_default_scale, "left")
-		if right_button is Control:
-			_start_pulse(right_button, right_default_scale, "right")
+		_start_pulse(left_button, left_default_scale, "left")
+		_start_pulse(right_button, right_default_scale, "right")
 	else:
 		clear_tutorial_highlights()
 
 
 func highlight_forward_button(active: bool) -> void:
 	if active:
-		if forward_button is Control:
-			_start_pulse(forward_button, forward_default_scale, "forward")
+		_start_pulse(forward_button, forward_default_scale, "forward")
 	else:
 		clear_tutorial_highlights()
 
@@ -192,9 +186,6 @@ func clear_tutorial_highlights() -> void:
 	_stop_pulse_by_name("right")
 	_stop_pulse_by_name("forward")
 
-	if left_button is Control:
-		left_button.scale = left_default_scale
-	if right_button is Control:
-		right_button.scale = right_default_scale
-	if forward_button is Control:
-		forward_button.scale = forward_default_scale
+	left_button.scale = left_default_scale
+	right_button.scale = right_default_scale
+	forward_button.scale = forward_default_scale
