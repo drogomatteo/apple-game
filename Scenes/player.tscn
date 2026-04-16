@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://cl31bj3wv04u4" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="2_6t5aa"]
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_cvnsp"]
-[ext_resource type="Texture2D" uid="uid://c63yel6wntstw" path="res://Assets/UI-UX/Images/Left.png" id="2_fkybt"]
+[ext_resource type="Texture2D" uid="uid://j5orbw47ph2b" path="res://Assets/UI-UX/Images/Left.png" id="2_fkybt"]
 [ext_resource type="Texture2D" uid="uid://cs40qy3tf5ywq" path="res://Assets/UI-UX/Images/avant.png" id="4_3smsa"]
-[ext_resource type="Texture2D" uid="uid://cgb1l38autjou" path="res://Assets/UI-UX/Images/Right.png" id="4_x3wgy"]
+[ext_resource type="Texture2D" uid="uid://4g1e5lnfmljy" path="res://Assets/UI-UX/Images/Right.png" id="4_x3wgy"]
 [ext_resource type="Script" uid="uid://bbcdtfa638wx" path="res://Scripts/basket.gd" id="9_tx1dd"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_v0iea"]
