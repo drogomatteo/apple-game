@@ -34,6 +34,25 @@ window/stretch/mode="viewport"
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
 
+[input]
+
+Avancer={
+"deadzone": 0.2,
+"events": []
+}
+Droite={
+"deadzone": 0.2,
+"events": []
+}
+Gauche={
+"deadzone": 0.2,
+"events": []
+}
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
 [layer_names]
 
 3d_physics/layer_1="Joueur"
