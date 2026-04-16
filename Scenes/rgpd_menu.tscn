@@ -2,6 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dnawbdaj13bp2" path="res://rgpd_scene.gd" id="1_pquc7"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_pquc7"]
+line_spacing = 1.0
+paragraph_spacing = -6.0
+font_size = 30
+
 [node name="RgpdMenu" type="Control" unique_id=58320947]
 layout_mode = 3
 anchors_preset = 15
@@ -33,14 +38,20 @@ layout_mode = 2
 
 [node name="RgpdTexte" type="Label" parent="CenterContainer/VBoxContainer" unique_id=511690892]
 layout_mode = 2
-text = "Cette application collecte certaines données de manière strictement anonyme dans le cadre d’une étude à visée médicale et statistique.
+text = "Cette application collecte certaines données de manière strictement 
+anonyme dans le cadre d’une étude à visée médicale et statistique.
 
-Ces données ne permettent pas de vous identifier personnellement et sont utilisées uniquement pour améliorer la compréhension et la détection des troubles cognitifs.
+Ces données ne permettent pas de vous identifier personnellement
+et sont utilisées uniquement pour améliorer 
+la compréhension et la détection des troubles cognitifs.
 
 Aucune information nominative n’est enregistrée ni partagée avec des tiers."
+label_settings = SubResource("LabelSettings_pquc7")
+horizontal_alignment = 1
 
 [node name="CheckBox" type="CheckBox" parent="CenterContainer/VBoxContainer" unique_id=364798137]
 layout_mode = 2
+text = "J'accepte que mes données personnelles soient utilisées à des fins médicales "
 
 [node name="ContinueButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2135284888]
 layout_mode = 2
