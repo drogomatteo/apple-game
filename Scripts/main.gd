@@ -33,7 +33,7 @@ var max_tree : int
 #Données joueur
 var position_joueur : Array
 var graine : int
-var string_to_save : String
+var list_to_save : Array
 
 #Grille
 var grid_size : int = 8
@@ -85,7 +85,6 @@ var validate_was_pressed := false
 
 #Tuto désactivé de base:
 func _ready() -> void:
-	string_to_save = ""
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + str(PlayerData.user_id) + "_" + str(randi())
 	TutorialHighlight.visible = false
 	Initialisation()
@@ -180,7 +179,7 @@ func _physics_process(_delta: float) -> void:
 
 		message_label.visible = true
 		
-		string_to_save += save_level()
+		list_to_save.append(save_level())
 		write_local_reports(false)
 		sync_reports_now()
 
@@ -420,7 +419,7 @@ func continuer_fin_apres_tuto() -> void:
 
 	message_label.visible = true
 	
-	string_to_save += save_level()
+	list_to_save.append(save_level())
 	write_local_reports(false)
 	sync_reports_now()
 
@@ -451,7 +450,6 @@ func _on_sampling_timeout() -> void:
 	var nouvelle_position = player_cell()
 	var DistanceAComparer = nouvelle_position-position_joueur[-1]
 	if sqrt(DistanceAComparer.x**2+DistanceAComparer.z**2) > 0.1:
-		print("Une nouvelle position à ajouter")
 		position_joueur.append(player_cell())
 
 
@@ -505,7 +503,7 @@ func queue_reports_for_sync() -> void:
 
 #fonction pour écrire les rapports localement
 func write_local_reports(interrompue: bool = false) -> void:
-	var contenu = string_to_save
+	var contenu = str(len(list_to_save))+"\n"+" ".join(list_to_save)
 
 	if interrompue:
 		contenu += save_interrupted_level()
