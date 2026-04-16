@@ -14,7 +14,7 @@ func _ready():
 
 	if accepted and not force_show:
 		print("[RGPD] Already accepted → skip")
-		call_deferred("_go_to_menu()")
+		call_deferred("_go_to_menu")
 		return
 
 	checkbox.button_pressed = accepted

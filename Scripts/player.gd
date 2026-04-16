@@ -97,7 +97,8 @@ func _physics_process(delta: float) -> void:
 		velocity.z = 0.0
 
 	elif temp_vel == SPEED and avance:
-		velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * SPEED
+		velocity.x = (transform.basis * Vector3(0, 0, direction.z)).normalized().x * SPEED
+		velocity.z = (transform.basis * Vector3(0, 0, direction.z)).normalized().z * SPEED
 
 	# Rotation
 	if temp_sens < SENSITIVITY and (tourner_droite or tourner_gauche):

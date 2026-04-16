@@ -491,13 +491,8 @@ func queue_reports_for_sync() -> void:
 	})
 
 	if not PlayerData.is_guest:
-		SyncManager.add_action({
-			"type": "file",
-			"path": "user://rapport_medecin.dat",
-			"url": GameManager.BASE_URL + "rapport_medecin/",
-			"session_id": session_id,
-			"extra_fields": {"seed": graine}
-		})
+		# Utiliser la nouvelle fonction qui crée la seed d'abord
+		GameManager.send_rapport_medecin(session_id, str(graine))
 
 
 #fonction pour écrire les rapports localement

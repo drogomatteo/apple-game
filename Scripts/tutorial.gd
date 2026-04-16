@@ -196,7 +196,8 @@ func _show_forward_step() -> void:
 
 func _show_basket_instruction() -> void:
 	current_step = TutorialStep.BASKET_INSTRUCTION
-	_allow_all_player_actions()
+	_disable_all_player_actions()
+	_stop_player_motion()
 	clear_highlight()
 	_reset_button_emphasis()
 	show_tutorial_box(messages[4], true)
@@ -212,7 +213,8 @@ func _start_basket_search() -> void:
 
 func _show_tree_instruction() -> void:
 	current_step = TutorialStep.TREE_INSTRUCTION
-	_allow_all_player_actions()
+	_disable_all_player_actions()
+	_stop_player_motion()
 	clear_highlight()
 	_reset_button_emphasis()
 	show_tutorial_box(messages[5], true)
@@ -228,7 +230,8 @@ func _start_tree_search() -> void:
 
 func _show_apple_instruction() -> void:
 	current_step = TutorialStep.APPLE_INSTRUCTION
-	_allow_all_player_actions()
+	_disable_all_player_actions()
+	_stop_player_motion()
 	clear_highlight()
 	_reset_button_emphasis()
 	show_tutorial_box(messages[6], true)
@@ -244,7 +247,8 @@ func _start_apple_search() -> void:
 
 func _show_return_basket_instruction() -> void:
 	current_step = TutorialStep.RETURN_BASKET_INSTRUCTION_1
-	_allow_all_player_actions()
+	_disable_all_player_actions()
+	_stop_player_motion()
 	clear_highlight()
 	_reset_button_emphasis()
 	# Pause du chrono tant que le joueur lit l'explication
@@ -273,7 +277,8 @@ func show_final_message_before_score() -> void:
 		return
 	if not waiting_final_popup:
 		return
-
+	_disable_all_player_actions()
+	_stop_player_motion()
 	waiting_final_popup = false
 	current_step = TutorialStep.FINAL_TUTORIAL_MESSAGE
 	show_tutorial_box(messages[10], true)
