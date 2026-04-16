@@ -202,9 +202,9 @@ func _physics_process(_delta: float) -> void:
 			Arbre[0].visible = true
 			index_Tree = 0
 			if Difficulté_actuel[0]:
-				Player.set_collision_mask(10)
+				Player.set_collision_mask(11)
 			else:
-				Player.set_collision_mask(8)
+				Player.set_collision_mask(9)
 			Player.get_child(5).visible = true
 			break
 		
@@ -214,9 +214,9 @@ func _physics_process(_delta: float) -> void:
 				Arbre[-1].visible = false
 				Apple_tree.visible = true
 				if Difficulté_actuel[0]:
-					Player.set_collision_mask(18)
+					Player.set_collision_mask(19)
 				else:
-					Player.set_collision_mask(16)
+					Player.set_collision_mask(17)
 			else:
 				var arbre_actuel = collision.get_collider()
 				arbre_actuel.visible = false
@@ -229,9 +229,9 @@ func _physics_process(_delta: float) -> void:
 			phase += 1
 			Apple_tree.visible = false
 			if Difficulté_actuel[0]:
-				Player.set_collision_mask(2)
+				Player.set_collision_mask(3)
 			else:
-				Player.set_collision_mask(0)
+				Player.set_collision_mask(1)
 			validate_button.visible = true
 			max_timer.start()
 			temps_restant.visible = true
@@ -246,7 +246,7 @@ func Initialisation() -> void:
 	sampling.start()
 
 	Difficulté_actuel = Gestion_Difficulté()
-	Player.set_collision_mask(6)
+	Player.set_collision_mask(7)
 
 	if Difficulté_actuel[2]:
 		Fences.set_visible(false)
@@ -304,8 +304,10 @@ func Initialisation() -> void:
 		child.set_visible(false)
 	Apple_tree.set_visible(false)
 	
-	if Difficulté_actuel[0]:
-		Player.set_collision_mask(4)
+	position_joueur.append(Objet["player0"])
+	
+	if not Difficulté_actuel[0]:
+		Player.set_collision_mask(5)
 		Visual.set_visible(false)
 
 
@@ -446,7 +448,10 @@ func _on_timer_timeout() -> void:
 
 
 func _on_sampling_timeout() -> void:
-	position_joueur.append(player_cell())
+	var nouvelle_position = player_cell()
+	var DistanceAComparer = nouvelle_position-position_joueur[-1]
+	if sqrt(DistanceAComparer.x**2+DistanceAComparer.z**2) < 0.1:
+		position_joueur.append(player_cell())
 
 
 func _on_break_button_pressed() -> void:
@@ -458,18 +463,23 @@ func _on_break_button_pressed() -> void:
 #fonction pour le niveau interrompu
 func save_interrupted_level() -> String:
 	var level = ""
-	level += "===================\n"
-	level += "level" + str(niveau) + " interrompu\n"
-	level += "===================\n"
+	level += str(graine)+"\n"
+	
+	level += str(int(Objet["basket0"].x))+" "+str(int(Objet["basket0"].z))+"\n"
+	level += str(int(Objet["apple_tree0"].x))+" "+str(int(Objet["apple_tree0"].z))+"\n"
+	if Difficulté_actuel[0]:
+		level += "1 "
+	else:
+		level += "0 "
+	level += str(int(Objet["visual0"].x))+" "+str(int(Objet["visual0"].z))+"\n"
 
-	level += "Graine de génération :" + str(graine) + "\n"
-	level += "Phase actuelle :" + str(phase) + "\n"
-	level += "Score actuel :" + str(score) + "\n"
-	level += "Position actuelle du joueur : (" + str(player_cell().x) + "," + str(player_cell().z) + ")\n"
-
-	level += "Trajet partiel du joueur :\n"
+	level += str(max_tree)+"\n"
+	for j in range(max_tree):
+		level += str(int(Objet["tree"+str(j)].x))+" "+str(int(Objet["tree"+str(j)].z))+"\n"
+	
+	level += str(len(position_joueur))+"\n"
 	for vecteur in position_joueur:
-		level += "(" + str(snappedf(vecteur.x, 0.01)) + "," + str(snappedf(vecteur.z,0.01)) + ")\n"
+		level += str(snappedf(vecteur.x, 0.01))+" "+str(snappedf(vecteur.z, 0.01))+"\n"
 
 	return level
 	
