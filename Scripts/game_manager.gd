@@ -103,4 +103,10 @@ func send_rapport_complet(session_id := ""):
 
 
 func send_rapport_medecin(session_id := "", seed_value := ""):
-	send_file("user://rapport_medecin.dat", BASE_URL + "rapport_medecin/", session_id, {"seed": seed_value})
+	# Au lieu d'envoyer la seed directement, on crée la Seed_Level d'abord
+	print("[GameManager] Creating SeedLevel for seed value: ", seed_value)
+	SyncManager.add_action({
+		"type": "create_seed",
+		"seed_value": seed_value,
+		"session_id": session_id
+	})

@@ -14,6 +14,8 @@ func _ready():
 
 
 func sync_before_play():
+	print("[MainMenu] Starting sync_before_play()...")
+	var sync_start = Time.get_ticks_msec()
 	SyncManager.force_sync()
 
 	var deadline := Time.get_ticks_msec() + int(INITIAL_SYNC_TIMEOUT_SECONDS * 1000.0)
@@ -21,8 +23,13 @@ func sync_before_play():
 	while not SyncManager.sync_done and Time.get_ticks_msec() < deadline:
 		await get_tree().process_frame
 
+	var elapsed = Time.get_ticks_msec() - sync_start
+	
 	if not SyncManager.sync_done:
+		print("[MainMenu] WARNING: Sync timeout! Time elapsed: %d ms / %d ms limit" % [elapsed, int(INITIAL_SYNC_TIMEOUT_SECONDS * 1000)])
 		push_warning("Initial sync timed out. Keeping play available and continuing sync in background.")
+	else:
+		print("[MainMenu] Sync successful! Time: %d ms" % elapsed)
 
 
 func _on_start_pressed():
