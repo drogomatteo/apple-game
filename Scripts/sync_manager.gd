@@ -155,10 +155,23 @@ func _on_request_completed(result, code, headers, body):
 		var response = JSON.parse_string(body.get_string_from_utf8())
 
 		if typeof(response) == TYPE_DICTIONARY and response.has("id"):
-			PlayerData.user_id = response["id"]
+			var synced_user_id = int(response["id"])
+			var login_data = action.get("data", {})
+			var synced_token = str(login_data.get("token", PlayerData.token))
+			var synced_uuid = str(response.get("uuid", login_data.get("uuid", PlayerData.uuid)))
+
+			if synced_token.to_lower() == "guest":
+				PlayerData.set_guest(synced_user_id)
+				PlayerData.token = "guest"
+				PlayerData.uuid = "none"
+			else:
+				PlayerData.set_user(synced_user_id, synced_uuid, synced_token)
 
 			for a in queue:
 				if a["type"] == "report":
 					a["data"]["user_id"] = PlayerData.user_id
+
+			save_queue()
+			GestionFichier.save_data()
 
 	process_next()
