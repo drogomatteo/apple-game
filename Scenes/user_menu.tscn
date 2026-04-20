@@ -1456,6 +1456,16 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 25
 placeholder_text = "Entrez votre clé"
 
+[node name="DoctorKeyLabel" type="Label" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=119887001]
+layout_mode = 2
+text = "Clé médecin (optionnelle)"
+
+[node name="DoctorKeyInput" type="LineEdit" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=119887002]
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+placeholder_text = "Entrez la clé médecin"
+
 [node name="SaveButton" type="Button" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=916444429]
 z_index = 1
 custom_minimum_size = Vector2(400, 100)
@@ -1467,9 +1477,6 @@ theme_override_styles/normal = ExtResource("3_klneb")
 theme_override_styles/pressed = ExtResource("3_klneb")
 theme_override_styles/hover = ExtResource("3_klneb")
 text = "Valider"
-
-[node name="StatusLabel" type="Label" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=480007012]
-layout_mode = 2
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CenterContainer/HBoxContainer" unique_id=469450911]
 layout_mode = 2
@@ -1505,6 +1512,9 @@ theme_override_styles/pressed = ExtResource("3_klneb")
 theme_override_styles/hover = ExtResource("3_klneb")
 text = "Mode Invité"
 
+[node name="StatusLabel" type="Label" parent="CenterContainer/HBoxContainer/VBoxContainer2" unique_id=480007012]
+layout_mode = 2
+
 [node name="BackButton" type="Button" parent="." unique_id=371559620]
 z_index = 1
 layout_mode = 1
@@ -1527,6 +1537,7 @@ text = "Retour"
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
 [connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/AgeInput" to="." method="_on_age_input_text_changed"]
 [connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/TokenInput" to="." method="_on_input_changed"]
+[connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/DoctorKeyInput" to="." method="_on_input_changed"]
 [connection signal="pressed" from="CenterContainer/HBoxContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="CenterContainer/HBoxContainer/VBoxContainer2/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
 [connection signal="pressed" from="CenterContainer/HBoxContainer/VBoxContainer2/GuestButton" to="." method="_on_guest_button_pressed"]

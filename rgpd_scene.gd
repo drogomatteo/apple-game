@@ -1,9 +1,5 @@
 extends Control
 
-const LOG_TAG := "[GDPR]"
-func _log(message: String) -> void:
-	print("%s %s" % [LOG_TAG, message])
-
 @onready var checkbox = $CenterContainer/VBoxContainer/CheckBox
 @onready var continue_button = $CenterContainer/VBoxContainer/ContinueButton
 
@@ -17,7 +13,6 @@ func _ready():
 	var accepted = SaveRgpd.is_accepted()
 
 	if accepted and not force_show:
-		_log("Consent already accepted, skipping screen")
 		call_deferred("_go_next_screen")
 		return
 
@@ -35,19 +30,16 @@ func _on_check_box_toggled(pressed: bool):
 
 func _on_continue_button_pressed():
 	if not checkbox.button_pressed:
-		_log("Continue blocked: checkbox not checked")
 		continue_button.disabled = true
 		return
 
 	SaveRgpd.set_accepted(true)
-	_log("Consent accepted")
 
 	_go_next_screen()
 
 
 func _on_refuse_button_pressed():
 	if first_login_flow:
-		_log("Refuse during first login: stay on GDPR")
 		checkbox.button_pressed = false
 		continue_button.disabled = true
 		return
@@ -61,7 +53,6 @@ func _apply_refusal_flow() -> void:
 	is_applying_refusal = true
 
 	SaveRgpd.set_accepted(false)
-	_log("Consent refused/removed, forcing logout")
 
 	continue_button.disabled = true
 
@@ -73,10 +64,8 @@ func _apply_refusal_flow() -> void:
 	var interface = get_tree().get_meta("interface")
 	if interface:
 		interface.first_login_flow = true
-		_log("Redirect after refusal -> GDPR (first login flow)")
 		interface.call_deferred("show_gdpr")
 	else:
-		_log("Fallback transition -> Interface scene")
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
 
 	call_deferred("queue_free")
@@ -87,13 +76,10 @@ func _go_next_screen():
 
 	if interface:
 		if opened_from_menu:
-			_log("Redirect -> main_menu")
 			interface.call_deferred("show_menu")
 		else:
-			_log("Redirect -> user_menu")
 			interface.call_deferred("show_user")
 	else:
-		_log("Fallback transition -> Interface scene")
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
 
 	call_deferred("queue_free")

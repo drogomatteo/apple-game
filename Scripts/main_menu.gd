@@ -16,7 +16,6 @@ func _ready():
 	start_button.disabled = false
 
 func sync_before_play():
-	_log("Initial sync started")
 	var sync_start = Time.get_ticks_msec()
 	SyncManager.force_sync()
 
@@ -30,42 +29,33 @@ func sync_before_play():
 	if not SyncManager.sync_done:
 		push_warning("Initial sync timed out. Continuing in background.")
 		_log("Initial sync timeout | elapsed_ms=%s" % str(elapsed))
-	else:
-		_log("Initial sync done | elapsed_ms=%s" % str(elapsed))
 
 func _on_start_pressed():
 	PlayerData.print_data()
 
 	if PlayerData.user_id == -1:
-		_log("Start blocked: no user, redirecting to user_menu")
 		get_tree().get_meta("interface").show_user()
 		return
 
 	var transition = get_tree().get_first_node_in_group("transition")
 
 	if transition:
-		_log("Start game via transition node")
 		transition.go_to_scene("game")
 	else:
-		_log("Start game via interface fallback")
 		get_tree().get_meta("interface").show_game()
 
 func _on_start_button_pressed():
 	_on_start_pressed()
 
 func _on_option_button_pressed():
-	_log("Open options")
 	get_tree().get_meta("interface").show_options()
 
 func _on_user_button_pressed():
-	_log("Open user menu")
 	get_tree().get_meta("interface").show_user()
 
 func _on_quit_button_pressed():
-	_log("Quit requested, saving data")
 	GestionFichier.save_data()
 	get_tree().quit()
 
 func _on_gdpr_button_pressed() -> void:
-	_log("Open GDPR from main menu")
 	get_tree().get_meta("interface").show_gdpr(true)

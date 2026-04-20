@@ -1,9 +1,5 @@
 extends Control
 
-const LOG_TAG := "[Interface]"
-func _log(message: String) -> void:
-	print("%s %s" % [LOG_TAG, message])
-
 @onready var container = $Container
 
 var menu_scene = preload("res://Scenes/main_menu.tscn")
@@ -20,7 +16,6 @@ func _ready():
 	
 	var accepted = SaveRgpd.is_accepted()
 	var connected = PlayerData.user_id != -1
-	_log("Boot flow | accepted=%s | connected=%s" % [str(accepted), str(connected)])
 
 	if not accepted:
 		first_login_flow = true
@@ -43,7 +38,6 @@ func clear():
 
 func show_menu():
 	first_login_flow =false
-	_log("Transition -> main_menu")
 	clear()
 	await get_tree().process_frame
 	current_scene = menu_scene.instantiate()
@@ -51,14 +45,12 @@ func show_menu():
 
 
 func show_options():
-	_log("Transition -> option_menu")
 	clear()
 	current_scene = options_scene.instantiate()
 	container.add_child(current_scene)
 
 
 func show_user():
-	_log("Transition -> user_menu | first_login_flow=%s" % str(first_login_flow))
 	clear()
 	current_scene = user_scene.instantiate()
 	current_scene.first_login = first_login_flow
@@ -66,14 +58,12 @@ func show_user():
 
 
 func show_game():
-	_log("Transition -> game")
 	clear()
 	current_scene = game_scene.instantiate()
 	container.add_child(current_scene)
 	
 
 func show_gdpr(opened_from_menu: bool = false):
-	_log("Transition -> gdpr_menu | opened_from_menu=%s" % str(opened_from_menu))
 	clear()
 	current_scene = rgpd_scene.instantiate()
 	current_scene.force_show = true
