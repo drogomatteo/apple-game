@@ -1,5 +1,9 @@
 extends Node
 
+const LOG_TAG := "[PlayerData]"
+func _log(message: String) -> void:
+	print("%s %s" % [LOG_TAG, message])
+
 var user_id = -1
 var token = ""
 var uuid = ""
@@ -8,7 +12,7 @@ var is_guest = true
 var session_id : String
 
 func set_user(id, u, t,a):
-	print("[AUTH] Logging in user")
+	_log("set_user | id=%s" % str(id))
 	user_id = id
 	uuid =u
 	token = t
@@ -16,7 +20,7 @@ func set_user(id, u, t,a):
 	is_guest = false
 
 func set_guest(id):
-	print("[AUTH] Logging in guest")
+	_log("set_guest | id=%s" % str(id))
 	user_id = id
 	uuid = ""
 	token = ""
@@ -24,7 +28,7 @@ func set_guest(id):
 	is_guest = true
 
 func logout_user():
-	print("[AUTH] Logging out user/guest")
+	_log("logout_user")
 
 	PlayerData.user_id = -1
 	PlayerData.token = ""
@@ -35,8 +39,4 @@ func logout_user():
 
 # DEBUG
 func print_data():
-	print("User ID:", user_id)
-	print("uuid:", uuid)
-	print("Token:", token)
-	print("Age:", age)
-	print("Guest:", is_guest)
+	_log("user_id=%s token=%s uuid=%s age=%s guest=%s" % [str(user_id), str(token), str(uuid), str(age), str(is_guest)])

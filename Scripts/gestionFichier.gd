@@ -1,12 +1,15 @@
 extends Node
 
+const LOG_TAG := "[Save]"
+func _log(message: String) -> void:
+	print("%s %s" % [LOG_TAG, message])
+
 var i = 0
 var player_data : Dictionary
 
 var save_path = "user://save.dat"
 
 func _ready() -> void:
-	print("[SAVE] Node ready → loading game")
 	load_game()
 
 func save_data():
@@ -23,15 +26,14 @@ func save_data():
 
 		file.store_var(player_data)
 		file.close()
-
-		print("[SAVE] Data successfully written and file closed")
+		_log("Save written")
 	else:
-		print("[ERROR] Failed to open file for writing:", save_path)
+		_log("ERROR: failed to open save file for writing")
 
 
 func load_game():
 	if not FileAccess.file_exists(save_path):
-		print("[LOAD] No save file found at:", save_path)
+		_log("No local save file found")
 		return
 	
 
@@ -42,7 +44,7 @@ func load_game():
 		file.close()
 
 		if player_data == null:
-			print("[LOAD] Data is null → abort")
+			_log("ERROR: save payload is null")
 			return
 
 		PlayerData.user_id = player_data.get("user_id", -1)
@@ -50,12 +52,6 @@ func load_game():
 		PlayerData.token = player_data.get("token", "")
 		PlayerData.age = player_data.get("age", "")
 		PlayerData.is_guest = player_data.get("is_guest", true)
-
-		print("[LOAD] PlayerData restored:")
-		print("   user_id:", PlayerData.user_id)
-		print("   uuid:", PlayerData.uuid)
-		print("   token:", PlayerData.token)
-		print("   age:", PlayerData.age)
-		print("   is_guest:", PlayerData.is_guest)
+		_log("Local save restored | user_id=%s" % str(PlayerData.user_id))
 	else:
-		print("[ERROR] Failed to open file for reading:", save_path)
+		_log("ERROR: failed to open save file for reading")

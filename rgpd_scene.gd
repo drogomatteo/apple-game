@@ -1,5 +1,9 @@
 extends Control
 
+const LOG_TAG := "[GDPR]"
+func _log(message: String) -> void:
+	print("%s %s" % [LOG_TAG, message])
+
 @onready var checkbox = $CenterContainer/VBoxContainer/CheckBox
 @onready var continue_button = $CenterContainer/VBoxContainer/ContinueButton
 
@@ -10,14 +14,10 @@ var is_applying_refusal := false
 
 
 func _ready():
-	print("[UI][RGPD] Scene loaded")
-	print("[UI][RGPD] first_login_flow:", first_login_flow, "opened_from_menu:", opened_from_menu)
-
 	var accepted = SaveRgpd.is_accepted()
-	print("[UI][RGPD] Accepted state from save:", accepted)
 
 	if accepted and not force_show:
-		print("[UI][RGPD] Already accepted → skip to menu")
+		_log("Consent already accepted, skipping screen")
 		call_deferred("_go_next_screen")
 		return
 
@@ -35,19 +35,19 @@ func _on_check_box_toggled(pressed: bool):
 
 func _on_continue_button_pressed():
 	if not checkbox.button_pressed:
-		print("[UI][RGPD] Continue blocked: checkbox not checked")
+		_log("Continue blocked: checkbox not checked")
 		continue_button.disabled = true
 		return
 
 	SaveRgpd.set_accepted(true)
-	print("[UI][RGPD] Saved accepted = true")
+	_log("Consent accepted")
 
 	_go_next_screen()
 
 
 func _on_refuse_button_pressed():
 	if first_login_flow:
-		print("[UI][RGPD] First login: refusal keeps user on GDPR")
+		_log("Refuse during first login: stay on GDPR")
 		checkbox.button_pressed = false
 		continue_button.disabled = true
 		return
@@ -61,24 +61,22 @@ func _apply_refusal_flow() -> void:
 	is_applying_refusal = true
 
 	SaveRgpd.set_accepted(false)
-	print("[UI][RGPD] Saved accepted = false")
+	_log("Consent refused/removed, forcing logout")
 
 	continue_button.disabled = true
 
 	if checkbox.button_pressed:
 		checkbox.button_pressed = false
-
-	print("[UI][RGPD] Consent refused/removed: logout user")
 	PlayerData.logout_user()
 	GestionFichier.save_data()
 
 	var interface = get_tree().get_meta("interface")
 	if interface:
 		interface.first_login_flow = true
-		print("[RGPD] Redirect after refusal → GDPR (first login flow)")
+		_log("Redirect after refusal -> GDPR (first login flow)")
 		interface.call_deferred("show_gdpr")
 	else:
-		print("[RGPD] Fallback after refusal → reload Interface")
+		_log("Fallback transition -> Interface scene")
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
 
 	call_deferred("queue_free")
@@ -89,13 +87,13 @@ func _go_next_screen():
 
 	if interface:
 		if opened_from_menu:
-			print("[RGPD] Redirect → MainMenu")
+			_log("Redirect -> main_menu")
 			interface.call_deferred("show_menu")
 		else:
-			print("[RGPD] Redirect → UserMenu")
+			_log("Redirect -> user_menu")
 			interface.call_deferred("show_user")
 	else:
-		print("[RGPD] Fallback → reload Interface")
+		_log("Fallback transition -> Interface scene")
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
 
 	call_deferred("queue_free")

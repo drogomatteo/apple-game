@@ -1,5 +1,9 @@
 extends Node
 
+const LOG_TAG := "[SyncManager]"
+func _log(message: String) -> void:
+	print("%s %s" % [LOG_TAG, message])
+
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 var file_path = "user://offline_queue.json"
 const REQUEST_TIMEOUT_SECONDS := 5.0
@@ -32,6 +36,7 @@ func add_action(action : Dictionary):
 		action["retries"] = 0
 	queue.append(action)
 	save_queue()
+	_log("Action queued | type=%s | queue_size=%s" % [str(action.get("type", "unknown")), str(queue.size())])
 
 func save_queue():
 	var f = FileAccess.open(file_path, FileAccess.WRITE)
@@ -101,15 +106,12 @@ func _build_user_request_payload(data: Dictionary) -> Dictionary:
 
 func force_sync():
 	if queue.is_empty():
-		print("[SyncManager] Queue is empty, sync_done = true")
 		sync_done = true
+		_log("force_sync called with empty queue")
 		return
 	sync_start_time = Time.get_ticks_msec()
 	sync_done = false
-	print("[SyncManager] force_sync() called. Queue size: ", queue.size())
-	print("[SyncManager] Queue content:")
-	for i in range(queue.size()):
-		print("  [", i, "] type: ", queue[i].get("type", "unknown"), " retries: ", queue[i].get("retries", 0))
+	_log("force_sync started | queue_size=%s" % str(queue.size()))
 	process_next()
 
 func _handle_immediate_request_error() -> void:
@@ -121,16 +123,16 @@ func _handle_immediate_request_error() -> void:
 
 	var action = queue[0]
 	action["retries"] += 1
+	_log("Immediate request error | type=%s | retries=%s" % [str(action.get("type", "unknown")), str(action["retries"])])
 	
 	if action["retries"] > MAX_RETRIES:
-		print("[SyncManager] CRITICAL: Action type=%s has exceeded max retries (%d). Abandoning it." % [action.get("type", "unknown"), MAX_RETRIES])
+		_log("Dropping action after max retries | type=%s" % str(action.get("type", "unknown")))
 		
 		if action.get("type", "") == "create_seed":
 			var seed_value = str(action.get("seed_value", ""))
 			var temp_file_path = "user://temp_seed_%s.dat" % seed_value
 			if FileAccess.file_exists(temp_file_path):
 				DirAccess.remove_absolute(temp_file_path)
-				print("[SyncManager] Cleaned up temp seed file: %s" % temp_file_path)
 		
 		queue.pop_front()
 		save_queue()
@@ -146,19 +148,18 @@ func _handle_immediate_request_error() -> void:
 func process_next():
 	if queue.is_empty():
 		var elapsed = Time.get_ticks_msec() - sync_start_time
-		print("[SyncManager] Queue processed. Total sync time: %d ms" % elapsed)
 		sync_done = true
+		_log("Sync complete | elapsed_ms=%s" % str(elapsed))
 		return
 
 	if is_running:
-		print("[SyncManager] Already running, waiting...")
+		_log("process_next skipped: request already running")
 		return
 
 	is_running = true
 	var action = queue[0]
-	
-	print("[SyncManager] Processing action: type=%s, retries=%d" % [action.get("type", "unknown"), action.get("retries", 0)])
 	request_start_time = Time.get_ticks_msec()
+	_log("Processing action | type=%s | retries=%s" % [str(action.get("type", "unknown")), str(action.get("retries", 0))])
 
 	if action["type"] == "login":
 		var login_data = action.get("data", {})
@@ -171,7 +172,7 @@ func process_next():
 		if bool(login_data.get("token_generated_offline", false)):
 			var token_to_check = str(login_data.get("token", "")).strip_edges()
 			if token_to_check != "" and token_to_check.to_lower() != "guest":
-				print("[SyncManager] Prechecking offline token uniqueness: %s" % token_to_check)
+				_log("Prechecking offline token uniqueness")
 				login_precheck_in_progress = true
 				var check_err := http.request(
 					BASE_URL + "user/?token=" + token_to_check,
@@ -179,7 +180,7 @@ func process_next():
 					HTTPClient.METHOD_GET
 				)
 				if check_err != OK:
-					print("[SyncManager] ERROR: Token precheck failed with error code: %d" % check_err)
+					_log("Token precheck request failed immediately")
 					login_precheck_in_progress = false
 					_handle_immediate_request_error()
 				return
@@ -187,8 +188,6 @@ func process_next():
 			login_data["token_generated_offline"] = false
 			action["data"] = login_data
 			save_queue()
-
-		print("[SyncManager] Sending LOGIN request to: %s" % (BASE_URL + "user/"))
 		var request_payload = action["data"].duplicate(true)
 		request_payload.erase("token_generated_offline")
 		var err := http.request(
@@ -198,11 +197,10 @@ func process_next():
 			JSON.stringify(_build_user_request_payload(request_payload))
 		)
 		if err != OK:
-			print("[SyncManager] ERROR: Login request failed with error code: %d" % err)
+			_log("Login request failed immediately")
 			_handle_immediate_request_error()
 
 	elif action["type"] == "create_seed":
-		print("[SyncManager] Creating SeedLevel with seed value: %s" % action.get("seed_value", ""))
 		var seed_value = str(action.get("seed_value", ""))
 		var temp_file_path = "user://temp_seed_%s.dat" % seed_value
 		
@@ -246,10 +244,10 @@ func process_next():
 			final_body
 		)
 		if err != OK:
+			_log("Seed upload request failed immediately")
 			_handle_immediate_request_error()
 
 	elif action["type"] == "report":
-		print("[SyncManager] Sending REPORT request to: %s" % (BASE_URL + "rapport_complet/"))
 		var err := http.request(
 			BASE_URL + "rapport_complet/",
 			["Content-Type: application/json"],
@@ -257,6 +255,7 @@ func process_next():
 			JSON.stringify(action["data"])
 		)
 		if err != OK:
+			_log("Report request failed immediately")
 			_handle_immediate_request_error()
 
 	elif action["type"] == "file":
@@ -277,6 +276,7 @@ func _on_request_completed(result, code, headers, body):
 		login_precheck_in_progress = false
 
 		if result != HTTPRequest.RESULT_SUCCESS:
+			_log("Token precheck failed (network) | retrying")
 			action["retries"] += 1
 
 			if action["retries"] > MAX_RETRIES:
@@ -297,6 +297,7 @@ func _on_request_completed(result, code, headers, body):
 		var lookup_body_text = body.get_string_from_utf8()
 
 		if code != 404 and (code < 200 or code >= 300):
+			_log("Token precheck failed (code=%s) | retrying" % str(code))
 			action["retries"] += 1
 
 			if action["retries"] > MAX_RETRIES:
@@ -319,6 +320,7 @@ func _on_request_completed(result, code, headers, body):
 			action["data"] = login_data
 			action["token_conflict_regen_attempts"] = 0
 			save_queue()
+			_log("Token precheck ok, sending login next")
 			process_next()
 			return
 
@@ -326,6 +328,7 @@ func _on_request_completed(result, code, headers, body):
 		action["token_conflict_regen_attempts"] = regen_attempts
 
 		if regen_attempts > MAX_TOKEN_CONFLICT_REGEN_ATTEMPTS:
+			_log("Too many token conflict regenerations, counting as retry")
 			action["retries"] += 1
 			action["token_conflict_regen_attempts"] = 0
 
@@ -352,15 +355,16 @@ func _on_request_completed(result, code, headers, body):
 		if PlayerData.token == old_token:
 			PlayerData.token = new_token
 			GestionFichier.save_data()
-
-		print("[SyncManager] Token conflict detected. Regenerated offline token: %s -> %s" % [old_token, new_token])
+		_log("Token conflict resolved with regenerated token")
 		process_next()
 		return
 
 	if result != HTTPRequest.RESULT_SUCCESS or (code != 200 and code != 201):
+		_log("Request failed | type=%s | code=%s | result=%s" % [action_type, str(code), str(result)])
 		action["retries"] += 1
 
 		if action["retries"] > MAX_RETRIES:
+			_log("Dropping action after max retries | type=%s" % action_type)
 			queue.pop_front()
 			save_queue()
 			retry_delay = 0.5
@@ -376,6 +380,7 @@ func _on_request_completed(result, code, headers, body):
 	retry_delay = 0.5
 	queue.pop_front()
 	save_queue()
+	_log("Action completed | type=%s | elapsed_ms=%s" % [action_type, str(elapsed)])
 
 	# -------- LOGIN --------
 	if action["type"] == "login":
@@ -409,5 +414,6 @@ func _on_request_completed(result, code, headers, body):
 
 			save_queue()
 			GestionFichier.save_data()
+			_log("Login synced successfully | user_id=%s" % str(synced_user_id))
 
 	process_next()

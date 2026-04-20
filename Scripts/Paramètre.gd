@@ -32,7 +32,6 @@ func sauvegarder_parametres() -> void:
 
 	var file = FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
 	if file == null:
-		print("Impossible de sauvegarder les paramètres")
 		return
 
 	file.store_string(JSON.stringify(data))
@@ -45,7 +44,6 @@ func charger_parametres() -> void:
 
 	var file = FileAccess.open(SETTINGS_PATH, FileAccess.READ)
 	if file == null:
-		print("Impossible de lire les paramètres")
 		return
 
 	var content := file.get_as_text()
@@ -53,7 +51,6 @@ func charger_parametres() -> void:
 
 	var parsed = JSON.parse_string(content)
 	if typeof(parsed) != TYPE_DICTIONARY:
-		print("Fichier de paramètres invalide")
 		return
 
 	sound = parsed.get("sound", true)

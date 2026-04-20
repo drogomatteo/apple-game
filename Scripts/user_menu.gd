@@ -1,5 +1,9 @@
 extends Control
 
+const LOG_TAG := "[UserMenu]"
+func _log(message: String) -> void:
+	print("%s %s" % [LOG_TAG, message])
+
 @onready var http = $HTTPRequest
 @onready var token_input = $CenterContainer/HBoxContainer/VBoxContainer/TokenInput
 @onready var age_input = $CenterContainer/HBoxContainer/VBoxContainer/AgeInput
@@ -28,8 +32,6 @@ var offline_generated_token_value := ""
 func _ready():
 	randomize()
 	http.timeout = REQUEST_TIMEOUT_SECONDS
-	
-	print("[USER MENU] first_login:", first_login)
 
 	if first_login:
 		back_button.visible = false
@@ -101,6 +103,7 @@ func generate_token() -> String:
 func _on_generate_token_button_pressed() -> void:
 	if is_request_running:
 		return
+	_log("Token generation requested")
 	token_generation_attempts = 0
 	status_label.text = "Génération..."
 	set_ui_locked(true)
@@ -112,6 +115,7 @@ func _try_generate_token():
 		is_generating_token = false
 		is_request_running = false
 		status_label.text = "Impossible de générer une clé patient"
+		_log("Token generation failed after max attempts")
 		set_ui_locked(false)
 		return
 
@@ -124,6 +128,7 @@ func _try_generate_token():
 	var err = http.request(url, [], HTTPClient.METHOD_GET)
 
 	if err != OK:
+		_log("Network error on token availability check, switching to offline token generation")
 		is_generating_token = false
 		is_request_running = false
 		_generate_token_offline()
@@ -193,10 +198,12 @@ func _generate_token_offline() -> void:
 		token_input.text = candidate
 		offline_generated_token_value = candidate
 		status_label.text = "Clé générée hors ligne (vérification au prochain sync)"
+		_log("Offline token generated")
 		set_ui_locked(false)
 		return
 
 	status_label.text = "Impossible de générer une clé patient"
+	_log("Offline token generation failed")
 	set_ui_locked(false)
 
 func _build_user_request_payload(data: Dictionary) -> Dictionary:
@@ -255,6 +262,7 @@ func _on_save_button_pressed():
 
 	is_request_running = true
 	status_label.text = "Connexion..."
+	_log("Sending login request")
 
 	var err = http.request(
 		BASE_URL + "user/",
@@ -264,6 +272,7 @@ func _on_save_button_pressed():
 	)
 
 	if err != OK:
+		_log("Immediate login request error, fallback to offline login")
 		_offline_login(data)
 
 # -------- GUEST --------
@@ -288,6 +297,7 @@ func _on_guest_button_pressed():
 
 	is_request_running = true
 	status_label.text = "Mode invité..."
+	_log("Sending guest login request")
 
 	var err = http.request(
 		BASE_URL + "user/",
@@ -297,6 +307,7 @@ func _on_guest_button_pressed():
 	)
 
 	if err != OK:
+		_log("Immediate guest request error, fallback to offline login")
 		_offline_login(data)
 
 # -------- HTTP RESPONSE --------
@@ -307,10 +318,12 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		is_generating_token = false
 
 		if result != HTTPRequest.RESULT_SUCCESS:
+			_log("Token generation HTTP failure, fallback offline")
 			_generate_token_offline()
 			return
 
 		if response_code != 404 and (response_code < 200 or response_code >= 300):
+			_log("Token check returned code %s, fallback offline" % str(response_code))
 			_generate_token_offline()
 			return
 
@@ -319,34 +332,41 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 			token_input.text = generated_token
 			offline_generated_token_value = ""
 			status_label.text = "Token généré ✔"
+			_log("Token generated online successfully")
 			set_ui_locked(false)  
 		else:
+			_log("Token collision detected, retrying generation")
 			_try_generate_token()
 
 		return
 
 	if result != HTTPRequest.RESULT_SUCCESS:
+		_log("Login HTTP failure, fallback offline")
 		_offline_login(pending_login_data)
 		return
 
 	if response_code != 200 and response_code != 201:
+		_log("Login rejected (code=%s), fallback offline" % str(response_code))
 		_offline_login(pending_login_data)
 		return
 
 	var response = JSON.parse_string(body.get_string_from_utf8())
 
 	if typeof(response) != TYPE_DICTIONARY or not response.has("id"):
+		_log("Invalid login response payload, fallback offline")
 		_offline_login(pending_login_data)
 		return
 
 	var user_id = int(response["id"])
 
 	if is_guest_mode:
+		_log("Guest login success | user_id=%s" % str(user_id))
 		PlayerData.set_guest(user_id)
 		PlayerData.token = "guest"
 		PlayerData.uuid = "none"
 		PlayerData.age = ""
 	else:
+		_log("User login success | user_id=%s" % str(user_id))
 		var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", get_device_uuid())))
 
 		var age = pending_login_data.get("age", "")
@@ -371,6 +391,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 # -------- OFFLINE --------
 func _offline_login(data):
+	_log("Entering offline login mode")
 	var local_id = 1 if is_guest_mode else randi() % 1000000
 
 	if is_guest_mode:
@@ -395,6 +416,7 @@ func _offline_login(data):
 		"type": "login",
 		"data": data
 	})
+	_log("Offline login queued for sync")
 
 	status_label.text = "Mode hors ligne"
 
@@ -408,8 +430,7 @@ func _offline_login(data):
 # -------- NAV --------
 func _go_to_menu():
 	var interface = get_tree().get_meta("interface")
-
-	print("[USER MENU] Navigation after login | first_login:", first_login)
+	_log("Navigating to menu")
 
 	if interface:
 		if first_login:
@@ -419,7 +440,6 @@ func _go_to_menu():
 
 func _on_back_button_pressed():
 	if first_login:
-		print("[USER MENU] Back disabled (first login)")
 		return
 	
 	get_tree().get_meta("interface").show_menu()
