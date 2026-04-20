@@ -72,9 +72,11 @@ func show_game():
 	container.add_child(current_scene)
 	
 
-func show_gdpr():
+func show_gdpr(opened_from_menu: bool = false):
 	print("[UI] GDPR Menu")
 	clear()
 	current_scene = rgpd_scene.instantiate()
 	current_scene.force_show = true
+	current_scene.first_login_flow = first_login_flow
+	current_scene.opened_from_menu = opened_from_menu
 	container.add_child(current_scene)

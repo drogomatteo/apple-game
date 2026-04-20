@@ -65,4 +65,4 @@ func _on_quit_button_pressed():
 	get_tree().quit()
 
 func _on_gdpr_button_pressed() -> void:
-	get_tree().get_meta("interface").show_gdpr()
+	get_tree().get_meta("interface").show_gdpr(true)

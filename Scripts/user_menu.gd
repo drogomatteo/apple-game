@@ -11,6 +11,8 @@ extends Control
 
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 const REQUEST_TIMEOUT_SECONDS := 5.0
+const TOKEN_LENGTH := 16
+const MAX_TOKEN_GENERATION_ATTEMPTS := 20
 
 var is_request_running = false
 var is_guest_mode = false
@@ -20,8 +22,10 @@ var first_login := false
 # -------- TOKEN GENERATION STATE --------
 var is_generating_token = false
 var generated_token = ""
+var token_generation_attempts := 0
 
 func _ready():
+	randomize()
 	http.timeout = REQUEST_TIMEOUT_SECONDS
 	
 	print("[USER MENU] first_login:", first_login)
@@ -85,18 +89,27 @@ func set_ui_locked(locked: bool) -> void:
 func generate_token() -> String:
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	var token = ""
-	for i in range(16):
+	for i in range(TOKEN_LENGTH):
 		token += chars[randi() % chars.length()]
 	return token
 
 func _on_generate_token_button_pressed() -> void:
 	if is_request_running:
 		return
+	token_generation_attempts = 0
 	status_label.text = "Génération..."
 	set_ui_locked(true)
 	_try_generate_token()
 
 func _try_generate_token():
+	token_generation_attempts += 1
+	if token_generation_attempts > MAX_TOKEN_GENERATION_ATTEMPTS:
+		is_generating_token = false
+		is_request_running = false
+		status_label.text = "Impossible de générer un token unique"
+		set_ui_locked(false)
+		return
+
 	generated_token = generate_token()
 	is_generating_token = true
 	is_request_running = true
@@ -110,6 +123,27 @@ func _try_generate_token():
 		is_generating_token = false
 		is_request_running = false
 		set_ui_locked(false) 
+
+func _is_token_available(response_code: int, body_text: String) -> bool:
+	if response_code == 404:
+		return true
+
+	if response_code < 200 or response_code >= 300:
+		return false
+
+	var response = JSON.parse_string(body_text)
+
+	if typeof(response) == TYPE_ARRAY:
+		return response.size() == 0
+
+	if typeof(response) == TYPE_DICTIONARY:
+		if response.has("count"):
+			return int(response["count"]) == 0
+		if response.has("results") and typeof(response["results"]) == TYPE_ARRAY:
+			return response["results"].size() == 0
+		return false
+
+	return false
 # -------- LOGIN --------
 func _on_save_button_pressed():
 	if is_request_running:
@@ -117,7 +151,7 @@ func _on_save_button_pressed():
 
 	var token = token_input.text.strip_edges()
 	var age = age_input.text.strip_edges()
-
+ 
 	if token == "" or age == "":
 		status_label.text = "Champs requis"
 		return
@@ -198,9 +232,8 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 			set_ui_locked(false)   # ← déverrouille en cas d'échec réseau
 			return
 
-		var response = JSON.parse_string(body.get_string_from_utf8())
-
-		if typeof(response) == TYPE_ARRAY and response.size() == 0:
+		var body_text = body.get_string_from_utf8()
+		if _is_token_available(response_code, body_text):
 			token_input.text = generated_token
 			status_label.text = "Token généré ✔"
 			set_ui_locked(false)   # ← déverrouille après succès
