@@ -16,6 +16,7 @@ func _ready():
 	start_button.disabled = false
 
 func sync_before_play():
+	_log("Initial sync started")
 	var sync_start = Time.get_ticks_msec()
 	SyncManager.force_sync()
 
@@ -29,11 +30,14 @@ func sync_before_play():
 	if not SyncManager.sync_done:
 		push_warning("Initial sync timed out. Continuing in background.")
 		_log("Initial sync timeout | elapsed_ms=%s" % str(elapsed))
+	else:
+		_log("Initial sync done | elapsed_ms=%s" % str(elapsed))
 
 func _on_start_pressed():
 	PlayerData.print_data()
 
 	if PlayerData.user_id == -1:
+		_log("Start blocked: no user, redirect to user menu")
 		get_tree().get_meta("interface").show_user()
 		return
 

@@ -27,12 +27,14 @@ func save_data():
 
 		file.store_var(player_data)
 		file.close()
+		_log("Save written")
 	else:
 		_log("ERROR: failed to open save file for writing")
 
 
 func load_game():
 	if not FileAccess.file_exists(save_path):
+		_log("No local save file found")
 		return
 	
 
@@ -52,5 +54,6 @@ func load_game():
 		PlayerData.age = player_data.get("age", "")
 		PlayerData.medecin_key = player_data.get("medecin_key", "")
 		PlayerData.is_guest = player_data.get("is_guest", true)
+		_log("Local save restored | user_id=%s" % str(PlayerData.user_id))
 	else:
 		_log("ERROR: failed to open save file for reading")

@@ -10,7 +10,9 @@ func _is_http_success(result: int, code: int) -> bool:
 	return result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
 
 func send_file(filepath, url, session_id := "", extra_fields := {}):
+	_log("send_file -> %s" % filepath)
 	if PlayerData.user_id == -1:
+		_log("No user_id: queue file upload")
 		SyncManager.add_action({
 			"type": "file",
 			"path": filepath,
@@ -74,6 +76,8 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 		return
 
 	http.request_completed.connect(func(result, code, headers, body):
+		if _is_http_success(result, code):
+			_log("Upload success | code=%s" % str(code))
 		if not _is_http_success(result, code):
 			_log("Upload failed, queueing retry")
 			SyncManager.add_action({
@@ -94,6 +98,7 @@ func send_rapport_complet(session_id := ""):
 
 func send_rapport_medecin(session_id := "", seed_value := ""):
 	# Au lieu d'envoyer la seed directement, on crée la Seed_Level d'abord
+	_log("Queue create_seed action")
 	SyncManager.add_action({
 		"type": "create_seed",
 		"seed_value": seed_value,

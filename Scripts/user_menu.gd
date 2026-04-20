@@ -114,6 +114,7 @@ func generate_token() -> String:
 func _on_generate_token_button_pressed() -> void:
 	if is_request_running:
 		return
+	_log("Token generation requested")
 	token_generation_attempts = 0
 	status_label.text = "Génération..."
 	set_ui_locked(true)
@@ -332,6 +333,7 @@ func _extract_user_by_token_medecins(body_text: String, token_to_find: String) -
 	return _extract_medecin_ids_array(target.get("medecins", []))
 
 func _merge_doctor_and_send_login(user_token: String, new_doctor_id: int) -> void:
+	_log("Doctor merge lookup started")
 	var request := HTTPRequest.new()
 	add_child(request)
 	request.timeout = REQUEST_TIMEOUT_SECONDS
@@ -343,6 +345,7 @@ func _merge_doctor_and_send_login(user_token: String, new_doctor_id: int) -> voi
 		HTTPClient.METHOD_GET
 	)
 	if err != OK:
+		_log("Doctor merge lookup request failed immediately")
 		if new_doctor_id >= 0:
 			pending_login_data["medecins"] = [new_doctor_id]
 		_send_login_request(pending_login_data)
@@ -355,12 +358,15 @@ func _on_existing_doctors_lookup_completed(result: int, response_code: int, _hea
 	pending_existing_medecins.clear()
 	if result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300:
 		pending_existing_medecins = _extract_user_by_token_medecins(body_text, user_token)
+	else:
+		_log("Doctor merge lookup failed | code=%s result=%s" % [str(response_code), str(result)])
 
 	if new_doctor_id >= 0 and not pending_existing_medecins.has(new_doctor_id):
 		pending_existing_medecins.append(new_doctor_id)
 
 	if not pending_existing_medecins.is_empty():
 		pending_login_data["medecins"] = pending_existing_medecins.duplicate()
+		_log("Doctor merge result | medecins=%s" % str(pending_existing_medecins))
 
 	_send_login_request(pending_login_data)
 
@@ -469,6 +475,7 @@ func _on_save_button_pressed():
 
 	is_request_running = true
 	if data.has("medecin_key"):
+		_log("Doctor key verification started")
 		pending_doctor_key = str(data.get("medecin_key", "")).strip_edges()
 		pending_doctor_id = -1
 		is_doctor_key_lookup = true
@@ -511,6 +518,7 @@ func _on_guest_button_pressed():
 
 	is_request_running = true
 	status_label.text = "Mode invité..."
+	_log("Sending guest login request")
 
 	var err = http.request(
 		BASE_URL + "user/",
@@ -527,6 +535,7 @@ func _send_login_request(data: Dictionary) -> void:
 	is_request_running = true
 	status_label.text = "Connexion..."
 	var payload = _build_user_request_payload(data)
+	_log("Sending /api/user/ login request")
 	var err = http.request(
 		BASE_URL + "user/",
 		["Content-Type: application/json"],
@@ -559,6 +568,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 			token_input.text = generated_token
 			offline_generated_token_value = ""
 			status_label.text = "Token généré ✔"
+			_log("Token generation success")
 			set_ui_locked(false)  
 		else:
 			_try_generate_token()
@@ -603,6 +613,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		if doctor_id >= 0:
 			pending_doctor_id = doctor_id
 			pending_login_data["medecin_id"] = doctor_id
+			_log("Doctor key validated | medecin_id=%s" % str(doctor_id))
 
 		var login_token = str(pending_login_data.get("token", "")).strip_edges()
 		if doctor_id >= 0 and login_token != "" and login_token.to_lower() != "guest":
@@ -641,6 +652,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		return
 
 	var user_id = int(response["id"])
+	_log("Login success | user_id=%s" % str(user_id))
 
 	if is_guest_mode:
 		PlayerData.set_guest(user_id)
@@ -676,6 +688,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 # -------- OFFLINE --------
 func _offline_login(data):
+	_log("Offline login mode enabled")
 	var local_id = 1 if is_guest_mode else -1
 
 	if is_guest_mode:
@@ -701,6 +714,7 @@ func _offline_login(data):
 		"type": "login",
 		"data": data
 	})
+	_log("Offline login queued for sync")
 
 	status_label.text = "Mode hors ligne"
 

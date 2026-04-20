@@ -1,5 +1,9 @@
 extends CanvasLayer
 
+const LOG_TAG := "[Transition]"
+func _log(message: String) -> void:
+	print("%s %s" % [LOG_TAG, message])
+
 @export var switch_duration : float = 1.0
 
 var apple_colors : Array[Color] = [
@@ -32,6 +36,7 @@ func to_snake_case(text : String) -> String:
 func go_to_scene(scene : String):
 
 	var scene_name = to_snake_case(scene)
+	_log("go_to_scene -> %s" % scene_name)
 
 	var random_color = apple_colors.pick_random()
 	color_rect.material.set_shader_parameter("transition_color", random_color)
@@ -54,8 +59,10 @@ func go_to_scene(scene : String):
 		_:
 			var interface = get_tree().get_meta("interface")
 			if interface:
+				_log("Interface route -> show_%s" % scene_name)
 				interface.call("show_" + scene_name)
 			else:
+				_log("Interface missing, fallback scene load")
 				get_tree().change_scene_to_file("res://Scenes/interface.tscn")
 
 

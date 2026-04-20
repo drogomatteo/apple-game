@@ -38,6 +38,7 @@ func add_action(action : Dictionary):
 		action["retries"] = 0
 	queue.append(action)
 	save_queue()
+	_log("Action queued | type=%s | queue_size=%s" % [str(action.get("type", "unknown")), str(queue.size())])
 
 func save_queue():
 	var f = FileAccess.open(file_path, FileAccess.WRITE)
@@ -201,9 +202,11 @@ func _is_doctor_not_found_error(code: int, body_text: String, action: Dictionary
 func force_sync():
 	if queue.is_empty():
 		sync_done = true
+		_log("force_sync called with empty queue")
 		return
 	sync_start_time = Time.get_ticks_msec()
 	sync_done = false
+	_log("force_sync started | queue_size=%s" % str(queue.size()))
 	process_next()
 
 func _handle_immediate_request_error() -> void:
@@ -241,6 +244,7 @@ func process_next():
 	if queue.is_empty():
 		var elapsed = Time.get_ticks_msec() - sync_start_time
 		sync_done = true
+		_log("Sync complete | elapsed_ms=%s" % str(elapsed))
 		return
 
 	if is_running:
@@ -249,6 +253,7 @@ func process_next():
 	is_running = true
 	var action = queue[0]
 	request_start_time = Time.get_ticks_msec()
+	_log("Processing action | type=%s | retries=%s" % [str(action.get("type", "unknown")), str(action.get("retries", 0))])
 
 	if action["type"] == "login":
 		var login_data = action.get("data", {})
