@@ -6,6 +6,7 @@ extends Control
 @onready var save_button = $CenterContainer/HBoxContainer/VBoxContainer/SaveButton
 @onready var guest_button = $CenterContainer/HBoxContainer/VBoxContainer2/GuestButton
 @onready var status_label = $CenterContainer/HBoxContainer/VBoxContainer/StatusLabel
+@onready var generate_button = $CenterContainer/HBoxContainer/VBoxContainer2/GenerateTokenButton
 @onready var back_button = $BackButton
 
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
@@ -74,6 +75,13 @@ func is_valid_age(age_text: String) -> bool:
 	return true
 
 # -------- TOKEN GENERATION --------
+func set_ui_locked(locked: bool) -> void:
+	save_button.disabled = locked
+	guest_button.disabled = locked
+	back_button.disabled = locked or first_login
+	token_input.editable = not locked
+	age_input.editable = not locked and not is_guest_mode
+	generate_button.disabled = locked
 func generate_token() -> String:
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	var token = ""
@@ -84,8 +92,8 @@ func generate_token() -> String:
 func _on_generate_token_button_pressed() -> void:
 	if is_request_running:
 		return
-
 	status_label.text = "Génération..."
+	set_ui_locked(true)
 	_try_generate_token()
 
 func _try_generate_token():
@@ -95,17 +103,13 @@ func _try_generate_token():
 
 	var url = BASE_URL + "user/?token=" + generated_token
 
-	var err = http.request(
-		url,
-		[],
-		HTTPClient.METHOD_GET
-	)
+	var err = http.request(url, [], HTTPClient.METHOD_GET)
 
 	if err != OK:
 		status_label.text = "Erreur réseau"
 		is_generating_token = false
 		is_request_running = false
-
+		set_ui_locked(false) 
 # -------- LOGIN --------
 func _on_save_button_pressed():
 	if is_request_running:
@@ -191,6 +195,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 		if result != HTTPRequest.RESULT_SUCCESS:
 			status_label.text = "Erreur réseau"
+			set_ui_locked(false)   # ← déverrouille en cas d'échec réseau
 			return
 
 		var response = JSON.parse_string(body.get_string_from_utf8())
@@ -198,7 +203,9 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		if typeof(response) == TYPE_ARRAY and response.size() == 0:
 			token_input.text = generated_token
 			status_label.text = "Token généré ✔"
+			set_ui_locked(false)   # ← déverrouille après succès
 		else:
+			# Token déjà pris → réessaye (reste verrouillé)
 			_try_generate_token()
 
 		return
