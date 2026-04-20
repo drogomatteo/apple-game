@@ -11,7 +11,7 @@ extends Control
 
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 const REQUEST_TIMEOUT_SECONDS := 5.0
-const TOKEN_LENGTH := 16
+const TOKEN_LENGTH := 8
 const MAX_TOKEN_GENERATION_ATTEMPTS := 20
 
 var is_request_running = false
@@ -23,6 +23,7 @@ var first_login := false
 var is_generating_token = false
 var generated_token = ""
 var token_generation_attempts := 0
+var offline_generated_token_value := ""
 
 func _ready():
 	randomize()
@@ -45,6 +46,8 @@ func _ready():
 
 func _on_input_changed(_text=""):
 	var token = token_input.text.strip_edges().to_lower()
+	if offline_generated_token_value != "" and token_input.text.strip_edges() != offline_generated_token_value:
+		offline_generated_token_value = ""
 
 	if token == "guest":
 		is_guest_mode = true
@@ -86,6 +89,8 @@ func set_ui_locked(locked: bool) -> void:
 	token_input.editable = not locked
 	age_input.editable = not locked and not is_guest_mode
 	generate_button.disabled = locked
+	if not locked:
+		update_button()
 func generate_token() -> String:
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	var token = ""
@@ -106,7 +111,7 @@ func _try_generate_token():
 	if token_generation_attempts > MAX_TOKEN_GENERATION_ATTEMPTS:
 		is_generating_token = false
 		is_request_running = false
-		status_label.text = "Impossible de générer un token unique"
+		status_label.text = "Impossible de générer une clé patient"
 		set_ui_locked(false)
 		return
 
@@ -119,10 +124,29 @@ func _try_generate_token():
 	var err = http.request(url, [], HTTPClient.METHOD_GET)
 
 	if err != OK:
-		status_label.text = "Erreur réseau"
 		is_generating_token = false
 		is_request_running = false
-		set_ui_locked(false) 
+		_generate_token_offline()
+
+func _response_contains_token(response_data, token_to_find: String) -> bool:
+	if typeof(response_data) == TYPE_DICTIONARY:
+		if response_data.has("token") and str(response_data["token"]) == token_to_find:
+			return true
+
+		if response_data.has("results") and typeof(response_data["results"]) == TYPE_ARRAY:
+			for item in response_data["results"]:
+				if typeof(item) == TYPE_DICTIONARY and item.has("token") and str(item["token"]) == token_to_find:
+					return true
+
+		return false
+
+	if typeof(response_data) == TYPE_ARRAY:
+		for item in response_data:
+			if typeof(item) == TYPE_DICTIONARY and item.has("token") and str(item["token"]) == token_to_find:
+				return true
+		return false
+
+	return false
 
 func _is_token_available(response_code: int, body_text: String) -> bool:
 	if response_code == 404:
@@ -131,19 +155,65 @@ func _is_token_available(response_code: int, body_text: String) -> bool:
 	if response_code < 200 or response_code >= 300:
 		return false
 
+	if body_text.strip_edges() == "":
+		return true
+
 	var response = JSON.parse_string(body_text)
+	return not _response_contains_token(response, generated_token)
 
-	if typeof(response) == TYPE_ARRAY:
-		return response.size() == 0
+func _collect_local_reserved_tokens() -> Dictionary:
+	var reserved := {}
 
-	if typeof(response) == TYPE_DICTIONARY:
-		if response.has("count"):
-			return int(response["count"]) == 0
-		if response.has("results") and typeof(response["results"]) == TYPE_ARRAY:
-			return response["results"].size() == 0
-		return false
+	var current_player_token = str(PlayerData.token).strip_edges()
+	if current_player_token != "" and current_player_token.to_lower() != "guest":
+		reserved[current_player_token] = true
 
-	return false
+	for action in SyncManager.queue:
+		if typeof(action) != TYPE_DICTIONARY:
+			continue
+		if action.get("type", "") != "login":
+			continue
+		var data = action.get("data", {})
+		if typeof(data) != TYPE_DICTIONARY:
+			continue
+		var queued_token = str(data.get("token", "")).strip_edges()
+		if queued_token != "":
+			reserved[queued_token] = true
+
+	return reserved
+
+func _generate_token_offline() -> void:
+	var reserved_tokens = _collect_local_reserved_tokens()
+
+	for _i in range(MAX_TOKEN_GENERATION_ATTEMPTS):
+		var candidate = generate_token()
+		if reserved_tokens.has(candidate):
+			continue
+
+		token_input.text = candidate
+		offline_generated_token_value = candidate
+		status_label.text = "Clé générée hors ligne (vérification au prochain sync)"
+		set_ui_locked(false)
+		return
+
+	status_label.text = "Impossible de générer une clé patient"
+	set_ui_locked(false)
+
+func _build_user_request_payload(data: Dictionary) -> Dictionary:
+	var payload := {
+		"token": data.get("token", ""),
+		"age": data.get("age", null)
+	}
+
+	if data.has("uuid"):
+		payload["uuid"] = data.get("uuid")
+
+	# Compatibilité backend: certains endpoints lisent un alias différent pour l'âge.
+	payload["user_age"] = payload["age"]
+	payload["patient_age"] = payload["age"]
+
+	return payload
+
 # -------- LOGIN --------
 func _on_save_button_pressed():
 	if is_request_running:
@@ -152,8 +222,14 @@ func _on_save_button_pressed():
 	var token = token_input.text.strip_edges()
 	var age = age_input.text.strip_edges()
  
-	if token == "" or age == "":
+	if token == "" and age =="":
 		status_label.text = "Champs requis"
+		return
+	if token == "":
+		status_label.text = "Clé patient requise"
+		return
+	if age == "":
+		status_label.text = "Age du patient requis"
 		return
 
 	if token.to_lower() == "guest":
@@ -173,6 +249,7 @@ func _on_save_button_pressed():
 		"uuid": uuid,
 		"age": int(age)
 	}
+	data["token_generated_offline"] = (offline_generated_token_value != "" and token == offline_generated_token_value)
 
 	pending_login_data = data.duplicate(true)
 
@@ -183,7 +260,7 @@ func _on_save_button_pressed():
 		BASE_URL + "user/",
 		["Content-Type: application/json"],
 		HTTPClient.METHOD_POST,
-		JSON.stringify(data)
+		JSON.stringify(_build_user_request_payload(data))
 	)
 
 	if err != OK:
@@ -195,6 +272,7 @@ func _on_guest_button_pressed():
 		return
 
 	is_guest_mode = true
+	offline_generated_token_value = ""
 
 	token_input.text = "guest"
 	age_input.text = ""
@@ -202,8 +280,9 @@ func _on_guest_button_pressed():
 
 	var data = {
 		"token": "guest",
-		"age": ""
+		"age": null
 	}
+	data["token_generated_offline"] = false
 
 	pending_login_data = data.duplicate(true)
 
@@ -214,7 +293,7 @@ func _on_guest_button_pressed():
 		BASE_URL + "user/",
 		["Content-Type: application/json"],
 		HTTPClient.METHOD_POST,
-		JSON.stringify(data)
+		JSON.stringify(_build_user_request_payload(data))
 	)
 
 	if err != OK:
@@ -228,17 +307,20 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		is_generating_token = false
 
 		if result != HTTPRequest.RESULT_SUCCESS:
-			status_label.text = "Erreur réseau"
-			set_ui_locked(false)   # ← déverrouille en cas d'échec réseau
+			_generate_token_offline()
+			return
+
+		if response_code != 404 and (response_code < 200 or response_code >= 300):
+			_generate_token_offline()
 			return
 
 		var body_text = body.get_string_from_utf8()
 		if _is_token_available(response_code, body_text):
 			token_input.text = generated_token
+			offline_generated_token_value = ""
 			status_label.text = "Token généré ✔"
-			set_ui_locked(false)   # ← déverrouille après succès
+			set_ui_locked(false)  
 		else:
-			# Token déjà pris → réessaye (reste verrouillé)
 			_try_generate_token()
 
 		return
@@ -283,6 +365,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 	PlayerData.print_data()
 	GestionFichier.save_data()
 	pending_login_data.clear()
+	offline_generated_token_value = ""
 
 	call_deferred("_go_to_menu")
 
@@ -291,6 +374,7 @@ func _offline_login(data):
 	var local_id = 1 if is_guest_mode else randi() % 1000000
 
 	if is_guest_mode:
+		data["age"] = null
 		PlayerData.set_guest(local_id)
 		PlayerData.age = ""
 	else:
@@ -317,6 +401,7 @@ func _offline_login(data):
 	PlayerData.print_data()
 	GestionFichier.save_data()
 	pending_login_data.clear()
+	offline_generated_token_value = ""
 
 	call_deferred("_go_to_menu")
 

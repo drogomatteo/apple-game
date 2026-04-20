@@ -4,6 +4,8 @@ var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 var file_path = "user://offline_queue.json"
 const REQUEST_TIMEOUT_SECONDS := 5.0
 const MAX_RETRIES := 10
+const TOKEN_LENGTH := 8
+const MAX_TOKEN_CONFLICT_REGEN_ATTEMPTS := 20
 
 var queue : Array = []
 var http := HTTPRequest.new()
@@ -16,8 +18,10 @@ var max_retry_delay = 5.0
 # Variables de tracking pour le diagnostic
 var sync_start_time = 0
 var request_start_time = 0
+var login_precheck_in_progress := false
 
 func _ready():
+	randomize()
 	add_child(http)
 	http.timeout = REQUEST_TIMEOUT_SECONDS
 	http.request_completed.connect(_on_request_completed)
@@ -43,6 +47,57 @@ func load_queue():
 	f.close()
 	if typeof(queue) != TYPE_ARRAY:
 		queue = []
+
+func _generate_token() -> String:
+	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	var token = ""
+	for _i in range(TOKEN_LENGTH):
+		token += chars[randi() % chars.length()]
+	return token
+
+func _response_contains_token(response_data, token_to_find: String) -> bool:
+	if typeof(response_data) == TYPE_DICTIONARY:
+		if response_data.has("token") and str(response_data["token"]) == token_to_find:
+			return true
+		if response_data.has("results") and typeof(response_data["results"]) == TYPE_ARRAY:
+			for item in response_data["results"]:
+				if typeof(item) == TYPE_DICTIONARY and item.has("token") and str(item["token"]) == token_to_find:
+					return true
+		return false
+
+	if typeof(response_data) == TYPE_ARRAY:
+		for item in response_data:
+			if typeof(item) == TYPE_DICTIONARY and item.has("token") and str(item["token"]) == token_to_find:
+				return true
+		return false
+
+	return false
+
+func _is_token_available_from_lookup(code: int, body_text: String, token_to_find: String) -> bool:
+	if code == 404:
+		return true
+	if code < 200 or code >= 300:
+		return false
+	if body_text.strip_edges() == "":
+		return true
+
+	var parsed = JSON.parse_string(body_text)
+	return not _response_contains_token(parsed, token_to_find)
+
+func _build_user_request_payload(data: Dictionary) -> Dictionary:
+	var payload := {
+		"token": data.get("token", ""),
+		"age": data.get("age", null)
+	}
+
+	if data.has("uuid"):
+		payload["uuid"] = data.get("uuid")
+
+	# Compatibilité backend: certains endpoints lisent un alias différent pour l'âge.
+	payload["user_age"] = payload["age"]
+	payload["patient_age"] = payload["age"]
+
+	return payload
 
 func force_sync():
 	if queue.is_empty():
@@ -106,12 +161,41 @@ func process_next():
 	request_start_time = Time.get_ticks_msec()
 
 	if action["type"] == "login":
+		var login_data = action.get("data", {})
+		if str(login_data.get("token", "")).to_lower() == "guest":
+			login_data["age"] = null
+			login_data["token_generated_offline"] = false
+			action["data"] = login_data
+			save_queue()
+
+		if bool(login_data.get("token_generated_offline", false)):
+			var token_to_check = str(login_data.get("token", "")).strip_edges()
+			if token_to_check != "" and token_to_check.to_lower() != "guest":
+				print("[SyncManager] Prechecking offline token uniqueness: %s" % token_to_check)
+				login_precheck_in_progress = true
+				var check_err := http.request(
+					BASE_URL + "user/?token=" + token_to_check,
+					[],
+					HTTPClient.METHOD_GET
+				)
+				if check_err != OK:
+					print("[SyncManager] ERROR: Token precheck failed with error code: %d" % check_err)
+					login_precheck_in_progress = false
+					_handle_immediate_request_error()
+				return
+
+			login_data["token_generated_offline"] = false
+			action["data"] = login_data
+			save_queue()
+
 		print("[SyncManager] Sending LOGIN request to: %s" % (BASE_URL + "user/"))
+		var request_payload = action["data"].duplicate(true)
+		request_payload.erase("token_generated_offline")
 		var err := http.request(
 			BASE_URL + "user/",
 			["Content-Type: application/json"],
 			HTTPClient.METHOD_POST,
-			JSON.stringify(action["data"])
+			JSON.stringify(_build_user_request_payload(request_payload))
 		)
 		if err != OK:
 			print("[SyncManager] ERROR: Login request failed with error code: %d" % err)
@@ -188,6 +272,90 @@ func _on_request_completed(result, code, headers, body):
 
 	var action = queue[0]
 	var action_type = action.get("type", "unknown")
+
+	if action_type == "login" and login_precheck_in_progress:
+		login_precheck_in_progress = false
+
+		if result != HTTPRequest.RESULT_SUCCESS:
+			action["retries"] += 1
+
+			if action["retries"] > MAX_RETRIES:
+				queue.pop_front()
+				save_queue()
+				retry_delay = 0.5
+				process_next()
+				return
+
+			await get_tree().create_timer(retry_delay).timeout
+			retry_delay = min(retry_delay * 2.0, max_retry_delay)
+			save_queue()
+			process_next()
+			return
+
+		var login_data = action.get("data", {})
+		var current_token = str(login_data.get("token", "")).strip_edges()
+		var lookup_body_text = body.get_string_from_utf8()
+
+		if code != 404 and (code < 200 or code >= 300):
+			action["retries"] += 1
+
+			if action["retries"] > MAX_RETRIES:
+				queue.pop_front()
+				save_queue()
+				retry_delay = 0.5
+				process_next()
+				return
+
+			await get_tree().create_timer(retry_delay).timeout
+			retry_delay = min(retry_delay * 2.0, max_retry_delay)
+			save_queue()
+			process_next()
+			return
+
+		var token_available = _is_token_available_from_lookup(code, lookup_body_text, current_token)
+
+		if token_available:
+			login_data["token_generated_offline"] = false
+			action["data"] = login_data
+			action["token_conflict_regen_attempts"] = 0
+			save_queue()
+			process_next()
+			return
+
+		var regen_attempts = int(action.get("token_conflict_regen_attempts", 0)) + 1
+		action["token_conflict_regen_attempts"] = regen_attempts
+
+		if regen_attempts > MAX_TOKEN_CONFLICT_REGEN_ATTEMPTS:
+			action["retries"] += 1
+			action["token_conflict_regen_attempts"] = 0
+
+			if action["retries"] > MAX_RETRIES:
+				queue.pop_front()
+				save_queue()
+				retry_delay = 0.5
+				process_next()
+				return
+
+			await get_tree().create_timer(retry_delay).timeout
+			retry_delay = min(retry_delay * 2.0, max_retry_delay)
+			save_queue()
+			process_next()
+			return
+
+		var old_token = current_token
+		var new_token = _generate_token()
+		login_data["token"] = new_token
+		login_data["token_generated_offline"] = true
+		action["data"] = login_data
+		save_queue()
+
+		if PlayerData.token == old_token:
+			PlayerData.token = new_token
+			GestionFichier.save_data()
+
+		print("[SyncManager] Token conflict detected. Regenerated offline token: %s -> %s" % [old_token, new_token])
+		process_next()
+		return
 
 	if result != HTTPRequest.RESULT_SUCCESS or (code != 200 and code != 201):
 		action["retries"] += 1
