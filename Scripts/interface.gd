@@ -9,11 +9,27 @@ var game_scene = preload("res://Scenes/main.tscn")
 var rgpd_scene = preload("res://Scenes/gdpr_menu.tscn")
 
 var current_scene = null
-
+var first_login_flow := false
 
 func _ready():
 	print("[UI] Ready → setting interface meta")
 	get_tree().set_meta("interface", self)
+	
+	var accepted = SaveRgpd.is_accepted()
+	var connected = PlayerData.user_id != -1
+
+	print("[FLOW] accepted:", accepted, "connected:", connected)
+
+	if not accepted:
+		first_login_flow = true
+		show_gdpr()
+		return
+
+	if not connected:
+		first_login_flow = true
+		show_user()
+		return
+
 	show_menu()
 
 
@@ -27,6 +43,7 @@ func clear():
 
 func show_menu():
 	print("[UI] Main Menu")
+	first_login_flow =false
 	clear()
 	await get_tree().process_frame
 	current_scene = menu_scene.instantiate()
@@ -44,6 +61,7 @@ func show_user():
 	print("[UI] User Menu")
 	clear()
 	current_scene = user_scene.instantiate()
+	current_scene.first_login = first_login_flow
 	container.add_child(current_scene)
 
 

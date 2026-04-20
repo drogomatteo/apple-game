@@ -45,9 +45,13 @@ func _on_refuse_button_pressed():
 
 
 func _go_to_menu():
-	if get_parent() and get_parent().get_parent():
-		get_parent().get_parent().call_deferred("show_menu")
+	var interface = get_tree().get_meta("interface")
+
+	if interface:
+		print("[RGPD] Redirect → UserMenu")
+		interface.call_deferred("show_user")
 	else:
+		print("[RGPD] Fallback → reload Interface")
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
 
 	call_deferred("queue_free")

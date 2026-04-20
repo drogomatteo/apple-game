@@ -14,6 +14,7 @@ const REQUEST_TIMEOUT_SECONDS := 5.0
 var is_request_running = false
 var is_guest_mode = false
 var pending_login_data : Dictionary = {}
+var first_login := false
 
 # -------- TOKEN GENERATION STATE --------
 var is_generating_token = false
@@ -21,6 +22,15 @@ var generated_token = ""
 
 func _ready():
 	http.timeout = REQUEST_TIMEOUT_SECONDS
+	
+	print("[USER MENU] first_login:", first_login)
+
+	if first_login:
+		back_button.visible = false
+		back_button.disabled = true
+	else:
+		back_button.visible = true
+		back_button.disabled = false
 
 	if PlayerData.user_id != -1:
 		token_input.text = PlayerData.token
@@ -176,7 +186,6 @@ func _on_guest_button_pressed():
 func _on_http_request_request_completed(result, response_code, headers, body):
 	is_request_running = false
 
-	# -------- TOKEN CHECK --------
 	if is_generating_token:
 		is_generating_token = false
 
@@ -186,7 +195,6 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 		var response = JSON.parse_string(body.get_string_from_utf8())
 
-		# libre = aucun utilisateur trouvé
 		if typeof(response) == TYPE_ARRAY and response.size() == 0:
 			token_input.text = generated_token
 			status_label.text = "Token généré ✔"
@@ -195,7 +203,6 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 		return
 
-	# -------- LOGIN NORMAL --------
 	if result != HTTPRequest.RESULT_SUCCESS:
 		_offline_login(pending_login_data)
 		return
@@ -217,7 +224,6 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		PlayerData.token = "guest"
 		PlayerData.uuid = "none"
 		PlayerData.age = ""
-		status_label.text = "Mode invité ✔"
 	else:
 		var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", get_device_uuid())))
 
@@ -233,7 +239,6 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		)
 
 		PlayerData.age = age
-		status_label.text = "Connecté ✔"
 
 	PlayerData.print_data()
 	GestionFichier.save_data()
@@ -278,10 +283,20 @@ func _offline_login(data):
 # -------- NAV --------
 func _go_to_menu():
 	var interface = get_tree().get_meta("interface")
+
+	print("[USER MENU] Navigation after login | first_login:", first_login)
+
 	if interface:
-		interface.show_menu()
+		if first_login:
+			interface.show_menu()
+		else:
+			interface.show_menu()
 
 func _on_back_button_pressed():
+	if first_login:
+		print("[USER MENU] Back disabled (first login)")
+		return
+	
 	get_tree().get_meta("interface").show_menu()
 
 # -------- INPUT AGE --------
