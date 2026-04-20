@@ -8,6 +8,11 @@ var first_login_flow := false
 var opened_from_menu := false
 var is_applying_refusal := false
 
+func _get_interface():
+	if get_tree().has_meta("interface"):
+		return get_tree().get_meta("interface")
+	return null
+
 
 func _ready():
 	var accepted = SaveRgpd.is_accepted()
@@ -61,7 +66,7 @@ func _apply_refusal_flow() -> void:
 	PlayerData.logout_user()
 	GestionFichier.save_data()
 
-	var interface = get_tree().get_meta("interface")
+	var interface = _get_interface()
 	if interface:
 		interface.first_login_flow = true
 		interface.call_deferred("show_gdpr")
@@ -72,7 +77,7 @@ func _apply_refusal_flow() -> void:
 
 
 func _go_next_screen():
-	var interface = get_tree().get_meta("interface")
+	var interface = _get_interface()
 
 	if interface:
 		if opened_from_menu:
