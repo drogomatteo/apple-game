@@ -1,76 +1,132 @@
 extends Control
 
 @onready var http = $HTTPRequest
-@onready var token_input = $CenterContainer/VBoxContainer/TokenInput
-@onready var save_button = $CenterContainer/VBoxContainer/SaveButton
-@onready var guest_button = $CenterContainer/VBoxContainer/GuestButton
-@onready var status_label = $CenterContainer/VBoxContainer/StatusLabel
+@onready var token_input = $CenterContainer/HBoxContainer/VBoxContainer/TokenInput
+@onready var age_input = $CenterContainer/HBoxContainer/VBoxContainer/AgeInput
+@onready var save_button = $CenterContainer/HBoxContainer/VBoxContainer/SaveButton
+@onready var guest_button = $CenterContainer/HBoxContainer/VBoxContainer2/GuestButton
+@onready var status_label = $CenterContainer/HBoxContainer/VBoxContainer/StatusLabel
 @onready var back_button = $BackButton
 
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 const REQUEST_TIMEOUT_SECONDS := 5.0
+
 var is_request_running = false
 var is_guest_mode = false
 var pending_login_data : Dictionary = {}
 
+# -------- TOKEN GENERATION STATE --------
+var is_generating_token = false
+var generated_token = ""
 
 func _ready():
-	print("[INIT] User menu loaded")
 	http.timeout = REQUEST_TIMEOUT_SECONDS
 
 	if PlayerData.user_id != -1:
 		token_input.text = PlayerData.token
+		age_input.text = str(PlayerData.age)
 
 	update_button()
-
 
 func _on_input_changed(_text=""):
-	update_button()
+	var token = token_input.text.strip_edges().to_lower()
 
+	if token == "guest":
+		is_guest_mode = true
+		age_input.text = ""
+		age_input.editable = false
+	else:
+		if is_guest_mode:
+			age_input.text = ""
+		is_guest_mode = false
+		age_input.editable = true
+
+	update_button()
 
 func update_button():
 	var token = token_input.text.strip_edges()
+	var age = age_input.text.strip_edges()
 
-	save_button.disabled = (token == "")
+	save_button.disabled = (token == "" or age == "")
 
-	if token != "":
+	if token != "" and age != "":
 		status_label.text = ""
 
-
 func get_device_uuid() -> String:
-	var uuid = OS.get_unique_id()
-	print("[UUID] Device UUID:", uuid)
-	return uuid
+	return OS.get_unique_id()
 
+func is_valid_age(age_text: String) -> bool:
+	if age_text == "":
+		return false
+	for c in age_text:
+		if not c.is_valid_int():
+			return false
+	return true
 
+# -------- TOKEN GENERATION --------
+func generate_token() -> String:
+	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	var token = ""
+	for i in range(16):
+		token += chars[randi() % chars.length()]
+	return token
+
+func _on_generate_token_button_pressed() -> void:
+	if is_request_running:
+		return
+
+	status_label.text = "Génération..."
+	_try_generate_token()
+
+func _try_generate_token():
+	generated_token = generate_token()
+	is_generating_token = true
+	is_request_running = true
+
+	var url = BASE_URL + "user/?token=" + generated_token
+
+	var err = http.request(
+		url,
+		[],
+		HTTPClient.METHOD_GET
+	)
+
+	if err != OK:
+		status_label.text = "Erreur réseau"
+		is_generating_token = false
+		is_request_running = false
+
+# -------- LOGIN --------
 func _on_save_button_pressed():
 	if is_request_running:
 		return
 
-	is_guest_mode = false
-
 	var token = token_input.text.strip_edges()
+	var age = age_input.text.strip_edges()
 
-	print("[LOGIN] Token entered:", token)
-
-	if token == "":
-		status_label.text = "Token requis"
+	if token == "" or age == "":
+		status_label.text = "Champs requis"
 		return
 
 	if token.to_lower() == "guest":
-		print("[LOGIN] Guest token detected → switching to guest mode")
 		_on_guest_button_pressed()
 		return
+
+	if not is_valid_age(age):
+		status_label.text = "Age invalide"
+		return
+
+	is_guest_mode = false
 
 	var uuid = get_device_uuid()
 
 	var data = {
 		"token": token,
-		"uuid": uuid
+		"uuid": uuid,
+		"age": int(age)
 	}
-	pending_login_data = data.duplicate(true)
 
-	print("[LOGIN] Sending data:", data)
+	pending_login_data = data.duplicate(true)
 
 	is_request_running = true
 	status_label.text = "Connexion..."
@@ -83,21 +139,24 @@ func _on_save_button_pressed():
 	)
 
 	if err != OK:
-		print("[ERROR] HTTP request failed")
 		_offline_login(data)
 
-
+# -------- GUEST --------
 func _on_guest_button_pressed():
 	if is_request_running:
 		return
 
 	is_guest_mode = true
 
-	print("[LOGIN] Guest mode activated")
+	token_input.text = "guest"
+	age_input.text = ""
+	age_input.editable = false
 
 	var data = {
-		"token": "guest"
+		"token": "guest",
+		"age": ""
 	}
+
 	pending_login_data = data.duplicate(true)
 
 	is_request_running = true
@@ -111,57 +170,69 @@ func _on_guest_button_pressed():
 	)
 
 	if err != OK:
-		print("[ERROR] Guest request failed")
 		_offline_login(data)
 
-
+# -------- HTTP RESPONSE --------
 func _on_http_request_request_completed(result, response_code, headers, body):
 	is_request_running = false
 
-	if result != HTTPRequest.RESULT_SUCCESS:
-		print("[ERROR] Network error -> offline mode, result:", result)
-		_offline_login(pending_login_data)
+	# -------- TOKEN CHECK --------
+	if is_generating_token:
+		is_generating_token = false
+
+		if result != HTTPRequest.RESULT_SUCCESS:
+			status_label.text = "Erreur réseau"
+			return
+
+		var response = JSON.parse_string(body.get_string_from_utf8())
+
+		# libre = aucun utilisateur trouvé
+		if typeof(response) == TYPE_ARRAY and response.size() == 0:
+			token_input.text = generated_token
+			status_label.text = "Token généré ✔"
+		else:
+			_try_generate_token()
+
 		return
 
-	print("[HTTP] Response code:", response_code)
+	# -------- LOGIN NORMAL --------
+	if result != HTTPRequest.RESULT_SUCCESS:
+		_offline_login(pending_login_data)
+		return
 
 	if response_code != 200 and response_code != 201:
-		print("[ERROR] Bad response → offline mode")
 		_offline_login(pending_login_data)
 		return
 
-	var text = body.get_string_from_utf8()
-	print("[HTTP] Response body:", text)
+	var response = JSON.parse_string(body.get_string_from_utf8())
 
-	var response = JSON.parse_string(text)
-
-	if typeof(response) != TYPE_DICTIONARY:
-		print("[ERROR] Invalid JSON")
-		_offline_login(pending_login_data)
-		return
-
-	if not response.has("id"):
-		print("[ERROR] No ID in response")
+	if typeof(response) != TYPE_DICTIONARY or not response.has("id"):
 		_offline_login(pending_login_data)
 		return
 
 	var user_id = int(response["id"])
-	var resolved_uuid = ""
-
-	print("[SUCCESS] Connected → user_id:", user_id)
 
 	if is_guest_mode:
 		PlayerData.set_guest(user_id)
 		PlayerData.token = "guest"
 		PlayerData.uuid = "none"
+		PlayerData.age = ""
 		status_label.text = "Mode invité ✔"
 	else:
-		resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", get_device_uuid())))
+		var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", get_device_uuid())))
+
+		var age = pending_login_data.get("age", "")
+		if str(age).is_valid_int():
+			age = int(age)
+
 		PlayerData.set_user(
 			user_id,
 			resolved_uuid,
-			str(pending_login_data.get("token", token_input.text.strip_edges()))
+			str(pending_login_data.get("token")),
+			age
 		)
+
+		PlayerData.age = age
 		status_label.text = "Connecté ✔"
 
 	PlayerData.print_data()
@@ -170,16 +241,26 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 	call_deferred("_go_to_menu")
 
-
+# -------- OFFLINE --------
 func _offline_login(data):
-	print("[OFFLINE] Using offline mode")
-
 	var local_id = 1 if is_guest_mode else randi() % 1000000
 
 	if is_guest_mode:
 		PlayerData.set_guest(local_id)
+		PlayerData.age = ""
 	else:
-		PlayerData.set_user(local_id, str(data.get("uuid", get_device_uuid())), data["token"])
+		var age = data.get("age", "")
+		if str(age).is_valid_int():
+			age = int(age)
+
+		PlayerData.set_user(
+			local_id,
+			str(data.get("uuid", get_device_uuid())),
+			data["token"],
+			age
+		)
+
+		PlayerData.age = age
 
 	SyncManager.add_action({
 		"type": "login",
@@ -194,15 +275,27 @@ func _offline_login(data):
 
 	call_deferred("_go_to_menu")
 
-
+# -------- NAV --------
 func _go_to_menu():
-	print("[NAV] Going to menu")
-
 	var interface = get_tree().get_meta("interface")
 	if interface:
 		interface.show_menu()
 
-
 func _on_back_button_pressed():
-	print("[NAV] Back button pressed")
 	get_tree().get_meta("interface").show_menu()
+
+# -------- INPUT AGE --------
+func _on_age_input_text_changed(new_text: String) -> void:
+	if is_guest_mode:
+		age_input.text = ""
+		return
+
+	var filtered = ""
+	for c in new_text:
+		if c.is_valid_int():
+			filtered += c
+
+	if filtered != new_text:
+		age_input.text = filtered
+
+	update_button()

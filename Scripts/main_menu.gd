@@ -5,16 +5,18 @@ const INITIAL_SYNC_TIMEOUT_SECONDS := 3.0
 
 
 func _ready():
-	if not start_button.pressed.is_connected(_on_start_pressed):
-		start_button.pressed.connect(_on_start_pressed)
+	print("[UI][MainMenu] ready")
 
 	start_button.disabled = true
-	await sync_before_play()
-	start_button.disabled = false
+	print("[UI][MainMenu] start_button disabled → starting sync")
 
+	await sync_before_play()
+
+	start_button.disabled = false
+	print("[UI][MainMenu] start_button enabled → ready to play")
 
 func sync_before_play():
-	print("[MainMenu] Starting sync_before_play()...")
+
 	var sync_start = Time.get_ticks_msec()
 	SyncManager.force_sync()
 
@@ -26,21 +28,17 @@ func sync_before_play():
 	var elapsed = Time.get_ticks_msec() - sync_start
 	
 	if not SyncManager.sync_done:
-		print("[MainMenu] WARNING: Sync timeout! Time elapsed: %d ms / %d ms limit" % [elapsed, int(INITIAL_SYNC_TIMEOUT_SECONDS * 1000)])
-		push_warning("Initial sync timed out. Keeping play available and continuing sync in background.")
+		print("[UI][MainMenu] WARNING: Sync timeout! Time elapsed:", elapsed, "ms")
+		push_warning("Initial sync timed out. Continuing in background.")
 	else:
-		print("[MainMenu] Sync successful! Time: %d ms" % elapsed)
-
+		print("[UI][MainMenu] Sync successful! Time:", elapsed, "ms")
 
 func _on_start_pressed():
-
 	print("----- USER DEBUG -----")
-	print("ID:", PlayerData.user_id)
-	print("uuid:", PlayerData.uuid)
-	print("Guest:", PlayerData.is_guest)
-	print("----------------------")
+	PlayerData.print_data()
 
 	if PlayerData.user_id == -1:
+		print("[UI][MainMenu] No user → redirect to user menu")
 		get_tree().get_meta("interface").show_user()
 		return
 
@@ -49,25 +47,22 @@ func _on_start_pressed():
 	if transition:
 		transition.go_to_scene("game")
 	else:
+		print("[UI][MainMenu] No transition → direct show_game()")
 		get_tree().get_meta("interface").show_game()
-
 
 func _on_start_button_pressed():
 	_on_start_pressed()
 
-
 func _on_option_button_pressed():
 	get_tree().get_meta("interface").show_options()
-
 
 func _on_user_button_pressed():
 	get_tree().get_meta("interface").show_user()
 
-
 func _on_quit_button_pressed():
+	print("[UI][MainMenu] Quit button pressed → saving data and exiting")
 	GestionFichier.save_data()
 	get_tree().quit()
 
-
-func _on_rgpd_button_pressed() -> void:
-	get_tree().get_meta("interface").show_rgpd()
+func _on_gdpr_button_pressed() -> void:
+	get_tree().get_meta("interface").show_gdpr()
