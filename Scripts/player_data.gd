@@ -7,6 +7,9 @@ var age = ""
 var medecin_key = ""
 var is_guest = true
 var session_id : String
+var access_token := ""
+var refresh_token := ""
+var access_token_expires_at := 0
 
 func set_user(id, u, t, a, m = ""):
 	user_id = id
@@ -31,6 +34,9 @@ func logout_user():
 	PlayerData.age= ""
 	PlayerData.medecin_key = ""
 	PlayerData.is_guest = false
+	PlayerData.access_token = ""
+	PlayerData.refresh_token = ""
+	PlayerData.access_token_expires_at = 0
 
 
 # DEBUG

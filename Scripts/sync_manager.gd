@@ -273,11 +273,16 @@ func process_next():
 		if bool(login_data.get("token_generated_offline", false)):
 			var token_to_check = str(login_data.get("token", "")).strip_edges()
 			if token_to_check != "" and token_to_check.to_lower() != "guest":
+				var has_lookup_token = await GameManager.ensure_valid_access_token()
+				if not has_lookup_token:
+					_log("Token precheck auth unavailable")
+					_handle_immediate_request_error()
+					return
 				login_precheck_in_progress = true
 				login_precheck_mode = "token"
 				var check_err := http.request(
 					BASE_URL + "user/?token=" + token_to_check,
-					[],
+					GameManager.get_api_headers(),
 					HTTPClient.METHOD_GET
 				)
 				if check_err != OK:
@@ -293,11 +298,16 @@ func process_next():
 
 		var doctor_key_to_check = str(login_data.get("medecin_key", "")).strip_edges()
 		if doctor_key_to_check != "" and not bool(login_data.get("doctor_key_prechecked", false)):
+			var has_doctor_lookup_token = await GameManager.ensure_valid_access_token()
+			if not has_doctor_lookup_token:
+				_log("Doctor key precheck auth unavailable")
+				_handle_immediate_request_error()
+				return
 			login_precheck_in_progress = true
 			login_precheck_mode = "doctor"
 			var doctor_check_err := http.request(
 				BASE_URL + DOCTOR_LOOKUP_PATH + doctor_key_to_check,
-				[],
+				GameManager.get_api_headers(),
 				HTTPClient.METHOD_GET
 			)
 			if doctor_check_err != OK:
@@ -310,9 +320,14 @@ func process_next():
 		var request_payload = action["data"].duplicate(true)
 		request_payload.erase("token_generated_offline")
 		request_payload.erase("doctor_key_prechecked")
+		var has_login_token = await GameManager.ensure_valid_access_token()
+		if not has_login_token:
+			_log("Login sync auth unavailable")
+			_handle_immediate_request_error()
+			return
 		var err := http.request(
 			BASE_URL + "user/",
-			["Content-Type: application/json"],
+			GameManager.get_json_post_headers(),
 			HTTPClient.METHOD_POST,
 			JSON.stringify(_build_user_request_payload(request_payload))
 		)
@@ -356,10 +371,15 @@ func process_next():
 		var body_bytes = body.to_utf8_buffer()
 		var end = ("\r\n--" + boundary + "--\r\n").to_utf8_buffer()
 		var final_body = body_bytes + file_bytes + end
+		var has_seed_token = await GameManager.ensure_valid_access_token()
+		if not has_seed_token:
+			_log("Seed upload auth unavailable")
+			_handle_immediate_request_error()
+			return
 		
 		var err := http.request_raw(
 			BASE_URL + "seed/",
-			["Content-Type: multipart/form-data; boundary=" + boundary],
+			GameManager.get_multipart_post_headers(boundary),
 			HTTPClient.METHOD_POST,
 			final_body
 		)
@@ -368,9 +388,14 @@ func process_next():
 			_handle_immediate_request_error()
 
 	elif action["type"] == "report":
+		var has_report_token = await GameManager.ensure_valid_access_token()
+		if not has_report_token:
+			_log("Report sync auth unavailable")
+			_handle_immediate_request_error()
+			return
 		var err := http.request(
 			BASE_URL + "rapport_complet/",
-			["Content-Type: application/json"],
+			GameManager.get_json_post_headers(),
 			HTTPClient.METHOD_POST,
 			JSON.stringify(action["data"])
 		)

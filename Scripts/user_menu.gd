@@ -19,6 +19,7 @@ const DOCTOR_LOOKUP_PATH := "medecin/?token="
 const REQUEST_TIMEOUT_SECONDS := 5.0
 const TOKEN_LENGTH := 8
 const MAX_TOKEN_GENERATION_ATTEMPTS := 20
+const PREFILL_MIN_TOKEN_LENGTH := 1
 
 var is_request_running = false
 var is_guest_mode = false
@@ -28,6 +29,14 @@ var is_doctor_key_lookup = false
 var pending_doctor_key = ""
 var pending_doctor_id := -1
 var pending_existing_medecins: Array[int] = []
+var prefill_http := HTTPRequest.new()
+var is_prefill_lookup_in_progress := false
+var pending_prefill_token := ""
+var pending_prefill_generation := 0
+var token_input_generation := 0
+var last_autofill_token := ""
+var last_autofill_age := ""
+var last_autofill_doctor_key := ""
 
 # -------- TOKEN GENERATION STATE --------
 var is_generating_token = false
@@ -38,6 +47,10 @@ var offline_generated_token_value := ""
 func _ready():
 	randomize()
 	http.timeout = REQUEST_TIMEOUT_SECONDS
+	add_child(prefill_http)
+	prefill_http.timeout = REQUEST_TIMEOUT_SECONDS
+	prefill_http.request_completed.connect(_on_prefill_request_completed)
+	token_input.focus_exited.connect(_on_token_input_focus_exited)
 
 	if first_login:
 		back_button.visible = false
@@ -49,11 +62,12 @@ func _ready():
 	if PlayerData.user_id != -1:
 		token_input.text = PlayerData.token
 		age_input.text = str(PlayerData.age)
-		doctor_key_input.text = ""
+		doctor_key_input.text = PlayerData.medecin_key
 
 	update_button()
 
 func _on_input_changed(_text=""):
+	token_input_generation += 1
 	var token = token_input.text.strip_edges().to_lower()
 	if offline_generated_token_value != "" and token_input.text.strip_edges() != offline_generated_token_value:
 		offline_generated_token_value = ""
@@ -70,6 +84,8 @@ func _on_input_changed(_text=""):
 		is_guest_mode = false
 		age_input.editable = true
 		doctor_key_input.editable = true
+		if token_input.text.strip_edges() != last_autofill_token:
+			_clear_previous_autofill_if_still_present()
 
 	update_button()
 
@@ -111,11 +127,20 @@ func generate_token() -> String:
 		token += chars[randi() % chars.length()]
 	return token
 
+func _clear_fields_for_generated_token() -> void:
+	age_input.text = ""
+	doctor_key_input.text = ""
+	pending_prefill_token = ""
+	pending_prefill_generation = 0
+	_clear_previous_autofill_if_still_present()
+	update_button()
+
 func _on_generate_token_button_pressed() -> void:
 	if is_request_running:
 		return
 	_log("Token generation requested")
 	token_generation_attempts = 0
+	_clear_fields_for_generated_token()
 	status_label.text = "Génération..."
 	set_ui_locked(true)
 	_try_generate_token()
@@ -135,8 +160,15 @@ func _try_generate_token():
 	is_request_running = true
 
 	var url = BASE_URL + "user/?token=" + generated_token
+	var has_token = await GameManager.ensure_valid_access_token()
+	if not has_token:
+		_log("API auth unavailable on token availability check, switching to offline token generation")
+		is_generating_token = false
+		is_request_running = false
+		_generate_token_offline()
+		return
 
-	var err = http.request(url, [], HTTPClient.METHOD_GET)
+	var err = http.request(url, GameManager.get_api_headers(), HTTPClient.METHOD_GET)
 
 	if err != OK:
 		_log("Network error on token availability check, switching to offline token generation")
@@ -258,6 +290,7 @@ func _generate_token_offline() -> void:
 			continue
 
 		token_input.text = candidate
+		_clear_fields_for_generated_token()
 		offline_generated_token_value = candidate
 		status_label.text = "Clé générée hors ligne (vérification au prochain sync)"
 		set_ui_locked(false)
@@ -332,6 +365,198 @@ func _extract_user_by_token_medecins(body_text: String, token_to_find: String) -
 
 	return _extract_medecin_ids_array(target.get("medecins", []))
 
+func _extract_user_by_token(body_text: String, token_to_find: String) -> Dictionary:
+	var parsed = JSON.parse_string(body_text)
+
+	if typeof(parsed) == TYPE_DICTIONARY:
+		if str(parsed.get("token", "")) == token_to_find:
+			return parsed
+		if parsed.has("results") and typeof(parsed["results"]) == TYPE_ARRAY:
+			for item in parsed["results"]:
+				if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token_to_find:
+					return item
+
+	if typeof(parsed) == TYPE_ARRAY:
+		for item in parsed:
+			if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token_to_find:
+				return item
+
+	return {}
+
+func _extract_user_age_from_lookup(user_data: Dictionary) -> String:
+	for key in ["age", "user_age", "patient_age", "patientAge", "userAge"]:
+		var raw_value = user_data.get(key, null)
+		if raw_value == null:
+			continue
+		if typeof(raw_value) == TYPE_INT:
+			return str(int(raw_value))
+		if typeof(raw_value) == TYPE_FLOAT:
+			var age_float = float(raw_value)
+			if is_equal_approx(age_float, floor(age_float)):
+				return str(int(age_float))
+			continue
+
+		var age_text = str(raw_value).strip_edges()
+		if age_text == "" or age_text == "null":
+			continue
+		if age_text.is_valid_int():
+			return str(int(age_text))
+	return ""
+
+func _extract_doctor_token_from_entry(entry: Dictionary) -> String:
+	for key in ["token", "medecin_key", "doctor_key", "token_medecin", "doctor_token", "medecin_token"]:
+		var value = str(entry.get(key, "")).strip_edges()
+		if value != "":
+			return value
+	return ""
+
+func _extract_latest_doctor_token_from_lookup(user_data: Dictionary) -> String:
+	for key in ["medecin_key", "doctor_key", "token_medecin", "latest_medecin_token", "latest_doctor_token", "doctor_token", "medecin_token"]:
+		var direct_value = str(user_data.get(key, "")).strip_edges()
+		if direct_value != "":
+			return direct_value
+
+	var medecins = user_data.get("medecins", [])
+	if typeof(medecins) != TYPE_ARRAY:
+		return ""
+
+	var latest_token := ""
+	var latest_created_at := ""
+	var latest_id := -1
+
+	for item in medecins:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var current_token = _extract_doctor_token_from_entry(item)
+		if current_token == "":
+			continue
+
+		var created_at = str(item.get("created_at", item.get("updated_at", item.get("date_creation", "")))).strip_edges()
+		var current_id = int(item.get("id", -1))
+
+		if latest_token == "":
+			latest_token = current_token
+			latest_created_at = created_at
+			latest_id = current_id
+			continue
+
+		if created_at != "" and created_at >= latest_created_at:
+			latest_token = current_token
+			latest_created_at = created_at
+			latest_id = current_id
+			continue
+
+		if latest_created_at == "" and current_id >= latest_id:
+			latest_token = current_token
+			latest_id = current_id
+
+	return latest_token
+
+func _clear_previous_autofill_if_still_present() -> void:
+	if last_autofill_age != "" and age_input.text.strip_edges() == last_autofill_age:
+		age_input.text = ""
+	if last_autofill_doctor_key != "" and doctor_key_input.text.strip_edges() == last_autofill_doctor_key:
+		doctor_key_input.text = ""
+	last_autofill_token = ""
+	last_autofill_age = ""
+	last_autofill_doctor_key = ""
+
+func _apply_lookup_prefill(user_data: Dictionary, looked_up_token: String) -> void:
+	var looked_up_age = _extract_user_age_from_lookup(user_data)
+	var looked_up_doctor_key = _extract_latest_doctor_token_from_lookup(user_data)
+
+	if looked_up_age != "":
+		age_input.text = looked_up_age
+	if looked_up_doctor_key != "":
+		doctor_key_input.text = looked_up_doctor_key
+
+	last_autofill_token = looked_up_token
+	last_autofill_age = looked_up_age
+	last_autofill_doctor_key = looked_up_doctor_key
+	update_button()
+
+func _maybe_prefill_user_fields() -> void:
+	var token = token_input.text.strip_edges()
+	if token == "" or token.to_lower() == "guest":
+		pending_prefill_token = ""
+		_clear_previous_autofill_if_still_present()
+		return
+	if token.length() < PREFILL_MIN_TOKEN_LENGTH:
+		pending_prefill_token = ""
+		_clear_previous_autofill_if_still_present()
+		return
+	if is_request_running or is_doctor_key_lookup or is_generating_token:
+		return
+	if is_prefill_lookup_in_progress or pending_prefill_token == token:
+		return
+	if last_autofill_token == token:
+		return
+
+	_clear_previous_autofill_if_still_present()
+	_start_prefill_lookup(token)
+
+func _start_prefill_lookup(token: String) -> void:
+	pending_prefill_token = token
+	pending_prefill_generation = token_input_generation
+	_run_prefill_lookup(token, pending_prefill_generation)
+
+func _on_token_input_focus_exited() -> void:
+	_maybe_prefill_user_fields()
+
+func _run_prefill_lookup(token: String, request_generation: int) -> void:
+	var has_token = await GameManager.ensure_valid_access_token()
+	if pending_prefill_token != token:
+		return
+	if request_generation != token_input_generation:
+		return
+	if not has_token:
+		_log("User prefill auth unavailable")
+		pending_prefill_token = ""
+		return
+
+	is_prefill_lookup_in_progress = true
+	var headers = GameManager.get_api_headers()
+	var err = prefill_http.request(
+		BASE_URL + "user/?token=" + token,
+		headers,
+		HTTPClient.METHOD_GET
+	)
+	if err != OK:
+		_log("User prefill lookup request failed immediately")
+		is_prefill_lookup_in_progress = false
+		pending_prefill_token = ""
+
+func _on_prefill_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	is_prefill_lookup_in_progress = false
+	var requested_token = pending_prefill_token
+	var request_generation = pending_prefill_generation
+	pending_prefill_token = ""
+	pending_prefill_generation = 0
+	var body_text = body.get_string_from_utf8()
+
+	if token_input.text.strip_edges() != requested_token:
+		return
+	if request_generation != token_input_generation:
+		return
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		_log("User prefill lookup failed | result=%s" % str(result))
+		return
+
+	if response_code == 404:
+		return
+
+	if response_code < 200 or response_code >= 300:
+		_log("User prefill lookup failed | code=%s" % str(response_code))
+		return
+
+	var user_data = _extract_user_by_token(body_text, requested_token)
+	if user_data.is_empty():
+		_log("User prefill lookup returned no matching user")
+		return
+
+	_apply_lookup_prefill(user_data, requested_token)
+
 func _merge_doctor_and_send_login(user_token: String, new_doctor_id: int) -> void:
 	_log("Doctor merge lookup started")
 	var request := HTTPRequest.new()
@@ -339,9 +564,17 @@ func _merge_doctor_and_send_login(user_token: String, new_doctor_id: int) -> voi
 	request.timeout = REQUEST_TIMEOUT_SECONDS
 	request.request_completed.connect(_on_existing_doctors_lookup_completed.bind(request, user_token, new_doctor_id))
 
+	var has_token = await GameManager.ensure_valid_access_token()
+	if not has_token:
+		_log("Doctor merge lookup auth unavailable")
+		if new_doctor_id >= 0:
+			pending_login_data["medecins"] = [new_doctor_id]
+		_send_login_request(pending_login_data)
+		return
+
 	var err = request.request(
 		BASE_URL + "user/?token=" + user_token,
-		[],
+		GameManager.get_api_headers(),
 		HTTPClient.METHOD_GET
 	)
 	if err != OK:
@@ -480,9 +713,19 @@ func _on_save_button_pressed():
 		pending_doctor_id = -1
 		is_doctor_key_lookup = true
 		status_label.text = "Vérification médecin..."
+		var has_token = await GameManager.ensure_valid_access_token()
+		if not has_token:
+			status_label.text = "Impossible de vérifier la clé médecin"
+			_log("Doctor key auth bootstrap/refresh failed, login blocked")
+			is_request_running = false
+			is_doctor_key_lookup = false
+			pending_doctor_key = ""
+			pending_doctor_id = -1
+			pending_login_data.clear()
+			return
 		var check_err = http.request(
 			BASE_URL + DOCTOR_LOOKUP_PATH + pending_doctor_key,
-			[],
+			GameManager.get_api_headers(),
 			HTTPClient.METHOD_GET
 		)
 		if check_err != OK:
@@ -519,10 +762,15 @@ func _on_guest_button_pressed():
 	is_request_running = true
 	status_label.text = "Mode invité..."
 	_log("Sending guest login request")
+	var has_token = await GameManager.ensure_valid_access_token()
+	if not has_token:
+		_log("API auth unavailable for guest login, fallback to offline login")
+		_offline_login(data)
+		return
 
 	var err = http.request(
 		BASE_URL + "user/",
-		["Content-Type: application/json"],
+		GameManager.get_json_post_headers(),
 		HTTPClient.METHOD_POST,
 		JSON.stringify(_build_user_request_payload(data))
 	)
@@ -536,9 +784,14 @@ func _send_login_request(data: Dictionary) -> void:
 	status_label.text = "Connexion..."
 	var payload = _build_user_request_payload(data)
 	_log("Sending /api/user/ login request")
+	var has_token = await GameManager.ensure_valid_access_token()
+	if not has_token:
+		_log("API auth unavailable for login, fallback to offline login")
+		_offline_login(data)
+		return
 	var err = http.request(
 		BASE_URL + "user/",
-		["Content-Type: application/json"],
+		GameManager.get_json_post_headers(),
 		HTTPClient.METHOD_POST,
 		JSON.stringify(payload)
 	)
@@ -566,6 +819,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		var body_text = body.get_string_from_utf8()
 		if _is_token_available(response_code, body_text):
 			token_input.text = generated_token
+			_clear_fields_for_generated_token()
 			offline_generated_token_value = ""
 			status_label.text = "Token généré ✔"
 			_log("Token generation success")

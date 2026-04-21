@@ -22,6 +22,9 @@ func save_data():
 			"medecin_key": PlayerData.medecin_key,
 			"user_id": PlayerData.user_id,
 			"is_guest": PlayerData.is_guest,
+			"access_token": PlayerData.access_token,
+			"refresh_token": PlayerData.refresh_token,
+			"access_token_expires_at": PlayerData.access_token_expires_at,
 			"nombreDeRapportLocal": i
 		}
 
@@ -54,6 +57,9 @@ func load_game():
 		PlayerData.age = player_data.get("age", "")
 		PlayerData.medecin_key = player_data.get("medecin_key", "")
 		PlayerData.is_guest = player_data.get("is_guest", true)
+		PlayerData.access_token = player_data.get("access_token", "")
+		PlayerData.refresh_token = player_data.get("refresh_token", "")
+		PlayerData.access_token_expires_at = int(player_data.get("access_token_expires_at", 0))
 		_log("Local save restored | user_id=%s" % str(PlayerData.user_id))
 	else:
 		_log("ERROR: failed to open save file for reading")
