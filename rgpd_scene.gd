@@ -4,17 +4,21 @@ extends Control
 @onready var continue_button = $CenterContainer/VBoxContainer/ContinueButton
 
 var force_show := false 
+var first_login_flow := false
+var opened_from_menu := false
+var is_applying_refusal := false
+
+func _get_interface():
+	if get_tree().has_meta("interface"):
+		return get_tree().get_meta("interface")
+	return null
 
 
 func _ready():
-	print("[RGPD] Scene loaded")
-
 	var accepted = SaveRgpd.is_accepted()
 
-
 	if accepted and not force_show:
-		print("[RGPD] Already accepted → skip")
-		call_deferred("_go_to_menu")
+		call_deferred("_go_next_screen")
 		return
 
 	checkbox.button_pressed = accepted
@@ -23,34 +27,64 @@ func _ready():
 
 func _on_check_box_toggled(pressed: bool):
 	continue_button.disabled = not pressed
+	if is_applying_refusal:
+		return
+	if not first_login_flow and not pressed:
+		_apply_refusal_flow()
 
 
 func _on_continue_button_pressed():
-	print("[RGPD] Accepted")
+	if not checkbox.button_pressed:
+		continue_button.disabled = true
+		return
 
 	SaveRgpd.set_accepted(true)
-	_go_to_menu()
+
+	_go_next_screen()
 
 
 func _on_refuse_button_pressed():
-	print("[RGPD] Refused")
+	if first_login_flow:
+		checkbox.button_pressed = false
+		continue_button.disabled = true
+		return
+
+	_apply_refusal_flow()
+
+
+func _apply_refusal_flow() -> void:
+	if is_applying_refusal:
+		return
+	is_applying_refusal = true
 
 	SaveRgpd.set_accepted(false)
 
-	checkbox.button_pressed = false
 	continue_button.disabled = true
 
+	if checkbox.button_pressed:
+		checkbox.button_pressed = false
 	PlayerData.logout_user()
 	GestionFichier.save_data()
 
-
-func _go_to_menu():
-	print("[NAV] Back to menu")
-	if get_parent() and get_parent().get_parent():
-		get_parent().get_parent().call_deferred("show_menu")
+	var interface = _get_interface()
+	if interface:
+		interface.first_login_flow = true
+		interface.call_deferred("show_gdpr")
 	else:
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
 
-	call_deferred("queue_free") 
+	call_deferred("queue_free")
 
-	
+
+func _go_next_screen():
+	var interface = _get_interface()
+
+	if interface:
+		if opened_from_menu:
+			interface.call_deferred("show_menu")
+		else:
+			interface.call_deferred("show_user")
+	else:
+		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
+
+	call_deferred("queue_free")

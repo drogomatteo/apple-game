@@ -3,7 +3,7 @@
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="1_ce3w2"]
 [ext_resource type="Script" uid="uid://bgub81fhtsdig" path="res://Scripts/main_menu.gd" id="1_n45e2"]
 [ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="2_n45e2"]
-[ext_resource type="Texture2D" uid="uid://c2srq4g4dkbd2" path="res://Assets/UI-UX/Images/cadenas.png" id="3_cp0ys"]
+[ext_resource type="Texture2D" uid="uid://cuk2pqwo8wn51" path="res://Assets/UI-UX/Images/cadenas.png" id="3_cp0ys"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="3_opfnp"]
 [ext_resource type="Texture2D" uid="uid://ctwc11wic5low" path="res://Assets/UI-UX/Images/images.png" id="4_cp0ys"]
 
@@ -95,7 +95,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="RgpdButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1841035764]
+[node name="GdprButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1841035764]
 layout_mode = 2
 theme_override_icons/icon = ExtResource("3_cp0ys")
 theme_override_styles/normal = ExtResource("3_opfnp")
@@ -119,6 +119,6 @@ theme_override_styles/hover = ExtResource("3_opfnp")
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/Quit Button" to="." method="_on_quit_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/RgpdButton" to="." method="_on_rgpd_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/GdprButton" to="." method="_on_gdpr_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/OptionButton" to="." method="_on_option_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/UserButton" to="." method="_on_user_button_pressed"]

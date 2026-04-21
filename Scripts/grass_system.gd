@@ -64,7 +64,6 @@ func _ready() -> void:
 func setup_distribution_texture() -> void:
 	if distribution_texture == null:
 		distribution_image = null
-		print("distribution_texture = null")
 		return
 
 	# Cas particulier : NoiseTexture2D peut ne pas être prête tout de suite
@@ -74,20 +73,14 @@ func setup_distribution_texture() -> void:
 		distribution_image = noise_tex.get_image()
 
 		if distribution_image == null:
-			print("NoiseTexture2D pas encore prête, attente du signal changed...")
 			await noise_tex.changed
 			distribution_image = noise_tex.get_image()
 
 	else:
 		distribution_image = distribution_texture.get_image()
 
-	if distribution_image == null:
-		print("distribution_image = null après chargement")
-	else:
-		print(
-			"distribution_image OK : ",
-			distribution_image.get_width(), "x", distribution_image.get_height()
-		)
+		if distribution_image == null:
+			pass
 
 func remap_distribution_value(value: float) -> float:
 	if not remap_distribution_values:
@@ -154,7 +147,6 @@ func setup_all_chunks() -> void:
 		var grass_far := child.get_node_or_null("GrassFar") as MultiMeshInstance3D
 
 		if grass_near == null and grass_far == null:
-			print("Aucun GrassNear / GrassFar trouvé dans : ", child.name)
 			continue
 
 		var base_seed: int = child.name.hash()
