@@ -196,6 +196,22 @@ func _response_contains_token(response_data, token_to_find: String) -> bool:
 
 	return false
 
+func _find_user_by_token_in_parsed_response(parsed, token_to_find: String) -> Dictionary:
+	if typeof(parsed) == TYPE_DICTIONARY:
+		if str(parsed.get("token", "")) == token_to_find:
+			return parsed
+		if parsed.has("results") and typeof(parsed["results"]) == TYPE_ARRAY:
+			for item in parsed["results"]:
+				if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token_to_find:
+					return item
+
+	if typeof(parsed) == TYPE_ARRAY:
+		for item in parsed:
+			if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token_to_find:
+				return item
+
+	return {}
+
 func _is_token_available(response_code: int, body_text: String) -> bool:
 	if response_code == 404:
 		return true
@@ -343,22 +359,7 @@ func _extract_medecin_ids_array(raw_value) -> Array[int]:
 
 func _extract_user_by_token_medecins(body_text: String, token_to_find: String) -> Array[int]:
 	var parsed = JSON.parse_string(body_text)
-	var target: Dictionary = {}
-
-	if typeof(parsed) == TYPE_DICTIONARY:
-		if parsed.has("token") and str(parsed["token"]) == token_to_find:
-			target = parsed
-		elif parsed.has("results") and typeof(parsed["results"]) == TYPE_ARRAY:
-			for item in parsed["results"]:
-				if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token_to_find:
-					target = item
-					break
-
-	if typeof(parsed) == TYPE_ARRAY:
-		for item in parsed:
-			if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token_to_find:
-				target = item
-				break
+	var target = _find_user_by_token_in_parsed_response(parsed, token_to_find)
 
 	if target.is_empty():
 		return []
@@ -367,21 +368,7 @@ func _extract_user_by_token_medecins(body_text: String, token_to_find: String) -
 
 func _extract_user_by_token(body_text: String, token_to_find: String) -> Dictionary:
 	var parsed = JSON.parse_string(body_text)
-
-	if typeof(parsed) == TYPE_DICTIONARY:
-		if str(parsed.get("token", "")) == token_to_find:
-			return parsed
-		if parsed.has("results") and typeof(parsed["results"]) == TYPE_ARRAY:
-			for item in parsed["results"]:
-				if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token_to_find:
-					return item
-
-	if typeof(parsed) == TYPE_ARRAY:
-		for item in parsed:
-			if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token_to_find:
-				return item
-
-	return {}
+	return _find_user_by_token_in_parsed_response(parsed, token_to_find)
 
 func _extract_user_age_from_lookup(user_data: Dictionary) -> String:
 	for key in ["age", "user_age", "patient_age", "patientAge", "userAge"]:
@@ -664,6 +651,27 @@ func _clear_invalid_doctor_key(reason: String) -> void:
 		GestionFichier.save_data()
 	_log("Doctor key cleared | %s" % reason)
 
+func _reset_doctor_lookup_state() -> void:
+	is_request_running = false
+	is_doctor_key_lookup = false
+	pending_doctor_key = ""
+	pending_doctor_id = -1
+	pending_login_data.clear()
+
+func _handle_doctor_lookup_blocked(status_message: String, log_message: String) -> void:
+	status_label.text = status_message
+	_log(log_message)
+	_reset_doctor_lookup_state()
+
+func _finalize_login_and_go_to_menu() -> void:
+	PlayerData.print_data()
+	GestionFichier.save_data()
+	pending_login_data.clear()
+	pending_doctor_id = -1
+	pending_existing_medecins.clear()
+	offline_generated_token_value = ""
+	call_deferred("_go_to_menu")
+
 # -------- LOGIN --------
 func _on_save_button_pressed():
 	if is_request_running:
@@ -715,13 +723,10 @@ func _on_save_button_pressed():
 		status_label.text = "Vérification médecin..."
 		var has_token = await GameManager.ensure_valid_access_token()
 		if not has_token:
-			status_label.text = "Impossible de vérifier la clé médecin"
-			_log("Doctor key auth bootstrap/refresh failed, login blocked")
-			is_request_running = false
-			is_doctor_key_lookup = false
-			pending_doctor_key = ""
-			pending_doctor_id = -1
-			pending_login_data.clear()
+			_handle_doctor_lookup_blocked(
+				"Impossible de vérifier la clé médecin",
+				"Doctor key auth bootstrap/refresh failed, login blocked"
+			)
 			return
 		var check_err = http.request(
 			BASE_URL + DOCTOR_LOOKUP_PATH + pending_doctor_key,
@@ -729,13 +734,10 @@ func _on_save_button_pressed():
 			HTTPClient.METHOD_GET
 		)
 		if check_err != OK:
-			status_label.text = "Impossible de vérifier la clé médecin"
-			_log("Doctor key check request failed immediately, login blocked")
-			is_request_running = false
-			is_doctor_key_lookup = false
-			pending_doctor_key = ""
-			pending_doctor_id = -1
-			pending_login_data.clear()
+			_handle_doctor_lookup_blocked(
+				"Impossible de vérifier la clé médecin",
+				"Doctor key check request failed immediately, login blocked"
+			)
 	else:
 		_send_login_request(data)
 
@@ -800,7 +802,7 @@ func _send_login_request(data: Dictionary) -> void:
 		_offline_login(data)
 
 # -------- HTTP RESPONSE --------
-func _on_http_request_request_completed(result, response_code, headers, body):
+func _on_http_request_request_completed(result, response_code, _headers, body):
 	is_request_running = false
 
 	if is_generating_token:
@@ -839,20 +841,20 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 		if result != HTTPRequest.RESULT_SUCCESS:
 			status_label.text = "Impossible de vérifier la clé médecin"
 			_log("Doctor key lookup network failure, login blocked")
-			pending_login_data.clear()
+			_reset_doctor_lookup_state()
 			return
 
 		if response_code == 404:
 			status_label.text = "Le médecin n'existe pas"
 			_log("Doctor key lookup failed: key not found")
 			_clear_invalid_doctor_key("lookup 404")
-			pending_login_data.clear()
+			_reset_doctor_lookup_state()
 			return
 
 		if response_code < 200 or response_code >= 300:
 			status_label.text = "Impossible de vérifier la clé médecin"
 			_log("Doctor key lookup failed with code=%s, login blocked" % str(response_code))
-			pending_login_data.clear()
+			_reset_doctor_lookup_state()
 			return
 
 		var doctor_found = _is_lookup_token_found(response_code, doctor_body_text, doctor_key)
@@ -860,7 +862,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 			status_label.text = "Le médecin n'existe pas"
 			_log("Doctor key lookup returned no matching token")
 			_clear_invalid_doctor_key("lookup no matching token")
-			pending_login_data.clear()
+			_reset_doctor_lookup_state()
 			return
 
 		var doctor_id = _extract_lookup_doctor_id(response_code, doctor_body_text, doctor_key)
@@ -931,14 +933,7 @@ func _on_http_request_request_completed(result, response_code, headers, body):
 
 		PlayerData.age = age
 
-	PlayerData.print_data()
-	GestionFichier.save_data()
-	pending_login_data.clear()
-	pending_doctor_id = -1
-	pending_existing_medecins.clear()
-	offline_generated_token_value = ""
-
-	call_deferred("_go_to_menu")
+	_finalize_login_and_go_to_menu()
 
 # -------- OFFLINE --------
 func _offline_login(data):
@@ -972,24 +967,14 @@ func _offline_login(data):
 
 	status_label.text = "Mode hors ligne"
 
-	PlayerData.print_data()
-	GestionFichier.save_data()
-	pending_login_data.clear()
-	pending_doctor_id = -1
-	pending_existing_medecins.clear()
-	offline_generated_token_value = ""
-
-	call_deferred("_go_to_menu")
+	_finalize_login_and_go_to_menu()
 
 # -------- NAV --------
 func _go_to_menu():
 	var interface = get_tree().get_meta("interface")
 
 	if interface:
-		if first_login:
-			interface.show_menu()
-		else:
-			interface.show_menu()
+		interface.show_menu()
 
 func _on_back_button_pressed():
 	if first_login:

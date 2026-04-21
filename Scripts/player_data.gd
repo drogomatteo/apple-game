@@ -11,11 +11,23 @@ var access_token := ""
 var refresh_token := ""
 var access_token_expires_at := 0
 
+func _clear_profile() -> void:
+	user_id = -1
+	token = ""
+	uuid = ""
+	age = ""
+	medecin_key = ""
+
+func _clear_api_tokens() -> void:
+	access_token = ""
+	refresh_token = ""
+	access_token_expires_at = 0
+
 func set_user(id, u, t, a, m = ""):
 	user_id = id
-	uuid =u
+	uuid = u
 	token = t
-	age =a
+	age = a
 	medecin_key = m
 	is_guest = false
 
@@ -28,16 +40,9 @@ func set_guest(id):
 	is_guest = true
 
 func logout_user():
-	PlayerData.user_id = -1
-	PlayerData.token = ""
-	PlayerData.uuid = ""
-	PlayerData.age= ""
-	PlayerData.medecin_key = ""
-	PlayerData.is_guest = false
-	PlayerData.access_token = ""
-	PlayerData.refresh_token = ""
-	PlayerData.access_token_expires_at = 0
-
+	_clear_profile()
+	is_guest = false
+	_clear_api_tokens()
 
 # DEBUG
 func print_data():

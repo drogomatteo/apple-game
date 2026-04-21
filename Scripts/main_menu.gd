@@ -7,6 +7,8 @@ func _log(message: String) -> void:
 @onready var start_button = $MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/StartButton
 const INITIAL_SYNC_TIMEOUT_SECONDS := 3.0
 
+func _get_interface():
+	return get_tree().get_meta("interface")
 
 func _ready():
 	if not start_button.pressed.is_connected(_on_start_pressed):
@@ -41,7 +43,7 @@ func _on_start_pressed():
 
 	if PlayerData.user_id == -1:
 		_log("Start blocked: no user, redirect to user menu")
-		get_tree().get_meta("interface").show_user()
+		_get_interface().show_user()
 		return
 
 	var transition = get_tree().get_first_node_in_group("transition")
@@ -49,21 +51,21 @@ func _on_start_pressed():
 	if transition:
 		transition.go_to_scene("game")
 	else:
-		get_tree().get_meta("interface").show_game()
+		_get_interface().show_game()
 
 func _on_start_button_pressed():
 	_on_start_pressed()
 
 
 func _on_option_button_pressed():
-	get_tree().get_meta("interface").show_options()
+	_get_interface().show_options()
 
 func _on_user_button_pressed():
-	get_tree().get_meta("interface").show_user()
+	_get_interface().show_user()
 
 func _on_quit_button_pressed():
 	GestionFichier.save_data()
 	get_tree().quit()
 
 func _on_gdpr_button_pressed() -> void:
-	get_tree().get_meta("interface").show_gdpr(true)
+	_get_interface().show_gdpr(true)

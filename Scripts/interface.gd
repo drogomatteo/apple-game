@@ -15,6 +15,13 @@ var rgpd_scene = preload("res://Scenes/gdpr_menu.tscn")
 var current_scene = null
 var first_login_flow := false
 
+func _swap_scene(scene_resource: PackedScene, clear_existing := true):
+	if clear_existing:
+		clear()
+	current_scene = scene_resource.instantiate()
+	container.add_child(current_scene)
+	return current_scene
+
 func _ready():
 	get_tree().set_meta("interface", self)
 	
@@ -40,43 +47,34 @@ func clear():
 		current_scene.queue_free()
 		current_scene = null
 
-
 func show_menu():
-	first_login_flow =false
+	first_login_flow = false
 	_log("Transition -> main_menu")
-	clear()
+	if current_scene:
+		clear()
 	await get_tree().process_frame
-	current_scene = menu_scene.instantiate()
-	container.add_child(current_scene)
+	_swap_scene(menu_scene, false)
 
 
 func show_options():
 	_log("Transition -> option_menu")
-	clear()
-	current_scene = options_scene.instantiate()
-	container.add_child(current_scene)
+	_swap_scene(options_scene)
 
 
 func show_user():
 	_log("Transition -> user_menu | first_login=%s" % str(first_login_flow))
-	clear()
-	current_scene = user_scene.instantiate()
-	current_scene.first_login = first_login_flow
-	container.add_child(current_scene)
+	var scene = _swap_scene(user_scene)
+	scene.first_login = first_login_flow
 
 
 func show_game():
 	_log("Transition -> game")
-	clear()
-	current_scene = game_scene.instantiate()
-	container.add_child(current_scene)
+	_swap_scene(game_scene)
 	
 
 func show_gdpr(opened_from_menu: bool = false):
 	_log("Transition -> gdpr_menu | from_menu=%s" % str(opened_from_menu))
-	clear()
-	current_scene = rgpd_scene.instantiate()
-	current_scene.force_show = true
-	current_scene.first_login_flow = first_login_flow
-	current_scene.opened_from_menu = opened_from_menu
-	container.add_child(current_scene)
+	var scene = _swap_scene(rgpd_scene)
+	scene.force_show = true
+	scene.first_login_flow = first_login_flow
+	scene.opened_from_menu = opened_from_menu

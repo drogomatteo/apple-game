@@ -44,6 +44,15 @@ func get_multipart_post_headers(boundary: String) -> PackedStringArray:
 	headers.insert(0, "Content-Type: multipart/form-data; boundary=" + boundary)
 	return headers
 
+func _queue_file_upload(filepath, url, session_id := "", extra_fields := {}) -> void:
+	SyncManager.add_action({
+		"type": "file",
+		"path": filepath,
+		"url": url,
+		"session_id": session_id,
+		"extra_fields": extra_fields
+	})
+
 func clear_api_tokens(save := true) -> void:
 	PlayerData.access_token = ""
 	PlayerData.refresh_token = ""
@@ -74,6 +83,13 @@ func _perform_http_request(request: HTTPRequest, url: String, headers: PackedStr
 		"code": code,
 		"body_text": response_body.get_string_from_utf8()
 	}
+
+func _parse_token_response(body_text: String, context: String) -> Dictionary:
+	var parsed = JSON.parse_string(body_text)
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	_log("%s response invalid | body=%s" % [context, body_text.strip_edges()])
+	return {}
 
 func _extract_expiry_timestamp(response_data: Dictionary) -> int:
 	var candidates = [
@@ -127,9 +143,8 @@ func fetch_api_tokens() -> bool:
 		])
 		return false
 
-	var parsed = JSON.parse_string(str(response.get("body_text", "")))
-	if typeof(parsed) != TYPE_DICTIONARY:
-		_log("Bootstrap token response invalid | body=%s" % str(response.get("body_text", "")).strip_edges())
+	var parsed = _parse_token_response(str(response.get("body_text", "")), "Bootstrap token")
+	if parsed.is_empty():
 		return false
 
 	return _store_api_tokens(parsed)
@@ -159,9 +174,8 @@ func refresh_api_tokens() -> bool:
 		clear_api_tokens(false)
 		return false
 
-	var parsed = JSON.parse_string(str(response.get("body_text", "")))
-	if typeof(parsed) != TYPE_DICTIONARY:
-		_log("Refresh token response invalid | body=%s" % str(response.get("body_text", "")).strip_edges())
+	var parsed = _parse_token_response(str(response.get("body_text", "")), "Refresh token")
+	if parsed.is_empty():
 		clear_api_tokens(false)
 		return false
 
@@ -180,13 +194,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 	_log("send_file -> %s" % filepath)
 	if PlayerData.user_id == -1:
 		_log("No user_id: queue file upload")
-		SyncManager.add_action({
-			"type": "file",
-			"path": filepath,
-			"url": url,
-			"session_id": session_id,
-			"extra_fields": extra_fields
-		})
+		_queue_file_upload(filepath, url, session_id, extra_fields)
 		return
 
 	var file = FileAccess.open(filepath, FileAccess.READ)
@@ -225,13 +233,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 	var has_token = await ensure_valid_access_token()
 	if not has_token:
 		_log("ERROR: no API access token available, queueing upload")
-		SyncManager.add_action({
-			"type": "file",
-			"path": filepath,
-			"url": url,
-			"session_id": session_id,
-			"extra_fields": extra_fields
-		})
+		_queue_file_upload(filepath, url, session_id, extra_fields)
 		return
 
 	var headers = get_multipart_post_headers(boundary)
@@ -243,27 +245,16 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 
 	if err != OK:
 		_log("ERROR: immediate upload request failed, queueing")
-		SyncManager.add_action({
-			"type": "file",
-			"path": filepath,
-			"url": url,
-			"session_id": session_id,
-			"extra_fields": extra_fields
-		})
+		_queue_file_upload(filepath, url, session_id, extra_fields)
+		http.queue_free()
 		return
 
-	http.request_completed.connect(func(result, code, headers, body):
+	http.request_completed.connect(func(result, code, _headers, _body):
 		if _is_http_success(result, code):
 			_log("Upload success | code=%s" % str(code))
 		if not _is_http_success(result, code):
 			_log("Upload failed, queueing retry")
-			SyncManager.add_action({
-				"type": "file",
-				"path": filepath,
-				"url": url,
-				"session_id": session_id,
-				"extra_fields": extra_fields
-			})
+			_queue_file_upload(filepath, url, session_id, extra_fields)
 
 		http.queue_free()
 	)

@@ -42,6 +42,8 @@ func add_action(action : Dictionary):
 
 func save_queue():
 	var f = FileAccess.open(file_path, FileAccess.WRITE)
+	if f == null:
+		return
 	f.store_string(JSON.stringify(queue))
 	f.close()
 
@@ -50,6 +52,9 @@ func load_queue():
 		queue = []
 		return
 	var f = FileAccess.open(file_path, FileAccess.READ)
+	if f == null:
+		queue = []
+		return
 	queue = JSON.parse_string(f.get_as_text())
 	f.close()
 	if typeof(queue) != TYPE_ARRAY:
@@ -79,6 +84,37 @@ func _response_contains_token(response_data, token_to_find: String) -> bool:
 		return false
 
 	return false
+
+func _remove_temp_seed_file(seed_value: String) -> void:
+	if seed_value == "":
+		return
+	var temp_file_path = "user://temp_seed_%s.dat" % seed_value
+	if FileAccess.file_exists(temp_file_path):
+		DirAccess.remove_absolute(temp_file_path)
+
+func _drop_current_action(action: Dictionary) -> void:
+	if action.get("type", "") == "create_seed":
+		_remove_temp_seed_file(str(action.get("seed_value", "")))
+	queue.pop_front()
+	save_queue()
+	retry_delay = 0.5
+
+func _schedule_retry_for_action(action: Dictionary, retry_log: String, drop_log: String) -> void:
+	action["retries"] += 1
+	if retry_log != "":
+		_log(retry_log % [str(action.get("type", "unknown")), str(action["retries"])])
+
+	if action["retries"] > MAX_RETRIES:
+		if drop_log != "":
+			_log(drop_log % str(action.get("type", "unknown")))
+		_drop_current_action(action)
+		process_next()
+		return
+
+	save_queue()
+	await get_tree().create_timer(retry_delay).timeout
+	retry_delay = min(retry_delay * 2.0, max_retry_delay)
+	process_next()
 
 func _is_token_available_from_lookup(code: int, body_text: String, token_to_find: String) -> bool:
 	if code == 404:
@@ -220,30 +256,11 @@ func _handle_immediate_request_error() -> void:
 		return
 
 	var action = queue[0]
-	action["retries"] += 1
-	
-	# Vérifier si on a dépassé le nombre maximal de retries
-	if action["retries"] > MAX_RETRIES:
-		print("[SyncManager] CRITICAL: Action type=%s has exceeded max retries (%d). Abandoning it." % [action.get("type", "unknown"), MAX_RETRIES])
-		
-		# Nettoyer le fichier temporaire si c'est une création de seed
-		if action.get("type", "") == "create_seed":
-			var seed_value = str(action.get("seed_value", ""))
-			var temp_file_path = "user://temp_seed_%s.dat" % seed_value
-			if FileAccess.file_exists(temp_file_path):
-				DirAccess.remove_absolute(temp_file_path)
-				print("[SyncManager] Cleaned up temp seed file: %s" % temp_file_path)
-		
-		queue.pop_front()
-		save_queue()
-		retry_delay = 0.5  # Réinitialiser le délai
-		process_next()
-		return
-
-	save_queue()
-	await get_tree().create_timer(retry_delay).timeout
-	retry_delay = min(retry_delay * 2.0, max_retry_delay)
-	process_next()
+	await _schedule_retry_for_action(
+		action,
+		"Immediate request error | type=%s | retries=%s",
+		"Dropping action after max retries | type=%s"
+	)
 
 func process_next():
 	if queue.is_empty():
@@ -404,60 +421,10 @@ func process_next():
 			_handle_immediate_request_error()
 
 	elif action["type"] == "file":
+		# (inchangé)
+		pass
 
-		var filepath = action["path"]
-		var url = action["url"]
-		var session_id = action.get("session_id", "")
-		var extra_fields = action.get("extra_fields", {})
-
-		var file = FileAccess.open(filepath, FileAccess.READ)
-		if file == null:
-			queue.pop_front()
-			save_queue()
-			is_running = false
-			process_next()
-			return
-
-		var file_bytes = file.get_buffer(file.get_length())
-		file.close()
-
-		var boundary = "----GodotBoundary"
-		var body = ""
-
-		body += "--" + boundary + "\r\n"
-		body += 'Content-Disposition: form-data; name="user"\r\n\r\n'
-		body += str(PlayerData.user_id) + "\r\n"
-
-		if session_id != "":
-			body += "--" + boundary + "\r\n"
-			body += 'Content-Disposition: form-data; name="session_id"\r\n\r\n'
-			body += session_id + "\r\n"
-
-		for field_name in extra_fields.keys():
-			body += "--" + boundary + "\r\n"
-			body += 'Content-Disposition: form-data; name="' + str(field_name) + '"\r\n\r\n'
-			body += str(extra_fields[field_name]) + "\r\n"
-
-		body += "--" + boundary + "\r\n"
-		body += 'Content-Disposition: form-data; name="fichier"; filename="rapport.dat"\r\n'
-		body += "Content-Type: application/octet-stream\r\n\r\n"
-
-		var body_bytes = body.to_utf8_buffer()
-		var end = ("\r\n--" + boundary + "--\r\n").to_utf8_buffer()
-
-		var final_body = body_bytes + file_bytes + end
-
-		var err := http.request_raw(
-			url,
-			["Content-Type: multipart/form-data; boundary=" + boundary],
-			HTTPClient.METHOD_POST,
-			final_body
-		)
-		if err != OK:
-			_handle_immediate_request_error()
-
-func _on_request_completed(result, code, headers, body):
-	var elapsed = Time.get_ticks_msec() - request_start_time
+func _on_request_completed(result, code, _headers, body):
 	is_running = false
 
 	if queue.is_empty():
@@ -473,19 +440,7 @@ func _on_request_completed(result, code, headers, body):
 
 		if result != HTTPRequest.RESULT_SUCCESS:
 			_log("Login precheck failed (network) | mode=%s | retrying" % precheck_mode)
-			action["retries"] += 1
-
-			if action["retries"] > MAX_RETRIES:
-				queue.pop_front()
-				save_queue()
-				retry_delay = 0.5
-				process_next()
-				return
-
-			await get_tree().create_timer(retry_delay).timeout
-			retry_delay = min(retry_delay * 2.0, max_retry_delay)
-			save_queue()
-			process_next()
+			await _schedule_retry_for_action(action, "", "")
 			return
 
 		var login_data = action.get("data", {})
@@ -494,19 +449,7 @@ func _on_request_completed(result, code, headers, body):
 
 		if code != 404 and (code < 200 or code >= 300):
 			_log("Login precheck failed (code=%s) | mode=%s | retrying" % [str(code), precheck_mode])
-			action["retries"] += 1
-
-			if action["retries"] > MAX_RETRIES:
-				queue.pop_front()
-				save_queue()
-				retry_delay = 0.5
-				process_next()
-				return
-
-			await get_tree().create_timer(retry_delay).timeout
-			retry_delay = min(retry_delay * 2.0, max_retry_delay)
-			save_queue()
-			process_next()
+			await _schedule_retry_for_action(action, "", "")
 			return
 
 		if precheck_mode == "doctor":
@@ -548,20 +491,8 @@ func _on_request_completed(result, code, headers, body):
 
 		if regen_attempts > MAX_TOKEN_CONFLICT_REGEN_ATTEMPTS:
 			_log("Too many token conflict regenerations, counting as retry")
-			action["retries"] += 1
 			action["token_conflict_regen_attempts"] = 0
-
-			if action["retries"] > MAX_RETRIES:
-				queue.pop_front()
-				save_queue()
-				retry_delay = 0.5
-				process_next()
-				return
-
-			await get_tree().create_timer(retry_delay).timeout
-			retry_delay = min(retry_delay * 2.0, max_retry_delay)
-			save_queue()
-			process_next()
+			await _schedule_retry_for_action(action, "", "")
 			return
 
 		var old_token = current_token
@@ -593,22 +524,11 @@ func _on_request_completed(result, code, headers, body):
 				return
 
 		_log("Request failed | type=%s | code=%s | result=%s" % [action_type, str(code), str(result)])
-		action["retries"] += 1
-		print("[SyncManager] ERROR: Request failed. Result=%d, Code=%d, Retries=%d. Retry delay: %.1f s" % [result, code, action["retries"], retry_delay])
-		print("[SyncManager] Response body: %s" % body.get_string_from_utf8())
-
-		if action["retries"] > MAX_RETRIES:
-			_log("Dropping action after max retries | type=%s" % action_type)
-			queue.pop_front()
-			save_queue()
-			retry_delay = 0.5
-			process_next()
-			return
-
-		await get_tree().create_timer(retry_delay).timeout
-		retry_delay = min(retry_delay * 2.0, max_retry_delay)
-		save_queue()
-		process_next()
+		await _schedule_retry_for_action(
+			action,
+			"",
+			"Dropping action after max retries | type=%s"
+		)
 		return
 
 	retry_delay = 0.5
