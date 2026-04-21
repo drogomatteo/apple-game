@@ -1,5 +1,6 @@
 extends Node
 
+# -------- PROFILE --------
 var user_id = -1
 var token = ""
 var uuid = ""
@@ -7,10 +8,13 @@ var age = ""
 var medecin_key = ""
 var is_guest = true
 var session_id : String
+
+# -------- API TOKENS --------
 var access_token := ""
 var refresh_token := ""
 var access_token_expires_at := 0
 
+# -------- INTERNAL HELPERS --------
 func _clear_profile() -> void:
 	user_id = -1
 	token = ""
@@ -23,6 +27,7 @@ func _clear_api_tokens() -> void:
 	refresh_token = ""
 	access_token_expires_at = 0
 
+# -------- PUBLIC API --------
 func set_user(id, u, t, a, m = ""):
 	user_id = id
 	uuid = u
@@ -35,7 +40,7 @@ func set_guest(id):
 	user_id = id
 	uuid = ""
 	token = ""
-	age =""
+	age = ""
 	medecin_key = ""
 	is_guest = true
 
@@ -44,6 +49,6 @@ func logout_user():
 	is_guest = false
 	_clear_api_tokens()
 
-# DEBUG
+# -------- DEBUG --------
 func print_data():
 	pass

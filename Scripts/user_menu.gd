@@ -4,6 +4,7 @@ const LOG_TAG := "[UserMenu]"
 func _log(message: String) -> void:
 	print("%s %s" % [LOG_TAG, message])
 
+# -------- NODES --------
 @onready var http = $HTTPRequest
 @onready var token_input = $CenterContainer/HBoxContainer/VBoxContainer/TokenInput
 @onready var age_input = $CenterContainer/HBoxContainer/VBoxContainer/AgeInput
@@ -14,6 +15,7 @@ func _log(message: String) -> void:
 @onready var generate_button = $CenterContainer/HBoxContainer/VBoxContainer2/GenerateTokenButton
 @onready var back_button = $BackButton
 
+# -------- CONFIG --------
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 const DOCTOR_LOOKUP_PATH := "medecin/?token="
 const REQUEST_TIMEOUT_SECONDS := 5.0
@@ -21,6 +23,7 @@ const TOKEN_LENGTH := 8
 const MAX_TOKEN_GENERATION_ATTEMPTS := 20
 const PREFILL_MIN_TOKEN_LENGTH := 1
 
+# -------- STATE --------
 var is_request_running = false
 var is_guest_mode = false
 var pending_login_data : Dictionary = {}
@@ -37,13 +40,16 @@ var token_input_generation := 0
 var last_autofill_token := ""
 var last_autofill_age := ""
 var last_autofill_doctor_key := ""
-
-# -------- TOKEN GENERATION STATE --------
 var is_generating_token = false
 var generated_token = ""
 var token_generation_attempts := 0
 var offline_generated_token_value := ""
 
+# -------- SHARED HELPERS --------
+func _get_interface():
+	return get_tree().get_meta("interface")
+
+# -------- LIFECYCLE --------
 func _ready():
 	randomize()
 	http.timeout = REQUEST_TIMEOUT_SECONDS
@@ -64,8 +70,9 @@ func _ready():
 		age_input.text = str(PlayerData.age)
 		doctor_key_input.text = PlayerData.medecin_key
 
-	update_button()
+	_update_button()
 
+# -------- UI HELPERS --------
 func _on_input_changed(_text=""):
 	token_input_generation += 1
 	var token = token_input.text.strip_edges().to_lower()
@@ -87,9 +94,9 @@ func _on_input_changed(_text=""):
 		if token_input.text.strip_edges() != last_autofill_token:
 			_clear_previous_autofill_if_still_present()
 
-	update_button()
+	_update_button()
 
-func update_button():
+func _update_button():
 	var token = token_input.text.strip_edges()
 	var age = age_input.text.strip_edges()
 
@@ -98,10 +105,10 @@ func update_button():
 	if token != "" and age != "":
 		status_label.text = ""
 
-func get_device_uuid() -> String:
+func _get_device_uuid() -> String:
 	return OS.get_unique_id()
 
-func is_valid_age(age_text: String) -> bool:
+func _is_valid_age(age_text: String) -> bool:
 	if age_text == "":
 		return false
 	for c in age_text:
@@ -109,8 +116,8 @@ func is_valid_age(age_text: String) -> bool:
 			return false
 	return true
 
-# -------- TOKEN GENERATION --------
-func set_ui_locked(locked: bool) -> void:
+# -------- FORM HELPERS --------
+func _set_ui_locked(locked: bool) -> void:
 	save_button.disabled = locked
 	guest_button.disabled = locked
 	back_button.disabled = locked or first_login
@@ -119,8 +126,10 @@ func set_ui_locked(locked: bool) -> void:
 	doctor_key_input.editable = not locked and not is_guest_mode
 	generate_button.disabled = locked
 	if not locked:
-		update_button()
-func generate_token() -> String:
+		_update_button()
+
+# -------- TOKEN HELPERS --------
+func _generate_token() -> String:
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	var token = ""
 	for i in range(TOKEN_LENGTH):
@@ -133,7 +142,7 @@ func _clear_fields_for_generated_token() -> void:
 	pending_prefill_token = ""
 	pending_prefill_generation = 0
 	_clear_previous_autofill_if_still_present()
-	update_button()
+	_update_button()
 
 func _on_generate_token_button_pressed() -> void:
 	if is_request_running:
@@ -142,7 +151,7 @@ func _on_generate_token_button_pressed() -> void:
 	token_generation_attempts = 0
 	_clear_fields_for_generated_token()
 	status_label.text = "Génération..."
-	set_ui_locked(true)
+	_set_ui_locked(true)
 	_try_generate_token()
 
 func _try_generate_token():
@@ -152,10 +161,10 @@ func _try_generate_token():
 		is_request_running = false
 		status_label.text = "Impossible de générer une clé patient"
 		_log("Token generation failed after max attempts")
-		set_ui_locked(false)
+		_set_ui_locked(false)
 		return
 
-	generated_token = generate_token()
+	generated_token = _generate_token()
 	is_generating_token = true
 	is_request_running = true
 
@@ -301,7 +310,7 @@ func _generate_token_offline() -> void:
 	var reserved_tokens = _collect_local_reserved_tokens()
 
 	for _i in range(MAX_TOKEN_GENERATION_ATTEMPTS):
-		var candidate = generate_token()
+		var candidate = _generate_token()
 		if reserved_tokens.has(candidate):
 			continue
 
@@ -309,12 +318,12 @@ func _generate_token_offline() -> void:
 		_clear_fields_for_generated_token()
 		offline_generated_token_value = candidate
 		status_label.text = "Clé générée hors ligne (vérification au prochain sync)"
-		set_ui_locked(false)
+		_set_ui_locked(false)
 		return
 
 	status_label.text = "Impossible de générer une clé patient"
 	_log("Offline token generation failed")
-	set_ui_locked(false)
+	_set_ui_locked(false)
 
 func _build_user_request_payload(data: Dictionary) -> Dictionary:
 	var payload := {
@@ -460,7 +469,7 @@ func _apply_lookup_prefill(user_data: Dictionary, looked_up_token: String) -> vo
 	last_autofill_token = looked_up_token
 	last_autofill_age = looked_up_age
 	last_autofill_doctor_key = looked_up_doctor_key
-	update_button()
+	_update_button()
 
 func _maybe_prefill_user_fields() -> void:
 	var token = token_input.text.strip_edges()
@@ -694,13 +703,13 @@ func _on_save_button_pressed():
 		_on_guest_button_pressed()
 		return
 
-	if not is_valid_age(age):
+	if not _is_valid_age(age):
 		status_label.text = "Age invalide"
 		return
 
 	is_guest_mode = false
 
-	var uuid = get_device_uuid()
+	var uuid = _get_device_uuid()
 
 	var data = {
 		"token": token,
@@ -818,14 +827,14 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 			_generate_token_offline()
 			return
 
-		var body_text = body.get_string_from_utf8()
-		if _is_token_available(response_code, body_text):
+		var token_body_text = body.get_string_from_utf8()
+		if _is_token_available(response_code, token_body_text):
 			token_input.text = generated_token
 			_clear_fields_for_generated_token()
 			offline_generated_token_value = ""
 			status_label.text = "Token généré ✔"
 			_log("Token generation success")
-			set_ui_locked(false)  
+			_set_ui_locked(false)  
 		else:
 			_try_generate_token()
 
@@ -917,7 +926,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 		PlayerData.age = ""
 		PlayerData.medecin_key = ""
 	else:
-		var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", get_device_uuid())))
+		var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", _get_device_uuid())))
 
 		var age = pending_login_data.get("age", "")
 		if str(age).is_valid_int():
@@ -952,7 +961,7 @@ func _offline_login(data):
 
 		PlayerData.set_user(
 			local_id,
-			str(data.get("uuid", get_device_uuid())),
+			str(data.get("uuid", _get_device_uuid())),
 			data["token"],
 			age,
 			str(data.get("medecin_key", ""))
@@ -971,18 +980,18 @@ func _offline_login(data):
 
 # -------- NAV --------
 func _go_to_menu():
-	var interface = get_tree().get_meta("interface")
-
+	var interface = _get_interface()
 	if interface:
 		interface.show_menu()
 
+# -------- BUTTON CALLBACKS --------
 func _on_back_button_pressed():
 	if first_login:
 		return
 	
-	get_tree().get_meta("interface").show_menu()
+	_get_interface().show_menu()
 
-# -------- INPUT AGE --------
+# -------- INPUT CALLBACKS --------
 func _on_age_input_text_changed(new_text: String) -> void:
 	if is_guest_mode:
 		age_input.text = ""
@@ -996,8 +1005,7 @@ func _on_age_input_text_changed(new_text: String) -> void:
 	if filtered != new_text:
 		age_input.text = filtered
 
-	update_button()
-
+	_update_button()
 
 func _on_doctor_token_input_text_changed(new_text: String) -> void:
 	if is_guest_mode:
@@ -1009,4 +1017,4 @@ func _on_doctor_token_input_text_changed(new_text: String) -> void:
 		doctor_key_input.text = sanitized
 		return
 
-	update_button()
+	_update_button()

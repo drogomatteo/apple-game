@@ -4,23 +4,29 @@ const LOG_TAG := "[MainMenu]"
 func _log(message: String) -> void:
 	print("%s %s" % [LOG_TAG, message])
 
+# -------- NODES --------
 @onready var start_button = $MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/StartButton
+
+# -------- CONFIG --------
 const INITIAL_SYNC_TIMEOUT_SECONDS := 3.0
 
+# -------- SHARED HELPERS --------
 func _get_interface():
 	return get_tree().get_meta("interface")
 
+# -------- LIFECYCLE --------
 func _ready():
 	if not start_button.pressed.is_connected(_on_start_pressed):
 		start_button.pressed.connect(_on_start_pressed)
 
 	start_button.disabled = true
 
-	await sync_before_play()
+	await _sync_before_play()
 
 	start_button.disabled = false
 
-func sync_before_play():
+# -------- FLOW --------
+func _sync_before_play():
 	_log("Initial sync started")
 	var sync_start = Time.get_ticks_msec()
 	SyncManager.force_sync()
@@ -38,7 +44,7 @@ func sync_before_play():
 	else:
 		_log("Initial sync done | elapsed_ms=%s" % str(elapsed))
 
-func _on_start_pressed():
+func _start_game_or_redirect():
 	PlayerData.print_data()
 
 	if PlayerData.user_id == -1:
@@ -53,8 +59,9 @@ func _on_start_pressed():
 	else:
 		_get_interface().show_game()
 
+# -------- BUTTON CALLBACKS --------
 func _on_start_button_pressed():
-	_on_start_pressed()
+	_start_game_or_redirect()
 
 
 func _on_option_button_pressed():

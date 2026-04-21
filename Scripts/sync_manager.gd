@@ -4,54 +4,58 @@ const LOG_TAG := "[SyncManager]"
 func _log(message: String) -> void:
 	print("%s %s" % [LOG_TAG, message])
 
+# -------- CONFIG --------
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 const DOCTOR_LOOKUP_PATH := "medecin/?token="
-var file_path = "user://offline_queue.json"
+var queue_file_path = "user://offline_queue.json"
 const REQUEST_TIMEOUT_SECONDS := 5.0
 const MAX_RETRIES := 10
 const TOKEN_LENGTH := 8
 const MAX_TOKEN_CONFLICT_REGEN_ATTEMPTS := 20
 
+# -------- STATE --------
 var queue : Array = []
 var http := HTTPRequest.new()
 var is_running = false
 var sync_done = false
-
 var retry_delay = 0.5
 var max_retry_delay = 5.0
 
-# Variables de tracking pour le diagnostic
+# -------- DIAGNOSTICS --------
 var sync_start_time = 0
 var request_start_time = 0
 var login_precheck_in_progress := false
 var login_precheck_mode := ""
 
+# -------- LIFECYCLE --------
 func _ready():
 	randomize()
 	add_child(http)
 	http.timeout = REQUEST_TIMEOUT_SECONDS
 	http.request_completed.connect(_on_request_completed)
-	load_queue()
+	_load_queue()
 
+# -------- PUBLIC API --------
 func add_action(action : Dictionary):
 	if not action.has("retries"):
 		action["retries"] = 0
 	queue.append(action)
-	save_queue()
+	_save_queue()
 	_log("Action queued | type=%s | queue_size=%s" % [str(action.get("type", "unknown")), str(queue.size())])
 
-func save_queue():
-	var f = FileAccess.open(file_path, FileAccess.WRITE)
+# -------- QUEUE PERSISTENCE --------
+func _save_queue():
+	var f = FileAccess.open(queue_file_path, FileAccess.WRITE)
 	if f == null:
 		return
 	f.store_string(JSON.stringify(queue))
 	f.close()
 
-func load_queue():
-	if not FileAccess.file_exists(file_path):
+func _load_queue():
+	if not FileAccess.file_exists(queue_file_path):
 		queue = []
 		return
-	var f = FileAccess.open(file_path, FileAccess.READ)
+	var f = FileAccess.open(queue_file_path, FileAccess.READ)
 	if f == null:
 		queue = []
 		return
@@ -60,6 +64,7 @@ func load_queue():
 	if typeof(queue) != TYPE_ARRAY:
 		queue = []
 
+# -------- TOKEN HELPERS --------
 func _generate_token() -> String:
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	var token = ""
@@ -96,7 +101,7 @@ func _drop_current_action(action: Dictionary) -> void:
 	if action.get("type", "") == "create_seed":
 		_remove_temp_seed_file(str(action.get("seed_value", "")))
 	queue.pop_front()
-	save_queue()
+	_save_queue()
 	retry_delay = 0.5
 
 func _schedule_retry_for_action(action: Dictionary, retry_log: String, drop_log: String) -> void:
@@ -108,14 +113,15 @@ func _schedule_retry_for_action(action: Dictionary, retry_log: String, drop_log:
 		if drop_log != "":
 			_log(drop_log % str(action.get("type", "unknown")))
 		_drop_current_action(action)
-		process_next()
+		_process_next()
 		return
 
-	save_queue()
+	_save_queue()
 	await get_tree().create_timer(retry_delay).timeout
 	retry_delay = min(retry_delay * 2.0, max_retry_delay)
-	process_next()
+	_process_next()
 
+# -------- API HELPERS --------
 func _is_token_available_from_lookup(code: int, body_text: String, token_to_find: String) -> bool:
 	if code == 404:
 		return true
@@ -244,7 +250,7 @@ func force_sync():
 	sync_start_time = Time.get_ticks_msec()
 	sync_done = false
 	_log("force_sync started | queue_size=%s" % str(queue.size()))
-	process_next()
+	_process_next()
 
 func _handle_immediate_request_error() -> void:
 	is_running = false
@@ -262,7 +268,8 @@ func _handle_immediate_request_error() -> void:
 		"Dropping action after max retries | type=%s"
 	)
 
-func process_next():
+# -------- SYNC FLOW --------
+func _process_next():
 	if queue.is_empty():
 		var elapsed = Time.get_ticks_msec() - sync_start_time
 		print("[SyncManager] Queue processed. Total sync time: %d ms" % elapsed)
@@ -285,7 +292,7 @@ func process_next():
 			login_data.erase("medecin_key")
 			login_data["token_generated_offline"] = false
 			action["data"] = login_data
-			save_queue()
+			_save_queue()
 
 		if bool(login_data.get("token_generated_offline", false)):
 			var token_to_check = str(login_data.get("token", "")).strip_edges()
@@ -311,7 +318,7 @@ func process_next():
 
 			login_data["token_generated_offline"] = false
 			action["data"] = login_data
-			save_queue()
+			_save_queue()
 
 		var doctor_key_to_check = str(login_data.get("medecin_key", "")).strip_edges()
 		if doctor_key_to_check != "" and not bool(login_data.get("doctor_key_prechecked", false)):
@@ -460,20 +467,20 @@ func _on_request_completed(result, code, _headers, body):
 			if doctor_key != "" and not doctor_found:
 				login_data.erase("medecin_key")
 				action["data"] = login_data
-				save_queue()
+				_save_queue()
 				if PlayerData.user_id != -1 and str(PlayerData.medecin_key).strip_edges() == doctor_key:
 					PlayerData.medecin_key = ""
 					GestionFichier.save_data()
 				_log("Doctor key not found during precheck. Sync login will continue without doctor key.")
-				process_next()
+				_process_next()
 				return
 
 			var doctor_id = _extract_lookup_doctor_id(code, lookup_body_text, doctor_key)
 			if doctor_id >= 0:
 				login_data["medecin_id"] = doctor_id
 			action["data"] = login_data
-			save_queue()
-			process_next()
+			_save_queue()
+			_process_next()
 			return
 
 		var token_available = _is_token_available_from_lookup(code, lookup_body_text, current_token)
@@ -482,8 +489,8 @@ func _on_request_completed(result, code, _headers, body):
 			login_data["token_generated_offline"] = false
 			action["data"] = login_data
 			action["token_conflict_regen_attempts"] = 0
-			save_queue()
-			process_next()
+			_save_queue()
+			_process_next()
 			return
 
 		var regen_attempts = int(action.get("token_conflict_regen_attempts", 0)) + 1
@@ -500,12 +507,12 @@ func _on_request_completed(result, code, _headers, body):
 		login_data["token"] = new_token
 		login_data["token_generated_offline"] = true
 		action["data"] = login_data
-		save_queue()
+		_save_queue()
 
 		if PlayerData.token == old_token:
 			PlayerData.token = new_token
 			GestionFichier.save_data()
-		process_next()
+		_process_next()
 		return
 
 	if result != HTTPRequest.RESULT_SUCCESS or (code != 200 and code != 201):
@@ -518,9 +525,9 @@ func _on_request_completed(result, code, _headers, body):
 				if PlayerData.user_id != -1:
 					PlayerData.medecin_key = ""
 					GestionFichier.save_data()
-				save_queue()
+				_save_queue()
 				_log("Doctor key not found during sync. Retrying login without doctor key.")
-				process_next()
+				_process_next()
 				return
 
 		_log("Request failed | type=%s | code=%s | result=%s" % [action_type, str(code), str(result)])
@@ -533,7 +540,7 @@ func _on_request_completed(result, code, _headers, body):
 
 	retry_delay = 0.5
 	queue.pop_front()
-	save_queue()
+	_save_queue()
 
 	# -------- LOGIN --------
 	if action["type"] == "login":
@@ -567,38 +574,7 @@ func _on_request_completed(result, code, _headers, body):
 					a["data"]["user_id"] = PlayerData.user_id
 					a["data"]["age"] = PlayerData.age # ← AGE
 
-			save_queue()
+			_save_queue()
 			GestionFichier.save_data()
 
-	elif action["type"] == "create_seed":
-		var response = JSON.parse_string(body.get_string_from_utf8())
-		print("[SyncManager] SeedLevel creation response: %s" % response)
-		
-		if typeof(response) == TYPE_DICTIONARY and response.has("id"):
-			var seed_id = int(response["id"])
-			var session_id = action.get("session_id", "")
-			var seed_value = str(action.get("seed_value", ""))
-			
-			print("[SyncManager] SeedLevel created with ID: %d" % seed_id)
-			
-			# Nettoyer le fichier temporaire
-			var temp_file_path = "user://temp_seed_%s.dat" % seed_value
-			if FileAccess.file_exists(temp_file_path):
-				DirAccess.remove_absolute(temp_file_path)
-				print("[SyncManager] Cleaned up temp seed file: %s" % temp_file_path)
-			
-			# Ajouter l'action pour envoyer le rapport médecin avec l'ID de la seed
-			queue.insert(0, {
-				"type": "file",
-				"path": "user://rapport_medecin.dat",
-				"url": BASE_URL + "rapport_medecin/",
-				"session_id": session_id,
-				"extra_fields": {"seed": seed_id},
-				"retries": 0
-			})
-			save_queue()
-			print("[SyncManager] Queued rapport_medecin to be sent with seed ID: %d" % seed_id)
-		else:
-			print("[SyncManager] ERROR: Invalid response format for create_seed")
-
-	process_next()
+	_process_next()

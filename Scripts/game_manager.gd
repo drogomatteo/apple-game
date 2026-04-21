@@ -1,24 +1,28 @@
 extends Node
 
 const LOG_TAG := "[GameManager]"
+
+# -------- CONFIG --------
 const GAME_API_KEY := "pL6UIb8R486IeTDv7arnpqm7NuJkQbHGesgpBIzClec"
 const AUTH_TOKEN_PATH := "auth/token/"
 const AUTH_REFRESH_PATH := "auth/refresh/"
 const ACCESS_TOKEN_DEFAULT_LIFETIME_SECONDS := 900
 const ACCESS_TOKEN_REFRESH_LEEWAY_SECONDS := 60
 const REQUEST_TIMEOUT_SECONDS := 5.0
+var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 
+# -------- STATE --------
 var auth_http := HTTPRequest.new()
 
 func _log(message: String) -> void:
 	print("%s %s" % [LOG_TAG, message])
 
-var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
-
+# -------- LIFECYCLE --------
 func _ready() -> void:
 	add_child(auth_http)
 	auth_http.timeout = REQUEST_TIMEOUT_SECONDS
 
+# -------- HEADER HELPERS --------
 func _is_http_success(result: int, code: int) -> bool:
 	return result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
 
@@ -44,6 +48,7 @@ func get_multipart_post_headers(boundary: String) -> PackedStringArray:
 	headers.insert(0, "Content-Type: multipart/form-data; boundary=" + boundary)
 	return headers
 
+# -------- QUEUE HELPERS --------
 func _queue_file_upload(filepath, url, session_id := "", extra_fields := {}) -> void:
 	SyncManager.add_action({
 		"type": "file",
@@ -53,6 +58,7 @@ func _queue_file_upload(filepath, url, session_id := "", extra_fields := {}) -> 
 		"extra_fields": extra_fields
 	})
 
+# -------- TOKEN HELPERS --------
 func clear_api_tokens(save := true) -> void:
 	PlayerData.access_token = ""
 	PlayerData.refresh_token = ""
@@ -91,6 +97,7 @@ func _parse_token_response(body_text: String, context: String) -> Dictionary:
 	_log("%s response invalid | body=%s" % [context, body_text.strip_edges()])
 	return {}
 
+# -------- TOKEN FLOW --------
 func _extract_expiry_timestamp(response_data: Dictionary) -> int:
 	var candidates = [
 		response_data.get("access_token_expires_at", 0),
@@ -190,6 +197,7 @@ func ensure_valid_access_token() -> bool:
 
 	return await fetch_api_tokens()
 
+# -------- FILE UPLOADS --------
 func send_file(filepath, url, session_id := "", extra_fields := {}):
 	_log("send_file -> %s" % filepath)
 	if PlayerData.user_id == -1:
@@ -259,10 +267,8 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 		http.queue_free()
 	)
 
-
 func send_rapport_complet(session_id := ""):
 	send_file("user://rapport_complet.dat", BASE_URL + "rapport_complet/", session_id)
-
 
 func send_rapport_medecin(session_id := "", seed_value := ""):
 	# Au lieu d'envoyer la seed directement, on crée la Seed_Level d'abord

@@ -16,10 +16,6 @@ shadow_size = 32
 shadow_color = Color(0, 0, 0, 0.58431375)
 shadow_offset = Vector2(3, 3)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_trj04"]
-
-[sub_resource type="Theme" id="Theme_16hvj"]
-
 [node name="MainMenu" type="Control" unique_id=1142539147]
 layout_mode = 3
 anchors_preset = 15
@@ -56,9 +52,7 @@ horizontal_alignment = 1
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CenterContainer" unique_id=183065039]
-material = SubResource("CanvasItemMaterial_trj04")
 layout_mode = 2
-theme = SubResource("Theme_16hvj")
 theme_override_constants/separation = 20
 alignment = 1
 metadata/_edit_use_anchors_ = true

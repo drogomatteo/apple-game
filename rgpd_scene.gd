@@ -38,7 +38,7 @@ func _on_continue_button_pressed():
 		continue_button.disabled = true
 		return
 
-	SaveRgpd.set_accepted(true)
+	SaveRgpd.set_accepted(true, true)
 
 	_go_next_screen()
 
@@ -57,7 +57,7 @@ func _apply_refusal_flow() -> void:
 		return
 	is_applying_refusal = true
 
-	SaveRgpd.set_accepted(false)
+	SaveRgpd.set_accepted(false, true)
 
 	continue_button.disabled = true
 
@@ -69,11 +69,11 @@ func _apply_refusal_flow() -> void:
 	var interface = _get_interface()
 	if interface:
 		interface.first_login_flow = true
-		interface.call_deferred("show_gdpr")
+		interface.show_gdpr()
 	else:
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
 
-	call_deferred("queue_free")
+	queue_free()
 
 
 func _go_next_screen():
@@ -81,10 +81,10 @@ func _go_next_screen():
 
 	if interface:
 		if opened_from_menu:
-			interface.call_deferred("show_menu")
+			interface.show_menu()
 		else:
-			interface.call_deferred("show_user")
+			interface.show_user()
 	else:
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
 
-	call_deferred("queue_free")
+	queue_free()
