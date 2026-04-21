@@ -59,6 +59,7 @@ var phase : int = 0
 @onready var max_timer = $Temps/Timer
 @onready var sampling = $Temps/Sampling
 var timeout : bool
+var temps_écoulé : float
 
 #Score
 var score = 15
@@ -242,6 +243,7 @@ func Initialisation() -> void:
 	timeout = false
 	position_joueur = []
 	sampling.start()
+	temps_écoulé = 0
 
 	Difficulté_actuel = Gestion_Difficulté()
 	Player.set_collision_mask(7)
@@ -359,6 +361,7 @@ func save_level():
 	var level = ""
 
 	level += str(graine)+"\n"
+	level += str(temps_écoulé)+"\n"
 	
 	level += str(int(Objet["basket0"].x))+" "+str(int(Objet["basket0"].z))+"\n"
 	level += str(int(Objet["apple_tree0"].x))+" "+str(int(Objet["apple_tree0"].z))+"\n"
@@ -450,6 +453,7 @@ func _on_sampling_timeout() -> void:
 	var DistanceAComparer = nouvelle_position-position_joueur[-1]
 	if sqrt(DistanceAComparer.x**2+DistanceAComparer.z**2) > 0.1:
 		position_joueur.append(player_cell())
+	temps_écoulé += 0.5
 
 
 func _on_break_button_pressed() -> void:
@@ -462,6 +466,7 @@ func _on_break_button_pressed() -> void:
 func save_interrupted_level() -> String:
 	var level = ""
 	level += str(graine)+"\n"
+	level += str(temps_écoulé)+"\n"
 	
 	level += str(int(Objet["basket0"].x))+" "+str(int(Objet["basket0"].z))+"\n"
 	level += str(int(Objet["apple_tree0"].x))+" "+str(int(Objet["apple_tree0"].z))+"\n"
@@ -497,7 +502,7 @@ func queue_reports_for_sync() -> void:
 
 #fonction pour écrire les rapports localement
 func write_local_reports(interrompue: bool = false) -> void:
-	var contenu = str(len(list_to_save))+"\n"+" ".join(list_to_save)
+	var contenu = str(len(list_to_save))+"\n"+"".join(list_to_save)
 
 	if interrompue:
 		contenu += save_interrupted_level()
