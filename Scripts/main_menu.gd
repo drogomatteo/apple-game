@@ -16,8 +16,8 @@ func _get_interface():
 
 # -------- LIFECYCLE --------
 func _ready():
-	if not start_button.pressed.is_connected(_on_start_pressed):
-		start_button.pressed.connect(_on_start_pressed)
+	if not start_button.pressed.is_connected(_on_start_button_pressed):
+		start_button.pressed.connect(_on_start_button_pressed)
 
 	start_button.disabled = true
 
