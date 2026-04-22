@@ -153,7 +153,7 @@ text = "Retour"
 
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
 [connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/AgeInput" to="." method="_on_age_input_text_changed"]
-[connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/TokenInput" to="." method="_on_input_changed"]
+[connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/TokenInput" to="." method="_on_token_input_text_changed"]
 [connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/DoctorKeyInput" to="." method="_on_input_changed"]
 [connection signal="pressed" from="CenterContainer/HBoxContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="CenterContainer/HBoxContainer/VBoxContainer2/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]

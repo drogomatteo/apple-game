@@ -73,7 +73,7 @@ func _ready():
 	_update_button()
 
 # -------- UI HELPERS --------
-func _on_input_changed(_text=""):
+func _on_token_input_text_changed(_text=""):
 	token_input_generation += 1
 	var token = token_input.text.strip_edges().to_lower()
 	if offline_generated_token_value != "" and token_input.text.strip_edges() != offline_generated_token_value:
@@ -86,14 +86,16 @@ func _on_input_changed(_text=""):
 		doctor_key_input.text = ""
 		doctor_key_input.editable = false
 	else:
-		if is_guest_mode:
-			age_input.text = ""
+		age_input.text = ""
+		doctor_key_input.text = ""
 		is_guest_mode = false
 		age_input.editable = true
 		doctor_key_input.editable = true
-		if token_input.text.strip_edges() != last_autofill_token:
-			_clear_previous_autofill_if_still_present()
+		_clear_previous_autofill_if_still_present()
 
+	_update_button()
+
+func _on_input_changed(_text=""):
 	_update_button()
 
 func _update_button():
