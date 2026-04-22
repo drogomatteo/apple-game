@@ -64,6 +64,43 @@ func _load_queue():
 	if typeof(queue) != TYPE_ARRAY:
 		queue = []
 
+func _build_multipart_file_body(filepath: String, session_id := "", extra_fields := {}) -> Dictionary:
+	var file = FileAccess.open(filepath, FileAccess.READ)
+	if file == null:
+		return {"ok": false}
+
+	var file_bytes = file.get_buffer(file.get_length())
+	file.close()
+
+	var boundary = "----GodotBoundary"
+	var body = ""
+
+	body += "--" + boundary + "\r\n"
+	body += 'Content-Disposition: form-data; name="user"\r\n\r\n'
+	body += str(PlayerData.user_id) + "\r\n"
+
+	if session_id != "":
+		body += "--" + boundary + "\r\n"
+		body += 'Content-Disposition: form-data; name="session_id"\r\n\r\n'
+		body += session_id + "\r\n"
+
+	for field_name in extra_fields.keys():
+		body += "--" + boundary + "\r\n"
+		body += 'Content-Disposition: form-data; name="' + str(field_name) + '"\r\n\r\n'
+		body += str(extra_fields[field_name]) + "\r\n"
+
+	body += "--" + boundary + "\r\n"
+	body += 'Content-Disposition: form-data; name="file"; filename="report.dat"\r\n'
+	body += "Content-Type: application/octet-stream\r\n\r\n"
+
+	var body_bytes = body.to_utf8_buffer()
+	var end = ("\r\n--" + boundary + "--\r\n").to_utf8_buffer()
+	return {
+		"ok": true,
+		"boundary": boundary,
+		"body": body_bytes + file_bytes + end
+	}
+
 # -------- TOKEN HELPERS --------
 func _generate_token() -> String:
 	var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -429,8 +466,39 @@ func _process_next():
 			_handle_immediate_request_error()
 
 	elif action["type"] == "file":
-		# (inchangé)
-		pass
+		var filepath = str(action.get("path", ""))
+		if filepath == "" or not FileAccess.file_exists(filepath):
+			_log("File action dropped, missing file | path=%s" % filepath)
+			_drop_current_action(action)
+			_process_next()
+			return
+
+		var upload_payload = _build_multipart_file_body(
+			filepath,
+			str(action.get("session_id", "")),
+			action.get("extra_fields", {})
+		)
+		if not bool(upload_payload.get("ok", false)):
+			_log("File action could not read file | path=%s" % filepath)
+			_drop_current_action(action)
+			_process_next()
+			return
+
+		var has_file_token = await GameManager.ensure_valid_access_token()
+		if not has_file_token:
+			_log("File upload auth unavailable")
+			_handle_immediate_request_error()
+			return
+
+		var err := http.request_raw(
+			str(action.get("url", "")),
+			GameManager.get_multipart_post_headers(str(upload_payload.get("boundary", ""))),
+			HTTPClient.METHOD_POST,
+			upload_payload.get("body", PackedByteArray())
+		)
+		if err != OK:
+			_log("File upload request failed immediately")
+			_handle_immediate_request_error()
 
 func _on_request_completed(result, code, _headers, body):
 	is_running = false

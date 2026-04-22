@@ -270,11 +270,5 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 func send_full_report(session_id := ""):
 	send_file("user://rapport_complet.dat", BASE_URL + "full-report/", session_id)
 
-func send_doctor_report(session_id := "", seed_value := ""):
-	# Au lieu d'envoyer la seed directement, on crée la Seed_Level d'abord
-	_log("Queue create_seed action")
-	SyncManager.add_action({
-		"type": "create_seed",
-		"seed_value": seed_value,
-		"session_id": session_id
-	})
+func send_doctor_report(session_id := "", _seed_value := ""):
+	send_file("user://doctor_report.dat", BASE_URL + "doctor-report/", session_id)
