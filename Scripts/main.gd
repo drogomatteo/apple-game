@@ -491,13 +491,13 @@ func queue_reports_for_sync() -> void:
 	SyncManager.add_action({
 		"type": "file",
 		"path": "user://rapport_complet.dat",
-		"url": GameManager.BASE_URL + "rapport_complet/",
+		"url": GameManager.BASE_URL + "full-report/",
 		"session_id": session_id
 	})
 
 	if not PlayerData.is_guest:
 		# Utiliser la nouvelle fonction qui crée la seed d'abord
-		GameManager.send_rapport_medecin(session_id, str(graine))
+		GameManager.send_doctor_report(session_id, str(graine))
 
 
 #fonction pour écrire les rapports localement
@@ -513,13 +513,13 @@ func write_local_reports(interrompue: bool = false) -> void:
 		file.close()
 
 	if not PlayerData.is_guest:
-		var file2 = FileAccess.open("user://rapport_medecin.dat", FileAccess.WRITE)
+		var file2 = FileAccess.open("user://doctor_report.dat", FileAccess.WRITE)
 		if file2:
-			var medecin_content = ""
-			medecin_content += "Score: " + str(score) + "\n"
-			medecin_content += "Niveau atteint: " + str(niveau) + "\n"
-			medecin_content += "Statut: " + ("interrompue" if interrompue else "terminee") + "\n"
-			file2.store_string(medecin_content)
+			var doctor_report_content = ""
+			doctor_report_content += "Score: " + str(score) + "\n"
+			doctor_report_content += "Niveau atteint: " + str(niveau) + "\n"
+			doctor_report_content += "Statut: " + ("interrompue" if interrompue else "terminee") + "\n"
+			file2.store_string(doctor_report_content)
 			file2.close()
 			
 			
@@ -535,7 +535,7 @@ func _notification(what):
 
 # fonction unique d’envoi qui met à jour à la fin de chaque niveau, elle est appelée à la fin de chaque niveau et on tente d'envoyer dans la DB
 func sync_reports_now() -> void:
-	GameManager.send_rapport_complet(session_id)
-
+	GameManager.send_full_report(session_id)
+	
 	if not PlayerData.is_guest:
-		GameManager.send_rapport_medecin(session_id, str(graine))
+		GameManager.send_doctor_report(session_id, str(graine))

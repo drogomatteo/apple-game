@@ -17,7 +17,7 @@ func _log(message: String) -> void:
 
 # -------- CONFIG --------
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
-const DOCTOR_LOOKUP_PATH := "medecin/?token="
+const DOCTOR_LOOKUP_PATH := "doctor/?token="
 const REQUEST_TIMEOUT_SECONDS := 5.0
 const TOKEN_LENGTH := 8
 const MAX_TOKEN_GENERATION_ATTEMPTS := 20
@@ -31,7 +31,7 @@ var first_login := false
 var is_doctor_key_lookup = false
 var pending_doctor_key = ""
 var pending_doctor_id := -1
-var pending_existing_medecins: Array[int] = []
+var pending_existing_doctors: Array[int] = []
 var prefill_http := HTTPRequest.new()
 var is_prefill_lookup_in_progress := false
 var pending_prefill_token := ""
@@ -68,7 +68,7 @@ func _ready():
 	if PlayerData.user_id != -1:
 		token_input.text = PlayerData.token
 		age_input.text = str(PlayerData.age)
-		doctor_key_input.text = PlayerData.medecin_key
+		doctor_key_input.text = PlayerData.doctor_key
 
 	_update_button()
 
@@ -338,18 +338,19 @@ func _build_user_request_payload(data: Dictionary) -> Dictionary:
 	payload["user_age"] = payload["age"]
 	payload["patient_age"] = payload["age"]
 
-	var doctor_key = str(data.get("medecin_key", "")).strip_edges()
+	var doctor_key = str(data.get("doctor_key", data.get("medecin_key", ""))).strip_edges()
 	if doctor_key != "":
-		payload["medecin_key"] = doctor_key
-	var doctor_id = int(data.get("medecin_id", -1))
+		payload["doctor_key"] = doctor_key
+	var doctor_id = int(data.get("doctor_id", data.get("medecin_id", -1)))
 	if doctor_id >= 0:
-		payload["id_med"] = doctor_id
-	if data.has("medecins") and typeof(data["medecins"]) == TYPE_ARRAY:
-		payload["medecins"] = data["medecins"]
+		payload["doctor_id"] = doctor_id
+	var doctors = data.get("doctors", data.get("medecins", null))
+	if typeof(doctors) == TYPE_ARRAY:
+		payload["doctors"] = doctors
 
 	return payload
 
-func _extract_medecin_ids_array(raw_value) -> Array[int]:
+func _extract_doctor_ids_array(raw_value) -> Array[int]:
 	var ids: Array[int] = []
 	if typeof(raw_value) != TYPE_ARRAY:
 		return ids
@@ -366,14 +367,14 @@ func _extract_medecin_ids_array(raw_value) -> Array[int]:
 
 	return ids
 
-func _extract_user_by_token_medecins(body_text: String, token_to_find: String) -> Array[int]:
+func _extract_user_by_token_doctors(body_text: String, token_to_find: String) -> Array[int]:
 	var parsed = JSON.parse_string(body_text)
 	var target = _find_user_by_token_in_parsed_response(parsed, token_to_find)
 
 	if target.is_empty():
 		return []
 
-	return _extract_medecin_ids_array(target.get("medecins", []))
+	return _extract_doctor_ids_array(target.get("doctors", target.get("medecins", [])))
 
 func _extract_user_by_token(body_text: String, token_to_find: String) -> Dictionary:
 	var parsed = JSON.parse_string(body_text)
@@ -400,27 +401,27 @@ func _extract_user_age_from_lookup(user_data: Dictionary) -> String:
 	return ""
 
 func _extract_doctor_token_from_entry(entry: Dictionary) -> String:
-	for key in ["token", "medecin_key", "doctor_key", "token_medecin", "doctor_token", "medecin_token"]:
+	for key in ["token", "doctor_key", "doctor_token", "medecin_key", "token_medecin", "medecin_token"]:
 		var value = str(entry.get(key, "")).strip_edges()
 		if value != "":
 			return value
 	return ""
 
 func _extract_latest_doctor_token_from_lookup(user_data: Dictionary) -> String:
-	for key in ["medecin_key", "doctor_key", "token_medecin", "latest_medecin_token", "latest_doctor_token", "doctor_token", "medecin_token"]:
+	for key in ["doctor_key", "latest_doctor_token", "doctor_token", "medecin_key", "token_medecin", "latest_medecin_token", "medecin_token"]:
 		var direct_value = str(user_data.get(key, "")).strip_edges()
 		if direct_value != "":
 			return direct_value
 
-	var medecins = user_data.get("medecins", [])
-	if typeof(medecins) != TYPE_ARRAY:
+	var doctors = user_data.get("doctors", user_data.get("medecins", []))
+	if typeof(doctors) != TYPE_ARRAY:
 		return ""
 
 	var latest_token := ""
 	var latest_created_at := ""
 	var latest_id := -1
 
-	for item in medecins:
+	for item in doctors:
 		if typeof(item) != TYPE_DICTIONARY:
 			continue
 		var current_token = _extract_doctor_token_from_entry(item)
@@ -564,7 +565,7 @@ func _merge_doctor_and_send_login(user_token: String, new_doctor_id: int) -> voi
 	if not has_token:
 		_log("Doctor merge lookup auth unavailable")
 		if new_doctor_id >= 0:
-			pending_login_data["medecins"] = [new_doctor_id]
+			pending_login_data["doctors"] = [new_doctor_id]
 		_send_login_request(pending_login_data)
 		return
 
@@ -576,7 +577,7 @@ func _merge_doctor_and_send_login(user_token: String, new_doctor_id: int) -> voi
 	if err != OK:
 		_log("Doctor merge lookup request failed immediately")
 		if new_doctor_id >= 0:
-			pending_login_data["medecins"] = [new_doctor_id]
+			pending_login_data["doctors"] = [new_doctor_id]
 		_send_login_request(pending_login_data)
 
 func _on_existing_doctors_lookup_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, request_node: HTTPRequest, user_token: String, new_doctor_id: int) -> void:
@@ -584,18 +585,18 @@ func _on_existing_doctors_lookup_completed(result: int, response_code: int, _hea
 		request_node.queue_free()
 
 	var body_text = body.get_string_from_utf8()
-	pending_existing_medecins.clear()
+	pending_existing_doctors.clear()
 	if result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300:
-		pending_existing_medecins = _extract_user_by_token_medecins(body_text, user_token)
+		pending_existing_doctors = _extract_user_by_token_doctors(body_text, user_token)
 	else:
 		_log("Doctor merge lookup failed | code=%s result=%s" % [str(response_code), str(result)])
 
-	if new_doctor_id >= 0 and not pending_existing_medecins.has(new_doctor_id):
-		pending_existing_medecins.append(new_doctor_id)
+	if new_doctor_id >= 0 and not pending_existing_doctors.has(new_doctor_id):
+		pending_existing_doctors.append(new_doctor_id)
 
-	if not pending_existing_medecins.is_empty():
-		pending_login_data["medecins"] = pending_existing_medecins.duplicate()
-		_log("Doctor merge result | medecins=%s" % str(pending_existing_medecins))
+	if not pending_existing_doctors.is_empty():
+		pending_login_data["doctors"] = pending_existing_doctors.duplicate()
+		_log("Doctor merge result | doctors=%s" % str(pending_existing_doctors))
 
 	_send_login_request(pending_login_data)
 
@@ -607,13 +608,13 @@ func _string_contains_any(text: String, needles: Array[String]) -> bool:
 	return false
 
 func _is_doctor_not_found_error(response_code: int, body_text: String) -> bool:
-	if not pending_login_data.has("medecin_key"):
+	if not pending_login_data.has("doctor_key") and not pending_login_data.has("medecin_key"):
 		return false
 
 	if response_code != 400 and response_code != 404:
 		return false
 
-	var doctor_terms: Array[String] = ["medecin", "doctor", "physician"]
+	var doctor_terms: Array[String] = ["doctor", "physician", "medecin"]
 	var missing_terms: Array[String] = ["not found", "does not exist", "n'existe", "introuvable", "invalid", "invalide"]
 
 	var lowered_body = body_text.to_lower()
@@ -621,20 +622,20 @@ func _is_doctor_not_found_error(response_code: int, body_text: String) -> bool:
 		return true
 
 	# Certains backends renvoient une erreur sur le nom du champ plutôt que dans le message.
-	if _string_contains_any(lowered_body, ["medecin_key", "doctor_key", "token_medecin"]):
+	if _string_contains_any(lowered_body, ["doctor_key", "token_medecin", "medecin_key"]):
 		return true
 
 	var parsed = JSON.parse_string(body_text)
 	if typeof(parsed) == TYPE_DICTIONARY:
-		for key in ["medecin_key", "doctor_key", "token_medecin", "doctor", "medecin", "physician", "detail", "message", "error"]:
+		for key in ["doctor_key", "token_medecin", "medecin_key", "doctor", "medecin", "physician", "detail", "message", "error"]:
 			if not parsed.has(key):
 				continue
 			var value_text = str(parsed[key]).to_lower()
 			if _string_contains_any(value_text, doctor_terms) and _string_contains_any(value_text, missing_terms):
 				return true
-			if key in ["medecin_key", "doctor_key", "token_medecin", "doctor", "medecin", "physician"] and _string_contains_any(value_text, missing_terms):
+			if key in ["doctor_key", "token_medecin", "medecin_key", "doctor", "medecin", "physician"] and _string_contains_any(value_text, missing_terms):
 				return true
-			if key in ["medecin_key", "doctor_key", "token_medecin", "doctor", "medecin", "physician"]:
+			if key in ["doctor_key", "token_medecin", "medecin_key", "doctor", "medecin", "physician"]:
 				return true
 
 	# Fallback volontaire: si une clé médecin est fournie et que le backend renvoie 404,
@@ -648,15 +649,15 @@ func _clear_invalid_doctor_key(reason: String) -> void:
 	doctor_key_input.text = ""
 	pending_doctor_key = ""
 	pending_doctor_id = -1
-	pending_existing_medecins.clear()
-	if pending_login_data.has("medecin_key"):
-		pending_login_data.erase("medecin_key")
-	if pending_login_data.has("medecin_id"):
-		pending_login_data.erase("medecin_id")
-	if pending_login_data.has("medecins"):
-		pending_login_data.erase("medecins")
-	if str(PlayerData.medecin_key).strip_edges() != "":
-		PlayerData.medecin_key = ""
+	pending_existing_doctors.clear()
+	if pending_login_data.has("doctor_key"):
+		pending_login_data.erase("doctor_key")
+	if pending_login_data.has("doctor_id"):
+		pending_login_data.erase("doctor_id")
+	if pending_login_data.has("doctors"):
+		pending_login_data.erase("doctors")
+	if str(PlayerData.doctor_key).strip_edges() != "":
+		PlayerData.doctor_key = ""
 		GestionFichier.save_data()
 	_log("Doctor key cleared | %s" % reason)
 
@@ -677,7 +678,7 @@ func _finalize_login_and_go_to_menu() -> void:
 	GestionFichier.save_data()
 	pending_login_data.clear()
 	pending_doctor_id = -1
-	pending_existing_medecins.clear()
+	pending_existing_doctors.clear()
 	offline_generated_token_value = ""
 	call_deferred("_go_to_menu")
 
@@ -716,17 +717,17 @@ func _on_save_button_pressed():
 		"uuid": uuid,
 		"age": int(age)
 	}
-	data["medecin_key"] = doctor_key_input.text.strip_edges()
+	data["doctor_key"] = doctor_key_input.text.strip_edges()
 	data["token_generated_offline"] = (offline_generated_token_value != "" and token == offline_generated_token_value)
-	if data["medecin_key"] == "":
-		data.erase("medecin_key")
+	if data["doctor_key"] == "":
+		data.erase("doctor_key")
 
 	pending_login_data = data.duplicate(true)
 
 	is_request_running = true
-	if data.has("medecin_key"):
+	if data.has("doctor_key"):
 		_log("Doctor key verification started")
-		pending_doctor_key = str(data.get("medecin_key", "")).strip_edges()
+		pending_doctor_key = str(data.get("doctor_key", "")).strip_edges()
 		pending_doctor_id = -1
 		is_doctor_key_lookup = true
 		status_label.text = "Vérification médecin..."
@@ -877,8 +878,8 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 		var doctor_id = _extract_lookup_doctor_id(response_code, doctor_body_text, doctor_key)
 		if doctor_id >= 0:
 			pending_doctor_id = doctor_id
-			pending_login_data["medecin_id"] = doctor_id
-			_log("Doctor key validated | medecin_id=%s" % str(doctor_id))
+			pending_login_data["doctor_id"] = doctor_id
+			_log("Doctor key validated | doctor_id=%s" % str(doctor_id))
 
 		var login_token = str(pending_login_data.get("token", "")).strip_edges()
 		if doctor_id >= 0 and login_token != "" and login_token.to_lower() != "guest":
@@ -924,7 +925,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 		PlayerData.token = "guest"
 		PlayerData.uuid = "none"
 		PlayerData.age = ""
-		PlayerData.medecin_key = ""
+		PlayerData.doctor_key = ""
 	else:
 		var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", _get_device_uuid())))
 
@@ -937,7 +938,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 			resolved_uuid,
 			str(pending_login_data.get("token")),
 			age,
-			str(pending_login_data.get("medecin_key", ""))
+			str(pending_login_data.get("doctor_key", pending_login_data.get("medecin_key", "")))
 		)
 
 		PlayerData.age = age
@@ -951,6 +952,7 @@ func _offline_login(data):
 
 	if is_guest_mode:
 		data["age"] = null
+		data.erase("doctor_key")
 		data.erase("medecin_key")
 		PlayerData.set_guest(local_id)
 		PlayerData.age = ""
@@ -964,7 +966,7 @@ func _offline_login(data):
 			str(data.get("uuid", _get_device_uuid())),
 			data["token"],
 			age,
-			str(data.get("medecin_key", ""))
+			str(data.get("doctor_key", data.get("medecin_key", "")))
 		)
 
 		PlayerData.age = age

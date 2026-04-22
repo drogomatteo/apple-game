@@ -19,7 +19,7 @@ func save_data():
 			"uuid": PlayerData.uuid,
 			"token": PlayerData.token,
 			"age": PlayerData.age,
-			"medecin_key": PlayerData.medecin_key,
+			"doctor_key": PlayerData.doctor_key,
 			"user_id": PlayerData.user_id,
 			"is_guest": PlayerData.is_guest,
 			"access_token": PlayerData.access_token,
@@ -55,7 +55,7 @@ func load_game():
 		PlayerData.uuid = player_data.get("uuid", "")
 		PlayerData.token = player_data.get("token", "")
 		PlayerData.age = player_data.get("age", "")
-		PlayerData.medecin_key = player_data.get("medecin_key", "")
+		PlayerData.doctor_key = player_data.get("doctor_key", player_data.get("medecin_key", ""))
 		PlayerData.is_guest = player_data.get("is_guest", true)
 		PlayerData.access_token = player_data.get("access_token", "")
 		PlayerData.refresh_token = player_data.get("refresh_token", "")

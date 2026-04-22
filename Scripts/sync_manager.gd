@@ -6,7 +6,7 @@ func _log(message: String) -> void:
 
 # -------- CONFIG --------
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
-const DOCTOR_LOOKUP_PATH := "medecin/?token="
+const DOCTOR_LOOKUP_PATH := "doctor/?token="
 var queue_file_path = "user://offline_queue.json"
 const REQUEST_TIMEOUT_SECONDS := 5.0
 const MAX_RETRIES := 10
@@ -197,12 +197,12 @@ func _build_user_request_payload(data: Dictionary) -> Dictionary:
 	payload["user_age"] = payload["age"]
 	payload["patient_age"] = payload["age"]
 
-	var doctor_key = str(data.get("medecin_key", "")).strip_edges()
+	var doctor_key = str(data.get("doctor_key", data.get("medecin_key", ""))).strip_edges()
 	if doctor_key != "":
-		payload["medecin_key"] = doctor_key
-	var doctor_id = int(data.get("medecin_id", -1))
+		payload["doctor_key"] = doctor_key
+	var doctor_id = int(data.get("doctor_id", data.get("medecin_id", -1)))
 	if doctor_id >= 0:
-		payload["id_med"] = doctor_id
+		payload["doctor_id"] = doctor_id
 
 	return payload
 
@@ -218,10 +218,10 @@ func _is_doctor_not_found_error(code: int, body_text: String, action: Dictionary
 		return false
 
 	var data = action.get("data", {})
-	if typeof(data) != TYPE_DICTIONARY or not data.has("medecin_key"):
+	if typeof(data) != TYPE_DICTIONARY or (not data.has("doctor_key") and not data.has("medecin_key")):
 		return false
 
-	var doctor_terms: Array[String] = ["medecin", "doctor", "physician"]
+	var doctor_terms: Array[String] = ["doctor", "physician", "medecin"]
 	var missing_terms: Array[String] = ["not found", "does not exist", "n'existe", "introuvable", "invalid", "invalide"]
 
 	var lowered_body = body_text.to_lower()
@@ -230,13 +230,13 @@ func _is_doctor_not_found_error(code: int, body_text: String, action: Dictionary
 
 	var parsed = JSON.parse_string(body_text)
 	if typeof(parsed) == TYPE_DICTIONARY:
-		for key in ["medecin_key", "doctor_key", "doctor", "medecin", "physician", "detail", "message", "error"]:
+		for key in ["doctor_key", "doctor", "physician", "medecin", "detail", "message", "error"]:
 			if not parsed.has(key):
 				continue
 			var value_text = str(parsed[key]).to_lower()
 			if _string_contains_any(value_text, doctor_terms) and _string_contains_any(value_text, missing_terms):
 				return true
-			if key in ["medecin_key", "doctor_key", "doctor", "medecin", "physician"] and _string_contains_any(value_text, missing_terms):
+			if key in ["doctor_key", "doctor", "physician", "medecin"] and _string_contains_any(value_text, missing_terms):
 				return true
 
 	return false
@@ -289,6 +289,7 @@ func _process_next():
 		var login_data = action.get("data", {})
 		if str(login_data.get("token", "")).to_lower() == "guest":
 			login_data["age"] = null
+			login_data.erase("doctor_key")
 			login_data.erase("medecin_key")
 			login_data["token_generated_offline"] = false
 			action["data"] = login_data
@@ -320,7 +321,7 @@ func _process_next():
 			action["data"] = login_data
 			_save_queue()
 
-		var doctor_key_to_check = str(login_data.get("medecin_key", "")).strip_edges()
+		var doctor_key_to_check = str(login_data.get("doctor_key", login_data.get("medecin_key", ""))).strip_edges()
 		if doctor_key_to_check != "" and not bool(login_data.get("doctor_key_prechecked", false)):
 			var has_doctor_lookup_token = await GameManager.ensure_valid_access_token()
 			if not has_doctor_lookup_token:
@@ -418,7 +419,7 @@ func _process_next():
 			_handle_immediate_request_error()
 			return
 		var err := http.request(
-			BASE_URL + "rapport_complet/",
+			BASE_URL + "full-report/",
 			GameManager.get_json_post_headers(),
 			HTTPClient.METHOD_POST,
 			JSON.stringify(action["data"])
@@ -460,16 +461,17 @@ func _on_request_completed(result, code, _headers, body):
 			return
 
 		if precheck_mode == "doctor":
-			var doctor_key = str(login_data.get("medecin_key", "")).strip_edges()
+			var doctor_key = str(login_data.get("doctor_key", login_data.get("medecin_key", ""))).strip_edges()
 			var doctor_found = _is_lookup_token_found(code, lookup_body_text, doctor_key)
 
 			login_data["doctor_key_prechecked"] = true
 			if doctor_key != "" and not doctor_found:
+				login_data.erase("doctor_key")
 				login_data.erase("medecin_key")
 				action["data"] = login_data
 				_save_queue()
-				if PlayerData.user_id != -1 and str(PlayerData.medecin_key).strip_edges() == doctor_key:
-					PlayerData.medecin_key = ""
+				if PlayerData.user_id != -1 and str(PlayerData.doctor_key).strip_edges() == doctor_key:
+					PlayerData.doctor_key = ""
 					GestionFichier.save_data()
 				_log("Doctor key not found during precheck. Sync login will continue without doctor key.")
 				_process_next()
@@ -477,7 +479,8 @@ func _on_request_completed(result, code, _headers, body):
 
 			var doctor_id = _extract_lookup_doctor_id(code, lookup_body_text, doctor_key)
 			if doctor_id >= 0:
-				login_data["medecin_id"] = doctor_id
+				login_data["doctor_id"] = doctor_id
+				login_data.erase("medecin_id")
 			action["data"] = login_data
 			_save_queue()
 			_process_next()
@@ -520,10 +523,11 @@ func _on_request_completed(result, code, _headers, body):
 			var body_text = body.get_string_from_utf8()
 			if _is_doctor_not_found_error(code, body_text, action):
 				var login_data = action.get("data", {})
+				login_data.erase("doctor_key")
 				login_data.erase("medecin_key")
 				action["data"] = login_data
 				if PlayerData.user_id != -1:
-					PlayerData.medecin_key = ""
+					PlayerData.doctor_key = ""
 					GestionFichier.save_data()
 				_save_queue()
 				_log("Doctor key not found during sync. Retrying login without doctor key.")
@@ -553,16 +557,16 @@ func _on_request_completed(result, code, _headers, body):
 			var synced_token = str(login_data.get("token", PlayerData.token))
 			var synced_uuid = str(response.get("uuid", login_data.get("uuid", PlayerData.uuid)))
 			var synced_age = login_data.get("age", "") # ← AGE
-			var synced_medecin_key = str(login_data.get("medecin_key", ""))
+			var synced_doctor_key = str(login_data.get("doctor_key", login_data.get("medecin_key", "")))
 
 			if synced_token.to_lower() == "guest":
 				PlayerData.set_guest(synced_user_id)
 				PlayerData.token = "guest"
 				PlayerData.uuid = "none"
 				PlayerData.age = "" # ← AGE
-				PlayerData.medecin_key = ""
+				PlayerData.doctor_key = ""
 			else:
-				PlayerData.set_user(synced_user_id, synced_uuid, synced_token, synced_age, synced_medecin_key)
+				PlayerData.set_user(synced_user_id, synced_uuid, synced_token, synced_age, synced_doctor_key)
 
 				if str(synced_age).is_valid_int(): # ← AGE
 					PlayerData.age = int(synced_age)

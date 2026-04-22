@@ -5,7 +5,7 @@ var user_id = -1
 var token = ""
 var uuid = ""
 var age = ""
-var medecin_key = ""
+var doctor_key = ""
 var is_guest = true
 var session_id : String
 
@@ -20,7 +20,7 @@ func _clear_profile() -> void:
 	token = ""
 	uuid = ""
 	age = ""
-	medecin_key = ""
+	doctor_key = ""
 
 func _clear_api_tokens() -> void:
 	access_token = ""
@@ -33,7 +33,7 @@ func set_user(id, u, t, a, m = ""):
 	uuid = u
 	token = t
 	age = a
-	medecin_key = m
+	doctor_key = m
 	is_guest = false
 
 func set_guest(id):
@@ -41,7 +41,7 @@ func set_guest(id):
 	uuid = ""
 	token = ""
 	age = ""
-	medecin_key = ""
+	doctor_key = ""
 	is_guest = true
 
 func logout_user():

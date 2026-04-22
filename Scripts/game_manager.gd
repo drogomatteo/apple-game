@@ -231,7 +231,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 		body += str(extra_fields[field_name]) + "\r\n"
 
 	body += "--" + boundary + "\r\n"
-	body += 'Content-Disposition: form-data; name="fichier"; filename="rapport.dat"\r\n'
+	body += 'Content-Disposition: form-data; name="file"; filename="report.dat"\r\n'
 	body += "Content-Type: application/octet-stream\r\n\r\n"
 
 	var body_bytes = body.to_utf8_buffer()
@@ -267,10 +267,10 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 		http.queue_free()
 	)
 
-func send_rapport_complet(session_id := ""):
-	send_file("user://rapport_complet.dat", BASE_URL + "rapport_complet/", session_id)
+func send_full_report(session_id := ""):
+	send_file("user://rapport_complet.dat", BASE_URL + "full-report/", session_id)
 
-func send_rapport_medecin(session_id := "", seed_value := ""):
+func send_doctor_report(session_id := "", seed_value := ""):
 	# Au lieu d'envoyer la seed directement, on crée la Seed_Level d'abord
 	_log("Queue create_seed action")
 	SyncManager.add_action({
