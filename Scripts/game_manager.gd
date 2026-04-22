@@ -1,5 +1,7 @@
 extends Node
 
+signal access_token_check_completed
+
 const LOG_TAG := "[GameManager]"
 
 # -------- CONFIG --------
@@ -13,6 +15,7 @@ var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 
 # -------- STATE --------
 var auth_http := HTTPRequest.new()
+var access_token_check_in_progress := false
 
 func _log(message: String) -> void:
 	print("%s %s" % [LOG_TAG, message])
@@ -25,6 +28,13 @@ func _ready() -> void:
 # -------- HEADER HELPERS --------
 func _is_http_success(result: int, code: int) -> bool:
 	return result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
+
+func _is_duplicate_report_response(url: String, code: int, body_text: String) -> bool:
+	if code != 400:
+		return false
+	if url.find("full-report/") == -1 and url.find("doctor-report/") == -1:
+		return false
+	return body_text.find("must make a unique set") != -1
 
 func get_api_headers() -> PackedStringArray:
 	var headers := PackedStringArray()
@@ -112,13 +122,20 @@ func _extract_expiry_timestamp(response_data: Dictionary) -> int:
 				return timestamp
 		var candidate_text = str(candidate).strip_edges()
 		if candidate_text.is_valid_int():
-			return int(candidate_text)
+			var parsed_timestamp = int(candidate_text)
+			if parsed_timestamp > 0:
+				return parsed_timestamp
 
 	var expires_in = response_data.get("expires_in", response_data.get("access_token_expires_in", 0))
 	if typeof(expires_in) == TYPE_INT or typeof(expires_in) == TYPE_FLOAT:
 		var duration = int(expires_in)
 		if duration > 0:
 			return int(Time.get_unix_time_from_system()) + duration
+	var expires_in_text = str(expires_in).strip_edges()
+	if expires_in_text.is_valid_int():
+		var parsed_duration = int(expires_in_text)
+		if parsed_duration > 0:
+			return int(Time.get_unix_time_from_system()) + parsed_duration
 
 	return int(Time.get_unix_time_from_system()) + ACCESS_TOKEN_DEFAULT_LIFETIME_SECONDS
 
@@ -192,10 +209,21 @@ func ensure_valid_access_token() -> bool:
 	if _has_usable_access_token():
 		return true
 
-	if await refresh_api_tokens():
-		return true
+	if access_token_check_in_progress:
+		await access_token_check_completed
+		return _has_usable_access_token()
 
-	return await fetch_api_tokens()
+	access_token_check_in_progress = true
+	var success := false
+
+	if await refresh_api_tokens():
+		success = true
+	else:
+		success = await fetch_api_tokens()
+
+	access_token_check_in_progress = false
+	access_token_check_completed.emit()
+	return success
 
 # -------- FILE UPLOADS --------
 func send_file(filepath, url, session_id := "", extra_fields := {}):
@@ -261,7 +289,17 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 		if _is_http_success(result, code):
 			_log("Upload success | code=%s" % str(code))
 		if not _is_http_success(result, code):
-			_log("Upload failed, queueing retry")
+			var body_text: String = _body.get_string_from_utf8().strip_edges()
+			if _is_duplicate_report_response(url, code, body_text):
+				_log("Upload already persisted remotely | url=%s | body=%s" % [url, body_text])
+				http.queue_free()
+				return
+			_log("Upload failed, queueing retry | code=%s | result=%s | url=%s | body=%s" % [
+				str(code),
+				str(result),
+				url,
+				body_text
+			])
 			_queue_file_upload(filepath, url, session_id, extra_fields)
 
 		http.queue_free()
@@ -270,5 +308,14 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 func send_full_report(session_id := ""):
 	send_file("user://rapport_complet.dat", BASE_URL + "full-report/", session_id)
 
-func send_doctor_report(session_id := "", _seed_value := ""):
-	send_file("user://doctor_report.dat", BASE_URL + "doctor-report/", session_id)
+func send_doctor_report(session_id := "", seed_value := ""):
+	_log("Queue create_seed action")
+	SyncManager.add_action({
+		"type": "create_seed",
+		"seed_value": seed_value,
+		"session_id": session_id,
+		"report_path": "user://doctor_report.dat",
+		"report_url": BASE_URL + "doctor-report/"
+	})
+	if not SyncManager.is_running:
+		SyncManager.force_sync()

@@ -141,8 +141,58 @@ func _drop_current_action(action: Dictionary) -> void:
 	_save_queue()
 	retry_delay = 0.5
 
+func _has_pending_login_action() -> bool:
+	for action in queue:
+		if str(action.get("type", "")) == "login":
+			return true
+	return false
+
+func _defer_current_action(reason: String) -> void:
+	if queue.is_empty():
+		return
+
+	var action = queue.pop_front()
+	queue.append(action)
+	_save_queue()
+	retry_delay = 0.5
+	if reason != "":
+		_log(reason)
+
+func _migrate_legacy_doctor_report_action(action: Dictionary) -> bool:
+	if str(action.get("type", "")) != "file":
+		return false
+
+	var url = str(action.get("url", ""))
+	if url.find("doctor-report/") == -1:
+		return false
+
+	var extra_fields = action.get("extra_fields", {})
+	if typeof(extra_fields) != TYPE_DICTIONARY or not extra_fields.has("seed"):
+		return false
+
+	var raw_seed = extra_fields.get("seed")
+	if typeof(raw_seed) != TYPE_STRING:
+		return false
+
+	var seed_value = str(raw_seed).strip_edges()
+	if seed_value == "" or not seed_value.is_valid_int():
+		return false
+
+	queue.pop_front()
+	queue.insert(0, {
+		"type": "create_seed",
+		"seed_value": seed_value,
+		"session_id": str(action.get("session_id", "")),
+		"report_path": str(action.get("path", "user://doctor_report.dat")),
+		"report_url": url,
+		"retries": int(action.get("retries", 0))
+	})
+	_save_queue()
+	_log("Migrated legacy doctor report action to create_seed flow")
+	return true
+
 func _schedule_retry_for_action(action: Dictionary, retry_log: String, drop_log: String) -> void:
-	action["retries"] += 1
+	action["retries"] = int(action.get("retries", 0)) + 1
 	if retry_log != "":
 		_log(retry_log % [str(action.get("type", "unknown")), str(action["retries"])])
 
@@ -250,6 +300,17 @@ func _string_contains_any(text: String, needles: Array[String]) -> bool:
 			return true
 	return false
 
+func _is_duplicate_report_error(action: Dictionary, code: int, body_text: String) -> bool:
+	if code != 400:
+		return false
+	var action_type = str(action.get("type", ""))
+	if action_type != "file":
+		return false
+	var url = str(action.get("url", ""))
+	if url.find("full-report/") == -1 and url.find("doctor-report/") == -1:
+		return false
+	return body_text.find("must make a unique set") != -1
+
 func _is_doctor_not_found_error(code: int, body_text: String, action: Dictionary) -> bool:
 	if code != 400 and code != 404:
 		return false
@@ -321,6 +382,11 @@ func _process_next():
 	var action = queue[0]
 	request_start_time = Time.get_ticks_msec()
 	_log("Processing action | type=%s | retries=%s" % [str(action.get("type", "unknown")), str(action.get("retries", 0))])
+
+	if _migrate_legacy_doctor_report_action(action):
+		is_running = false
+		_process_next()
+		return
 
 	if action["type"] == "login":
 		var login_data = action.get("data", {})
@@ -423,11 +489,11 @@ func _process_next():
 		var body = ""
 		
 		body += "--" + boundary + "\r\n"
-		body += 'Content-Disposition: form-data; name="nom"\r\n\r\n'
+		body += 'Content-Disposition: form-data; name="name"\r\n\r\n'
 		body += seed_value + "\r\n"
 		
 		body += "--" + boundary + "\r\n"
-		body += 'Content-Disposition: form-data; name="seed_file"; filename="seed.dat"\r\n'
+		body += 'Content-Disposition: form-data; name="file"; filename="seed.dat"\r\n'
 		body += "Content-Type: application/octet-stream\r\n\r\n"
 		
 		var body_bytes = body.to_utf8_buffer()
@@ -466,6 +532,20 @@ func _process_next():
 			_handle_immediate_request_error()
 
 	elif action["type"] == "file":
+		if PlayerData.user_id == -1:
+			if _has_pending_login_action():
+				_defer_current_action("File upload deferred until login sync provides a valid user_id")
+				is_running = false
+				_process_next()
+				return
+			_log("File upload has no valid user_id yet")
+			await _schedule_retry_for_action(
+				action,
+				"File upload waiting for valid user_id | type=%s | retries=%s",
+				"Dropping action after max retries | type=%s"
+			)
+			return
+
 		var filepath = str(action.get("path", ""))
 		if filepath == "" or not FileAccess.file_exists(filepath):
 			_log("File action dropped, missing file | path=%s" % filepath)
@@ -508,6 +588,7 @@ func _on_request_completed(result, code, _headers, body):
 
 	var action = queue[0]
 	var action_type = action.get("type", "unknown")
+	var body_text: String = body.get_string_from_utf8().strip_edges()
 
 	if action_type == "login" and login_precheck_in_progress:
 		login_precheck_in_progress = false
@@ -588,7 +669,6 @@ func _on_request_completed(result, code, _headers, body):
 
 	if result != HTTPRequest.RESULT_SUCCESS or (code != 200 and code != 201):
 		if result == HTTPRequest.RESULT_SUCCESS and action_type == "login":
-			var body_text = body.get_string_from_utf8()
 			if _is_doctor_not_found_error(code, body_text, action):
 				var login_data = action.get("data", {})
 				login_data.erase("doctor_key")
@@ -601,8 +681,21 @@ func _on_request_completed(result, code, _headers, body):
 				_log("Doctor key not found during sync. Retrying login without doctor key.")
 				_process_next()
 				return
+		if result == HTTPRequest.RESULT_SUCCESS and _is_duplicate_report_error(action, code, body_text):
+			_log("Remote report already exists, dropping duplicate queued upload | url=%s" % str(action.get("url", "")))
+			queue.pop_front()
+			_save_queue()
+			retry_delay = 0.5
+			_process_next()
+			return
 
-		_log("Request failed | type=%s | code=%s | result=%s" % [action_type, str(code), str(result)])
+		_log("Request failed | type=%s | code=%s | result=%s | url=%s | body=%s" % [
+			action_type,
+			str(code),
+			str(result),
+			str(action.get("url", "")),
+			body_text
+		])
 		await _schedule_retry_for_action(
 			action,
 			"",
@@ -648,5 +741,23 @@ func _on_request_completed(result, code, _headers, body):
 
 			_save_queue()
 			GestionFichier.save_data()
+
+	elif action["type"] == "create_seed":
+		var response = JSON.parse_string(body_text)
+		if typeof(response) == TYPE_DICTIONARY and response.has("id"):
+			var seed_id = int(response["id"])
+			queue.insert(0, {
+				"type": "file",
+				"path": str(action.get("report_path", "user://doctor_report.dat")),
+				"url": str(action.get("report_url", BASE_URL + "doctor-report/")),
+				"session_id": str(action.get("session_id", "")),
+				"retries": 0,
+				"extra_fields": {
+					"seed": seed_id
+				}
+			})
+			_save_queue()
+		else:
+			_log("Seed creation response invalid | body=%s" % body_text)
 
 	_process_next()

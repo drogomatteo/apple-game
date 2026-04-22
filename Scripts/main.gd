@@ -497,10 +497,11 @@ func queue_reports_for_sync() -> void:
 
 	if not PlayerData.is_guest:
 		SyncManager.add_action({
-			"type": "file",
-			"path": "user://doctor_report.dat",
-			"url": GameManager.BASE_URL + "doctor-report/",
-			"session_id": session_id
+			"type": "create_seed",
+			"seed_value": str(graine),
+			"session_id": session_id,
+			"report_path": "user://doctor_report.dat",
+			"report_url": GameManager.BASE_URL + "doctor-report/"
 		})
 
 
