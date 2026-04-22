@@ -71,6 +71,19 @@ func _ready():
 		doctor_key_input.text = PlayerData.doctor_key
 
 	_update_button()
+	_show_pending_token_update_notice()
+
+func _show_pending_token_update_notice() -> void:
+	if not PlayerData.token_update_pending:
+		return
+	if PlayerData.updated_token == "":
+		return
+
+	status_label.text = "Clé patient mise à jour : " + PlayerData.updated_token
+	PlayerData.token_update_pending = false
+	PlayerData.previous_token = ""
+	PlayerData.updated_token = ""
+	GestionFichier.save_data()
 
 # -------- UI HELPERS --------
 func _on_token_input_text_changed(_text=""):
@@ -671,9 +684,21 @@ func _reset_doctor_lookup_state() -> void:
 	pending_login_data.clear()
 
 func _handle_doctor_lookup_blocked(status_message: String, log_message: String) -> void:
+	if log_message.find("login blocked") != -1:
+		_fallback_doctor_lookup_to_offline(log_message.replace("login blocked", "fallback to offline login"))
+		return
 	status_label.text = status_message
 	_log(log_message)
 	_reset_doctor_lookup_state()
+
+func _fallback_doctor_lookup_to_offline(log_message: String) -> void:
+	_log(log_message)
+	status_label.text = "Mode hors ligne"
+	is_request_running = false
+	is_doctor_key_lookup = false
+	pending_doctor_key = ""
+	pending_doctor_id = -1
+	_offline_login(pending_login_data)
 
 func _finalize_login_and_go_to_menu() -> void:
 	PlayerData.print_data()
@@ -852,8 +877,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 
 		if result != HTTPRequest.RESULT_SUCCESS:
 			status_label.text = "Impossible de vérifier la clé médecin"
-			_log("Doctor key lookup network failure, login blocked")
-			_reset_doctor_lookup_state()
+			_fallback_doctor_lookup_to_offline("Doctor key lookup network failure, fallback to offline login")
 			return
 
 		if response_code == 404:
@@ -865,8 +889,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 
 		if response_code < 200 or response_code >= 300:
 			status_label.text = "Impossible de vérifier la clé médecin"
-			_log("Doctor key lookup failed with code=%s, login blocked" % str(response_code))
-			_reset_doctor_lookup_state()
+			_fallback_doctor_lookup_to_offline("Doctor key lookup failed with code=%s, fallback to offline login" % str(response_code))
 			return
 
 		var doctor_found = _is_lookup_token_found(response_code, doctor_body_text, doctor_key)
@@ -950,7 +973,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 # -------- OFFLINE --------
 func _offline_login(data):
 	_log("Offline login mode enabled")
-	var local_id = 1 if is_guest_mode else -1
+	var local_id = 1 if is_guest_mode else -2
 
 	if is_guest_mode:
 		data["age"] = null

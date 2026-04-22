@@ -8,6 +8,9 @@ var age = ""
 var doctor_key = ""
 var is_guest = true
 var session_id : String
+var token_update_pending := false
+var previous_token = ""
+var updated_token = ""
 
 # -------- API TOKENS --------
 var access_token := ""
@@ -21,6 +24,9 @@ func _clear_profile() -> void:
 	uuid = ""
 	age = ""
 	doctor_key = ""
+	token_update_pending = false
+	previous_token = ""
+	updated_token = ""
 
 func _clear_api_tokens() -> void:
 	access_token = ""

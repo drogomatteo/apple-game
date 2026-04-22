@@ -532,7 +532,7 @@ func _process_next():
 			_handle_immediate_request_error()
 
 	elif action["type"] == "file":
-		if PlayerData.user_id == -1:
+		if PlayerData.user_id < 0:
 			if _has_pending_login_action():
 				_defer_current_action("File upload deferred until login sync provides a valid user_id")
 				is_running = false
@@ -663,6 +663,9 @@ func _on_request_completed(result, code, _headers, body):
 
 		if PlayerData.token == old_token:
 			PlayerData.token = new_token
+			PlayerData.token_update_pending = true
+			PlayerData.previous_token = old_token
+			PlayerData.updated_token = new_token
 			GestionFichier.save_data()
 		_process_next()
 		return
