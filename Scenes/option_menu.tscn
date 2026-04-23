@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cammce2u5gcrc" path="res://Scripts/option_menu.gd" id="1_47jcy"]
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="1_xt6yv"]
-[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="2_47jcy"]
+[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Images/Font/Bubble Sans 1.01.otf" id="2_47jcy"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="3_gg4yi"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3036b"]

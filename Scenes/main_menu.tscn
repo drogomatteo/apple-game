@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://bwq3eicpmx7gl"]
 
-[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="1_ce3w2"]
+[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Images/Font/Bubble Sans 1.01.otf" id="1_ce3w2"]
 [ext_resource type="Script" uid="uid://bgub81fhtsdig" path="res://Scripts/main_menu.gd" id="1_n45e2"]
 [ext_resource type="Texture2D" uid="uid://ck0uoxic5gtmv" path="res://Assets/UI-UX/Images/82122.png" id="2_n45e2"]
-[ext_resource type="Texture2D" uid="uid://cuk2pqwo8wn51" path="res://Assets/UI-UX/Images/cadenas.png" id="3_cp0ys"]
+[ext_resource type="Texture2D" uid="uid://c2srq4g4dkbd2" path="res://Assets/UI-UX/Images/cadenas.png" id="3_cp0ys"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="3_opfnp"]
 [ext_resource type="Texture2D" uid="uid://ctwc11wic5low" path="res://Assets/UI-UX/Images/images.png" id="4_cp0ys"]
 

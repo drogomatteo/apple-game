@@ -4,7 +4,7 @@
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="3_klneb"]
 [ext_resource type="Theme" uid="uid://yk6efy6kitav" path="res://Style_bouton/button_theme.tres" id="3_sioj2"]
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="4_klneb"]
-[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="5_sioj2"]
+[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Images/Font/Bubble Sans 1.01.otf" id="5_sioj2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sioj2"]
 shader = ExtResource("4_klneb")

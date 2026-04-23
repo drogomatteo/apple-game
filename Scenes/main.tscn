@@ -13,7 +13,7 @@
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
-[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
+[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Images/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="16_k12tt"]
 [ext_resource type="Script" uid="uid://n36a3eclwoit" path="res://Scripts/tutorial.gd" id="17_h1bgf"]
