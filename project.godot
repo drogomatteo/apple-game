@@ -27,7 +27,8 @@ SaveRgpd="*uid://cgk45g5lrs7dc"
 
 [display]
 
-window/stretch/mode="viewport"
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [editor]
 
