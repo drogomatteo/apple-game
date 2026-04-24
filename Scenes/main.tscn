@@ -21,9 +21,12 @@
 [ext_resource type="Script" uid="uid://n36a3eclwoit" path="res://Scripts/tutorial.gd" id="17_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bjvhpahrg4hpq" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_verty.png" id="17_u50mg"]
 [ext_resource type="Texture2D" uid="uid://l16w5k4u21p4" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_brun_pressed.png" id="17_ueoa1"]
+[ext_resource type="Texture2D" uid="uid://byyli8q20ju1x" path="res://Assets/UI-UX/Images/LeftRIght-3.png" id="18_7k868"]
 [ext_resource type="Script" uid="uid://blqaj5vsw5nrj" path="res://Scripts/tracer_carte.gd" id="18_b3802"]
 [ext_resource type="Texture2D" uid="uid://cywtkl0v480kh" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_vert_Image.png" id="18_cbgmd"]
 [ext_resource type="Texture2D" uid="uid://csw3shv868ah8" path="res://Assets/UI-UX/Images/Buttons Texture/My_button.png" id="19_1w6v2"]
+[ext_resource type="Texture2D" uid="uid://bpk6scambf2u" path="res://Assets/UI-UX/Images/LeftRIght-2.png" id="19_hpc6h"]
+[ext_resource type="Texture2D" uid="uid://cx2fhq1gwhoxa" path="res://Assets/UI-UX/Images/LeftRIght-1.png" id="20_kltya"]
 [ext_resource type="Texture2D" uid="uid://ctjl301ecdrtp" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-9_My_pressed_buttons.png" id="20_ueoa1"]
 [ext_resource type="Texture2D" uid="uid://dgr2nov4qgfa4" path="res://Assets/UI-UX/Images/Buttons Texture/My_Boutton_CLASSIQUELong.png" id="21_6vcvc"]
 [ext_resource type="Texture2D" uid="uid://be7760xem1hfp" path="res://Assets/UI-UX/Images/Buttons Texture/My_Boutton_CLASSIQUE_pressed.png" id="22_7k868"]
@@ -56,6 +59,8 @@ texture = ExtResource("15_u50mg")
 
 [sub_resource type="Theme" id="Theme_b3802"]
 default_font_size = 25
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7k868"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
 font = ExtResource("14_u50mg")
@@ -423,163 +428,8 @@ transform = Transform3D(-0.7998419, 0, 0.6002108, 0, 1, 0, -0.6002108, 0, -0.799
 
 [node name="UI" type="Node" parent="." unique_id=1112396103]
 
-[node name="TutorialUI" type="CanvasLayer" parent="UI" unique_id=359413544]
-layer = 10
-
-[node name="Highlight" type="Panel" parent="UI/TutorialUI" unique_id=160683626]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/TutorialUI" unique_id=1445983652]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("16_3pmx8")
-theme_override_constants/margin_left = 200
-theme_override_constants/margin_top = 100
-theme_override_constants/margin_right = 200
-theme_override_constants/margin_bottom = 200
-
-[node name="BoiteMessage" type="Panel" parent="UI/TutorialUI/MarginContainer" unique_id=716527475]
-layout_mode = 2
-theme = ExtResource("16_3pmx8")
-theme_override_styles/panel = SubResource("StyleBoxTexture_cbgmd")
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/TutorialUI/MarginContainer/BoiteMessage" unique_id=594265095]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 30
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 30
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer" unique_id=996929194]
-layout_mode = 2
-
-[node name="Message" type="Label" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer" unique_id=461640129]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-theme_type_variation = &"labelBasic"
-theme_override_constants/line_spacing = -5
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 0
-theme_override_font_sizes/font_size = 26
-text = "Bienvenue dans le tutoriel de l'Apple Game.
-
-Appuyez sur le bouton 'Next' afin de continuer.\""
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="Next" type="TextureButton" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer" unique_id=732166363]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-theme = SubResource("Theme_b3802")
-texture_normal = ExtResource("16_1w6v2")
-texture_pressed = ExtResource("17_ueoa1")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer/Next" unique_id=1347055890]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_type_variation = &"labelGras"
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "SUIVANT"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Zone de texte" type="Control" parent="UI" unique_id=584328298]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 3.0
-offset_bottom = 3.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="TempsRestant" type="Label" parent="UI/Zone de texte" unique_id=151437164]
-layout_mode = 1
-offset_left = 12.0
-offset_top = 9.0
-offset_right = 52.0
-offset_bottom = 64.0
-label_settings = SubResource("LabelSettings_jkdf5")
-
-[node name="AlertMessage" type="Label" parent="UI/Zone de texte" unique_id=10637415]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -205.0
-offset_top = 94.5
-offset_right = 206.0
-offset_bottom = 164.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
-theme_override_font_sizes/font_size = 40
-text = "Temps écoulé !"
-label_settings = SubResource("LabelSettings_fdnlq")
-horizontal_alignment = 1
-
-[node name="MessageLabel" type="Label" parent="UI/Zone de texte" unique_id=825985541]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -19.0
-offset_top = 160.0
-offset_right = 21.0
-offset_bottom = 210.0
-grow_horizontal = 2
-label_settings = SubResource("LabelSettings_wsu2k")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Zone de texte" unique_id=1173458181]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -85.0
-offset_right = 85.0
-offset_bottom = 69.0
-grow_horizontal = 2
-
-[node name="HSeparator" type="HSeparator" parent="UI/Zone de texte/VBoxContainer" unique_id=1065240905]
-layout_mode = 2
-theme_override_constants/separation = 20
-theme_override_styles/separator = SubResource("StyleBoxEmpty_u50mg")
-
-[node name="ToDo" type="Label" parent="UI/Zone de texte/VBoxContainer" unique_id=1336770187]
-layout_mode = 2
-text = "test"
-label_settings = SubResource("LabelSettings_wsu2k")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Break" type="CanvasLayer" parent="UI" unique_id=1115599442]
-layer = 12
-visible = false
-
-[node name="BreakMenu" parent="UI/Break" unique_id=504863998 instance=ExtResource("16_k12tt")]
-visibility_layer = 4
-
 [node name="Bouttons" type="CanvasLayer" parent="UI" unique_id=596184563]
+layer = 11
 
 [node name="Bouton" type="Control" parent="UI/Bouttons" unique_id=1081117856]
 layout_mode = 3
@@ -726,6 +576,200 @@ theme_override_font_sizes/font_size = 30
 text = "PAUSE"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TutorialUI" type="CanvasLayer" parent="UI" unique_id=359413544]
+layer = 10
+visible = false
+
+[node name="Highlight" type="Panel" parent="UI/TutorialUI" unique_id=160683626]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/TutorialUI" unique_id=1445983652]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("16_3pmx8")
+theme_override_constants/margin_left = 200
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 200
+theme_override_constants/margin_bottom = 200
+
+[node name="BoiteMessage" type="Panel" parent="UI/TutorialUI/MarginContainer" unique_id=716527475]
+layout_mode = 2
+theme = ExtResource("16_3pmx8")
+theme_override_styles/panel = SubResource("StyleBoxTexture_cbgmd")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/TutorialUI/MarginContainer/BoiteMessage" unique_id=594265095]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer" unique_id=996929194]
+layout_mode = 2
+
+[node name="Message" type="Label" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer" unique_id=461640129]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_type_variation = &"labelBasic"
+theme_override_constants/line_spacing = -5
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 29
+text = "Bienvenue dans le tutoriel de l'Apple Game.
+
+Appuyez sur le bouton 'Next' afin de continuer.\""
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Next" type="TextureButton" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer" unique_id=732166363]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme = SubResource("Theme_b3802")
+texture_normal = ExtResource("16_1w6v2")
+texture_pressed = ExtResource("17_ueoa1")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer/Next" unique_id=1347055890]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "SUIVANT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pivoter" type="HBoxContainer" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer" unique_id=1604553413]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="VSeparator" type="VSeparator" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter" unique_id=62824463]
+layout_mode = 2
+theme_override_constants/separation = 15
+theme_override_styles/separator = SubResource("StyleBoxEmpty_7k868")
+
+[node name="Icon left" type="TextureRect" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter" unique_id=339638879]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+texture = ExtResource("18_7k868")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconForward" type="TextureRect" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter" unique_id=1500889506]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+texture = ExtResource("19_hpc6h")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="IconRight" type="TextureRect" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter" unique_id=528805971]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+texture = ExtResource("20_kltya")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Zone de texte" type="Control" parent="UI" unique_id=584328298]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 3.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="TempsRestant" type="Label" parent="UI/Zone de texte" unique_id=151437164]
+layout_mode = 1
+offset_left = 12.0
+offset_top = 9.0
+offset_right = 52.0
+offset_bottom = 64.0
+label_settings = SubResource("LabelSettings_jkdf5")
+
+[node name="AlertMessage" type="Label" parent="UI/Zone de texte" unique_id=10637415]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -205.0
+offset_top = 94.5
+offset_right = 206.0
+offset_bottom = 164.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
+theme_override_font_sizes/font_size = 40
+text = "Temps écoulé !"
+label_settings = SubResource("LabelSettings_fdnlq")
+horizontal_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="UI/Zone de texte" unique_id=825985541]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -19.0
+offset_top = 160.0
+offset_right = 21.0
+offset_bottom = 210.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_wsu2k")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Zone de texte" unique_id=1173458181]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -85.0
+offset_right = 85.0
+offset_bottom = 69.0
+grow_horizontal = 2
+
+[node name="HSeparator" type="HSeparator" parent="UI/Zone de texte/VBoxContainer" unique_id=1065240905]
+layout_mode = 2
+theme_override_constants/separation = 20
+theme_override_styles/separator = SubResource("StyleBoxEmpty_u50mg")
+
+[node name="ToDo" type="Label" parent="UI/Zone de texte/VBoxContainer" unique_id=1336770187]
+layout_mode = 2
+text = "test"
+label_settings = SubResource("LabelSettings_wsu2k")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Break" type="CanvasLayer" parent="UI" unique_id=1115599442]
+layer = 12
+visible = false
+
+[node name="BreakMenu" parent="UI/Break" unique_id=504863998 instance=ExtResource("16_k12tt")]
+visibility_layer = 4
 
 [node name="TutorialController" type="Node" parent="." unique_id=1832623938]
 script = ExtResource("17_h1bgf")

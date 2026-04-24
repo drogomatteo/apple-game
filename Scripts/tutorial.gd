@@ -31,16 +31,21 @@ const HIGHLIGHT_COLOR := Color(1.0, 0.95, 0.55, 1.0)
 @onready var player = $"../Player"
 
 @onready var tutorial_ui = $"../UI/TutorialUI"
-@onready var boite_message = $"../UI/TutorialUI/BoiteMessage"
-@onready var message_label = $"../UI/TutorialUI/BoiteMessage/Message"
-@onready var next_button = $"../UI/TutorialUI/BoiteMessage/Next"
+@onready var boite_message = $"../UI/TutorialUI/MarginContainer/BoiteMessage"
+@onready var message_label = $"../UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer/Message"
+@onready var next_button = $"../UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer/Next"
 @onready var highlight = $"../UI/TutorialUI/Highlight"
 @onready var ToDo = $"../UI/Zone de texte/VBoxContainer/ToDo"
+
+@onready var icon_left = $"../UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter/Icon left"
+@onready var icon_right = $"../UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter/IconRight"
+@onready var icon_forward = $"../UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter/IconForward"
 
 # Boutons de la scène Player
 @onready var Left = $"../Player/CanvasLayer/MarginContainer/HBoxContainer/Control/Left"
 @onready var Right = $"../Player/CanvasLayer/MarginContainer/HBoxContainer/Control3/Right"
 @onready var forward_button_ui = $"../Player/CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward"
+
 var messages := [
 	"Bienvenue dans le tutoriel de l'Apple Game.\n\nAppuyez sur le bouton 'SUIVANT' afin de continuer.",
 	"Parfait !\n\nCommençons sans plus tarder.",
@@ -50,7 +55,7 @@ var messages := [
 	"Continuez comme ça.\n\nCherchons maintenant l'arbre.",
 	"Très bien.\n\nAu tour du pommier.",
 	"Nous arrivons à l'étape finale.\n\nConnaissez-vous le principe de l'Apple Game ?",
-	"Le but du jeu est de retrouver la position initiale du panier sur la map.\n\nVous en souvenez-vous ?",
+	"Le but du jeu est de retrouver la position initiale du panier sur la zone de jeu.\n\nVous en souvenez-vous ?",
 	"Positionnez-vous là où le panier était et confirmez à l'aide du bouton 'Confirmer position'.\n\nVous avez 30 secondes !",
 	"Bravo !\n\nLe tutoriel est terminé.\n\nVous allez maintenant voir votre résultat pour cette partie."
 ]
@@ -59,7 +64,6 @@ var tutorial_active: bool = false
 var current_step: TutorialStep = TutorialStep.NONE
 var action_timer: float = 0.0
 var waiting_final_popup: bool = false
-
 
 
 func _ready() -> void:
@@ -119,6 +123,7 @@ func _process(delta: float) -> void:
 
 		TutorialStep.WAIT_RETURN_BASKET:
 			pass
+
 
 func _on_next_button_pressed() -> void:
 	_stop_next_pulse()
@@ -183,6 +188,8 @@ func _show_rotate_step() -> void:
 	clear_highlight()
 	_highlight_rotation_buttons()
 	show_tutorial_box(messages[2], false)
+	icon_left.visible = true
+	icon_right.visible = true
 
 
 func _show_forward_step() -> void:
@@ -193,6 +200,7 @@ func _show_forward_step() -> void:
 	clear_highlight()
 	_highlight_forward_button()
 	show_tutorial_box(messages[3], false)
+	icon_forward.visible = true
 
 
 func _show_basket_instruction() -> void:
@@ -253,6 +261,7 @@ func _show_return_basket_instruction() -> void:
 	_stop_player_motion()
 	clear_highlight()
 	_reset_button_emphasis()
+
 	# Pause du chrono tant que le joueur lit l'explication
 	world.max_timer.paused = true
 	world.temps_restant.visible = false
@@ -268,6 +277,7 @@ func _start_return_basket_search() -> void:
 	_allow_all_player_actions()
 	clear_highlight()
 	_reset_button_emphasis()
+
 	# Reprise du chrono seulement quand le joueur a fini de lire
 	world.validate_button.visible = true
 	world.temps_restant.visible = true
@@ -279,6 +289,7 @@ func show_final_message_before_score() -> void:
 		return
 	if not waiting_final_popup:
 		return
+
 	_disable_all_player_actions()
 	_stop_player_motion()
 	waiting_final_popup = false
@@ -288,6 +299,9 @@ func show_final_message_before_score() -> void:
 
 func show_tutorial_box(text: String, show_next: bool = true) -> void:
 	tutorial_ui.show()
+	icon_left.visible = false
+	icon_right.visible = false
+	icon_forward.visible = false
 	boite_message.show()
 	message_label.text = text
 	next_button.visible = show_next
@@ -354,19 +368,19 @@ func _stop_player_motion() -> void:
 	player.temp_sens = 0.0
 
 
-
 func _highlight_rotation_buttons() -> void:
 	player.clear_tutorial_highlights()
 	player.highlight_rotation_buttons(true)
+
 
 func _highlight_forward_button() -> void:
 	player.clear_tutorial_highlights()
 	player.highlight_forward_button(true)
 
 
-
 func _reset_button_emphasis() -> void:
 	player.clear_tutorial_highlights()
+
 
 func _start_next_pulse() -> void:
 	_stop_next_pulse()
@@ -378,8 +392,8 @@ func _start_next_pulse() -> void:
 
 	next_tween = create_tween()
 	next_tween.set_loops()
-	next_tween.tween_property(next_button, "scale", next_default_scale * 1.10, 0.45)
-	next_tween.tween_property(next_button, "scale", next_default_scale, 0.45)
+	next_tween.tween_property(next_button, "scale", next_default_scale * 1.05, 0.85)
+	next_tween.tween_property(next_button, "scale", next_default_scale, 0.85)
 
 
 func _stop_next_pulse() -> void:

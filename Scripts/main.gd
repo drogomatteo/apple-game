@@ -95,7 +95,7 @@ func _ready() -> void:
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + str(PlayerData.user_id) + "_" + str(randi())
 	TutorialHighlight.visible = false
 	Initialisation()
-	Paramètre.definir_tutorial_seen(false)
+	
 	if not Paramètre.tutorial_seen:
 		TutorialController.start_tutorial()
 
@@ -399,6 +399,7 @@ func continuer_fin_apres_tuto() -> void:
 	player_right.visible = false
 	player_node_3d.visible = false
 	next_level.visible = true
+	
 
 	if niveau == niveau_max:
 		next_level.text = "Voici votre score : " + str(score) + "\nAppuyez sur le bouton pour quitter"
@@ -436,7 +437,7 @@ func toDo():
 	if phase == 0:
 		return "Trouvez le panier"
 	elif phase == 1:
-		return "Trouvez un arbre"
+		return "Trouvez l'arbre"
 	elif phase == 2:
 		return "Trouvez le pommier"
 	elif phase == 3:
