@@ -429,7 +429,6 @@ transform = Transform3D(-0.7998419, 0, 0.6002108, 0, 1, 0, -0.6002108, 0, -0.799
 [node name="UI" type="Node" parent="." unique_id=1112396103]
 
 [node name="Bouttons" type="CanvasLayer" parent="UI" unique_id=596184563]
-layer = 11
 
 [node name="Bouton" type="Control" parent="UI/Bouttons" unique_id=1081117856]
 layout_mode = 3
@@ -450,9 +449,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -352.0
-offset_top = -270.0
+offset_top = -292.0
 offset_right = -52.0
-offset_bottom = -150.0
+offset_bottom = -172.0
 grow_horizontal = 0
 grow_vertical = 0
 texture_normal = ExtResource("17_u50mg")
@@ -542,9 +541,11 @@ text = "Voir un résumé du niveau"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BreakButton" type="TextureButton" parent="UI/Bouttons/Bouton" unique_id=1085198246 groups=["break_button"]]
+[node name="BreakButtonCanvas" type="CanvasLayer" parent="UI/Bouttons" unique_id=1852292759]
+layer = 11
+
+[node name="BreakButton" type="TextureButton" parent="UI/Bouttons/BreakButtonCanvas" unique_id=1085198246 groups=["break_button"]]
 custom_minimum_size = Vector2(200, 75)
-layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -558,7 +559,7 @@ texture_pressed = ExtResource("20_ueoa1")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="UI/Bouttons/Bouton/BreakButton" unique_id=1259410098]
+[node name="Label" type="Label" parent="UI/Bouttons/BreakButtonCanvas/BreakButton" unique_id=1259410098]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -572,6 +573,8 @@ offset_bottom = 18.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(0.27450982, 0.12941177, 0.08627451, 1)
+theme_override_fonts/font = ExtResource("14_u50mg")
 theme_override_font_sizes/font_size = 30
 text = "PAUSE"
 horizontal_alignment = 1
@@ -579,7 +582,6 @@ vertical_alignment = 1
 
 [node name="TutorialUI" type="CanvasLayer" parent="UI" unique_id=359413544]
 layer = 10
-visible = false
 
 [node name="Highlight" type="Panel" parent="UI/TutorialUI" unique_id=160683626]
 offset_right = 40.0
@@ -622,10 +624,12 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 theme_type_variation = &"labelBasic"
-theme_override_constants/line_spacing = -5
+theme_override_colors/font_outline_color = Color(0.27450982, 0.12941177, 0.08627451, 1)
+theme_override_constants/line_spacing = -11
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 0
-theme_override_font_sizes/font_size = 29
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 32
 text = "Bienvenue dans le tutoriel de l'Apple Game.
 
 Appuyez sur le bouton 'Next' afin de continuer.\""
@@ -785,4 +789,4 @@ script = ExtResource("18_b3802")
 
 [connection signal="timeout" from="Temps/Timer" to="." method="_on_timer_timeout"]
 [connection signal="timeout" from="Temps/Sampling" to="." method="_on_sampling_timeout"]
-[connection signal="pressed" from="UI/Bouttons/Bouton/BreakButton" to="." method="_on_break_button_pressed"]
+[connection signal="pressed" from="UI/Bouttons/BreakButtonCanvas/BreakButton" to="." method="_on_break_button_pressed"]

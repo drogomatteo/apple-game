@@ -77,7 +77,7 @@ var Difficulté_actuel : Array
 var session_id : String 
 
 #Pause
-@onready var BreakButton = $UI/Bouttons/Bouton/BreakButton
+@onready var BreakButton = $UI/Bouttons/BreakButtonCanvas/BreakButton
 @onready var BreakMenu = $UI/Break/BreakMenu
 
 #Tuto
