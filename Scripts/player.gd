@@ -24,9 +24,9 @@ var allow_right: bool = true
 @export var bruit_pas: AudioStreamRandomizer
 
 # Nœuds
-@onready var left_button = $Left
-@onready var forward_button = $Forward
-@onready var right_button = $Right
+@onready var left_button = $CanvasLayer/MarginContainer/HBoxContainer/Control/Left
+@onready var forward_button = $CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward
+@onready var right_button = $CanvasLayer/MarginContainer/HBoxContainer/Control3/Right
 @onready var camera = $Camera3D
 @onready var footstep_player = $AudioStreamPlayer2D
 

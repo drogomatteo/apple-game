@@ -1,13 +1,13 @@
 extends Node3D
 
 #Zone de texte
-@onready var validate_button = $Bouton/ValidateButton
-@onready var message_label = $"Zone de texte/MessageLabel"
-@onready var next_level = $Bouton/NextLevel
-@onready var voir_recap = $Bouton/Recap
-@onready var message_alerte = $"Zone de texte/AlertMessage"
-@onready var temps_restant = $"Zone de texte/TempsRestant"
-@onready var textToDo = $"Zone de texte/ToDo"
+@onready var validate_button = $UI/Bouttons/Bouton/ValidateButton
+@onready var message_label = $"UI/Zone de texte/MessageLabel"
+@onready var next_level = $UI/Bouttons/Bouton/NextLevel
+@onready var voir_recap = $UI/Bouttons/Bouton/Recap
+@onready var message_alerte = $"UI/Zone de texte/AlertMessage"
+@onready var temps_restant = $"UI/Zone de texte/TempsRestant"
+@onready var textToDo = $"UI/Zone de texte/ToDo"
 
 #Scène
 @export_group("Scènes")
@@ -71,8 +71,8 @@ var Difficulté_actuel : Array
 var session_id : String 
 
 #Pause
-@onready var BreakButton = $Bouton/BreakButton
-@onready var BreakMenu = $BreakMenu
+@onready var BreakButton = $UI/Bouttons/Bouton/BreakButton
+@onready var BreakMenu = $UI/Break/BreakMenu
 
 #Tuto
 @onready var TutorialUI = $UI/TutorialUI

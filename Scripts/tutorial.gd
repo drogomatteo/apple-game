@@ -37,15 +37,14 @@ const HIGHLIGHT_COLOR := Color(1.0, 0.95, 0.55, 1.0)
 @onready var highlight = $"../UI/TutorialUI/Highlight"
 
 # Boutons de la scène Player
-@onready var left_button_ui = $"../Player/Left"
-@onready var right_button_ui = $"../Player/Right"
-@onready var forward_button_ui = $"../Player/Forward"
-
+@onready var Left = $"../Player/CanvasLayer/MarginContainer/HBoxContainer/Control/Left"
+@onready var Right = $"../Player/CanvasLayer/MarginContainer/HBoxContainer/Control3/Right"
+@onready var forward_button_ui = $"../Player/CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward"
 var messages := [
 	"Bienvenue dans le tutoriel de l'Apple Game.\n\nAppuyez sur le bouton 'Next' afin de continuer.",
 	"Parfait !\n\nCommençons sans plus tarder.",
 	"Essayons un peu de regarder aux alentours.\n\nAppuyez sur les boutons 'Pivoter'.",
-	"Super !\n\nMaintenant, avançons en appuyant sur le bouton 'Flèche'.",
+	"Super !\n\nMaintenant, avançons en appuyant sur le bouton 'Avancer'.",
 	"Vous êtes prêt !\n\nPassons désormais à l'étape suivante.\n\nSuivez les instructions notées au dessus de votre écran.",
 	"Continuez comme ça.\n\nCherchons maintenant l'arbre.",
 	"Très bien.\n\nAu tour du pommier.",

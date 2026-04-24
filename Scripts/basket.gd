@@ -4,8 +4,8 @@ extends Node3D
 @export var lerp_speed: float = 5.0
 @export var max_rotation: float = 0.5 
 
-@onready var Left = $"../Left"
-@onready var Right = $"../Right"
+@onready var Left = $"../CanvasLayer/MarginContainer/HBoxContainer/Control/Left"
+@onready var Right = $"../CanvasLayer/MarginContainer/HBoxContainer/Control3/Right"
 
 var direction = 0.0
 
