@@ -6,13 +6,13 @@ func _log(message: String) -> void:
 
 # -------- NODES --------
 @onready var http = $HTTPRequest
-@onready var token_input = $CenterContainer/HBoxContainer/VBoxContainer/TokenInput
-@onready var age_input = $CenterContainer/HBoxContainer/VBoxContainer/AgeInput
-@onready var doctor_key_input = $CenterContainer/HBoxContainer/VBoxContainer/DoctorKeyInput
-@onready var save_button = $CenterContainer/HBoxContainer/VBoxContainer/SaveButton
-@onready var guest_button = $CenterContainer/HBoxContainer/VBoxContainer2/GuestButton
-@onready var status_label = $CenterContainer/HBoxContainer/VBoxContainer2/StatusLabel
-@onready var generate_button = $CenterContainer/HBoxContainer/VBoxContainer2/GenerateTokenButton
+@onready var token_input = $MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput
+@onready var age_input = $MarginContainer/fond/MarginContainer/VBoxContainer/AgeBox/AgeInput
+@onready var doctor_key_input = $MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput
+@onready var save_button = $MarginContainer/fond/MarginContainer/VBoxContainer/SaveButton
+@onready var guest_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton
+@onready var status_label = $MarginContainer/fond/MarginContainer/VBoxContainer/StatusLabel
+@onready var generate_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton
 @onready var back_button = $BackButton
 
 # -------- CONFIG --------

@@ -63,7 +63,7 @@ layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_trj04")
 
 [node name="StartButton" type="TextureButton" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=1103198651]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(120, 110)
 layout_mode = 2
 theme_type_variation = &"ButtonClassique"
 texture_normal = ExtResource("4_yhxw7")
@@ -86,11 +86,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"labelGras"
 theme_override_colors/font_color = Color(0.69928354, 0, 0.09885319, 1)
-theme_override_font_sizes/font_size = 38
+theme_override_font_sizes/font_size = 47
 text = "JOUER"
 
 [node name="Quit Button" type="TextureButton" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=2016246964]
-custom_minimum_size = Vector2(400, 100)
+custom_minimum_size = Vector2(400, 80)
 layout_mode = 2
 texture_normal = ExtResource("4_yhxw7")
 texture_pressed = ExtResource("5_16hvj")
@@ -125,7 +125,7 @@ theme_override_constants/separation = 10
 alignment = 2
 
 [node name="GdprButton" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=30557419]
-custom_minimum_size = Vector2(80, 100)
+custom_minimum_size = Vector2(120, 100)
 layout_mode = 2
 texture_normal = ExtResource("5_n45e2")
 texture_pressed = ExtResource("7_vr1f0")
@@ -134,7 +134,7 @@ stretch_mode = 5
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/GdprButton" unique_id=36168221]
 modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
-custom_minimum_size = Vector2(30, 60)
+custom_minimum_size = Vector2(40, 60)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -152,7 +152,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="OptionButton" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1227175599]
-custom_minimum_size = Vector2(80, 100)
+custom_minimum_size = Vector2(120, 100)
 layout_mode = 2
 texture_normal = ExtResource("5_n45e2")
 texture_pressed = ExtResource("7_vr1f0")
@@ -161,7 +161,7 @@ stretch_mode = 5
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/OptionButton" unique_id=1750948479]
 modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
-custom_minimum_size = Vector2(40, 60)
+custom_minimum_size = Vector2(50, 60)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -180,7 +180,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 0
 
 [node name="UserButton" type="TextureButton" parent="MarginContainer/VBoxContainer2" unique_id=945896313]
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
 texture_normal = ExtResource("5_n45e2")
 texture_pressed = ExtResource("7_vr1f0")
@@ -189,7 +189,7 @@ stretch_mode = 5
 
 [node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer2/UserButton" unique_id=1823667585]
 modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
-custom_minimum_size = Vector2(40, 60)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
