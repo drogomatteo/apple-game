@@ -6,18 +6,27 @@
 [ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="3_344ge"]
 [ext_resource type="PackedScene" uid="uid://c6l5lj6s2mx2m" path="res://Scenes/apple_tree.tscn" id="4_ynf5e"]
 [ext_resource type="PackedScene" uid="uid://c1t1p06i8i56u" path="res://Scenes/tavern.tscn" id="5_hptm8"]
-[ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="6_fdnlq"]
 [ext_resource type="Script" uid="uid://cyf1mrcpq47gu" path="res://Scripts/grass_system.gd" id="7_k12tt"]
 [ext_resource type="PackedScene" uid="uid://vicdlypsxa16" path="res://Assets/Herbe/main.tscn" id="7_ynf5e"]
 [ext_resource type="Texture2D" uid="uid://dbnicgab7e1rs" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="8_b3802"]
 [ext_resource type="Material" uid="uid://bboslgsskuo6v" path="res://Assets/Herbe/HerbeMaterial.tres" id="8_h1bgf"]
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
-[ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Images/Font/Bubble Sans 1.01.otf" id="12_fdnlq"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
+[ext_resource type="FontFile" uid="uid://dd8eexcadnoj1" path="res://Assets/UI-UX/Images/Font/Fredoka_SemiCondensed-SemiBold.ttf" id="14_u50mg"]
+[ext_resource type="Texture2D" uid="uid://cg6xhyklt5q5j" path="res://Assets/UI-UX/Images/Buttons Texture/My_Panel.png" id="15_u50mg"]
+[ext_resource type="Texture2D" uid="uid://6njqh54442c" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_brun.png" id="16_1w6v2"]
+[ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="16_3pmx8"]
 [ext_resource type="PackedScene" uid="uid://k6fu4jt18nip" path="res://Scenes/break_menu.tscn" id="16_k12tt"]
 [ext_resource type="Script" uid="uid://n36a3eclwoit" path="res://Scripts/tutorial.gd" id="17_h1bgf"]
+[ext_resource type="Texture2D" uid="uid://bjvhpahrg4hpq" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_verty.png" id="17_u50mg"]
+[ext_resource type="Texture2D" uid="uid://l16w5k4u21p4" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_brun_pressed.png" id="17_ueoa1"]
 [ext_resource type="Script" uid="uid://blqaj5vsw5nrj" path="res://Scripts/tracer_carte.gd" id="18_b3802"]
+[ext_resource type="Texture2D" uid="uid://cywtkl0v480kh" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_vert_Image.png" id="18_cbgmd"]
+[ext_resource type="Texture2D" uid="uid://csw3shv868ah8" path="res://Assets/UI-UX/Images/Buttons Texture/My_button.png" id="19_1w6v2"]
+[ext_resource type="Texture2D" uid="uid://ctjl301ecdrtp" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-9_My_pressed_buttons.png" id="20_ueoa1"]
+[ext_resource type="Texture2D" uid="uid://dgr2nov4qgfa4" path="res://Assets/UI-UX/Images/Buttons Texture/My_Boutton_CLASSIQUELong.png" id="21_6vcvc"]
+[ext_resource type="Texture2D" uid="uid://be7760xem1hfp" path="res://Assets/UI-UX/Images/Buttons Texture/My_Boutton_CLASSIQUE_pressed.png" id="22_7k868"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
 size = Vector3(35.937653, 1, 35.554764)
@@ -42,28 +51,32 @@ ambient_light_source = 2
 ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
 ambient_light_energy = 0.3
 
-[sub_resource type="LabelSettings" id="LabelSettings_h1bgf"]
-font_size = 37
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cbgmd"]
+texture = ExtResource("15_u50mg")
 
 [sub_resource type="Theme" id="Theme_b3802"]
 default_font_size = 25
 
 [sub_resource type="LabelSettings" id="LabelSettings_jkdf5"]
-font = ExtResource("12_fdnlq")
+font = ExtResource("14_u50mg")
 font_size = 40
-font_color = Color(0, 0, 0, 1)
+font_color = Color(0.1764706, 0.09411765, 0, 1)
+outline_size = 10
 
 [sub_resource type="LabelSettings" id="LabelSettings_fdnlq"]
-font = ExtResource("12_fdnlq")
-font_size = 50
-font_color = Color(0.9019608, 0.078431375, 0.078431375, 1)
+font = ExtResource("14_u50mg")
+font_size = 57
+font_color = Color(0.69803923, 0, 0.09803922, 1)
 shadow_size = 9
 shadow_color = Color(0, 0, 0, 0.48235294)
 
 [sub_resource type="LabelSettings" id="LabelSettings_wsu2k"]
-font = ExtResource("12_fdnlq")
-font_size = 36
-font_color = Color(0, 0, 0, 1)
+font = ExtResource("14_u50mg")
+font_size = 49
+font_color = Color(0.1764706, 0.09411765, 0, 1)
+outline_size = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u50mg"]
 
 [node name="World" type="Node3D" unique_id=1297503563]
 script = ExtResource("1_jjgbg")
@@ -417,58 +430,82 @@ layer = 10
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="BoiteMessage" type="Panel" parent="UI/TutorialUI" unique_id=716527475]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -440.0
-offset_top = -236.0
-offset_right = 443.0
-offset_bottom = 185.75
+[node name="MarginContainer" type="MarginContainer" parent="UI/TutorialUI" unique_id=1445983652]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("16_3pmx8")
+theme_override_constants/margin_left = 200
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 200
+theme_override_constants/margin_bottom = 200
 
-[node name="Message" type="Label" parent="UI/TutorialUI/BoiteMessage" unique_id=461640129]
+[node name="BoiteMessage" type="Panel" parent="UI/TutorialUI/MarginContainer" unique_id=716527475]
+layout_mode = 2
+theme = ExtResource("16_3pmx8")
+theme_override_styles/panel = SubResource("StyleBoxTexture_cbgmd")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/TutorialUI/MarginContainer/BoiteMessage" unique_id=594265095]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -414.5
-offset_top = -177.875
-offset_right = 427.0
-offset_bottom = 97.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-label_settings = SubResource("LabelSettings_h1bgf")
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer" unique_id=996929194]
+layout_mode = 2
+
+[node name="Message" type="Label" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer" unique_id=461640129]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_type_variation = &"labelBasic"
+theme_override_constants/line_spacing = -5
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_font_sizes/font_size = 26
+text = "Bienvenue dans le tutoriel de l'Apple Game.
+
+Appuyez sur le bouton 'Next' afin de continuer.\""
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="Next" type="Button" parent="UI/TutorialUI/BoiteMessage" unique_id=23478084]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -66.0
-offset_top = -92.5
-offset_right = 68.0
-offset_bottom = -31.5
-grow_horizontal = 2
-grow_vertical = 0
+[node name="Next" type="TextureButton" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer" unique_id=732166363]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
 theme = SubResource("Theme_b3802")
-text = "NEXT"
+texture_normal = ExtResource("16_1w6v2")
+texture_pressed = ExtResource("17_ueoa1")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/VBoxContainer/Next" unique_id=1347055890]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "SUIVANT"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Zone de texte" type="Control" parent="UI" unique_id=584328298]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 3.0
+offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -490,15 +527,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -205.0
-offset_top = 102.0
+offset_top = 94.5
 offset_right = 206.0
-offset_bottom = 171.0
+offset_bottom = 164.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0.078431375, 0.078431375, 1)
 theme_override_font_sizes/font_size = 40
 text = "Temps écoulé !"
 label_settings = SubResource("LabelSettings_fdnlq")
+horizontal_alignment = 1
 
 [node name="MessageLabel" type="Label" parent="UI/Zone de texte" unique_id=825985541]
 layout_mode = 1
@@ -512,19 +550,31 @@ offset_bottom = 210.0
 grow_horizontal = 2
 label_settings = SubResource("LabelSettings_wsu2k")
 
-[node name="ToDo" type="Label" parent="UI/Zone de texte" unique_id=1336770187]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Zone de texte" unique_id=1173458181]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 50.0
+offset_left = -85.0
+offset_right = 85.0
+offset_bottom = 69.0
 grow_horizontal = 2
+
+[node name="HSeparator" type="HSeparator" parent="UI/Zone de texte/VBoxContainer" unique_id=1065240905]
+layout_mode = 2
+theme_override_constants/separation = 20
+theme_override_styles/separator = SubResource("StyleBoxEmpty_u50mg")
+
+[node name="ToDo" type="Label" parent="UI/Zone de texte/VBoxContainer" unique_id=1336770187]
+layout_mode = 2
+text = "test"
 label_settings = SubResource("LabelSettings_wsu2k")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Break" type="CanvasLayer" parent="UI" unique_id=1115599442]
 layer = 12
+visible = false
 
 [node name="BreakMenu" parent="UI/Break" unique_id=504863998 instance=ExtResource("16_k12tt")]
 visibility_layer = 4
@@ -539,76 +589,143 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = ExtResource("16_3pmx8")
 
-[node name="NextLevel" type="Button" parent="UI/Bouttons/Bouton" unique_id=1237651726]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -31.500015
-offset_right = 160.0
-offset_bottom = 31.500015
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("12_fdnlq")
-theme_override_font_sizes/font_size = 40
-text = "Niveau suivant"
-
-[node name="ValidateButton" type="Button" parent="UI/Bouttons/Bouton" unique_id=922594922]
+[node name="ValidateButton" type="TextureButton" parent="UI/Bouttons/Bouton" unique_id=1252573776]
+custom_minimum_size = Vector2(300, 100)
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -143.0
-offset_top = -265.0
-offset_right = -23.0
-offset_bottom = -145.0
+offset_left = -352.0
+offset_top = -270.0
+offset_right = -52.0
+offset_bottom = -150.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_font_sizes/font_size = 40
-theme_override_styles/normal = ExtResource("6_fdnlq")
-theme_override_styles/pressed = ExtResource("6_fdnlq")
-theme_override_styles/hover = ExtResource("6_fdnlq")
-text = "ˇ"
+texture_normal = ExtResource("17_u50mg")
+texture_pressed = ExtResource("18_cbgmd")
+ignore_texture_size = true
+stretch_mode = 5
 
-[node name="BreakButton" type="Button" parent="UI/Bouttons/Bouton" unique_id=635311221 groups=["break_button"]]
+[node name="Label" type="Label" parent="UI/Bouttons/Bouton/ValidateButton" unique_id=68435935]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = -151.0
-offset_top = 13.0
-offset_right = -18.0
-offset_bottom = 47.0
-grow_horizontal = 0
-theme_override_fonts/font = ExtResource("12_fdnlq")
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("6_fdnlq")
-theme_override_styles/pressed = ExtResource("6_fdnlq")
-theme_override_styles/hover = ExtResource("6_fdnlq")
-text = "Pause"
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 25
+text = "Valider position du panier"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
-[node name="Recap" type="Button" parent="UI/Bouttons/Bouton" unique_id=625001054]
+[node name="NextLevel" type="TextureButton" parent="UI/Bouttons/Bouton" unique_id=224729927]
+custom_minimum_size = Vector2(500, 150)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -91.5
-offset_top = 102.0
-offset_right = 91.5
-offset_bottom = 133.0
+offset_left = -250.0
+offset_top = -75.0
+offset_right = 250.0
+offset_bottom = 75.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_fonts/font = ExtResource("12_fdnlq")
-theme_override_font_sizes/font_size = 26
-text = "Voir résumé du niveau"
+texture_normal = ExtResource("21_6vcvc")
+texture_pressed = ExtResource("22_7k868")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="UI/Bouttons/Bouton/NextLevel" unique_id=1986221815]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_font_sizes/font_size = 53
+text = "Niveau suivant"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Recap" type="Button" parent="UI/Bouttons/Bouton" unique_id=1437469430]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -294.0
+offset_top = 69.0
+offset_right = 291.0
+offset_bottom = 138.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"BouttonTertiaire"
+
+[node name="Label" type="Label" parent="UI/Bouttons/Bouton/Recap" unique_id=799368074]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -219.5
+offset_top = -24.0
+offset_right = 219.5
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelBasic"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 39
+text = "Voir un résumé du niveau"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BreakButton" type="TextureButton" parent="UI/Bouttons/Bouton" unique_id=1085198246 groups=["break_button"]]
+custom_minimum_size = Vector2(200, 75)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -244.0
+offset_top = 20.0
+offset_right = -30.0
+offset_bottom = 95.0
+grow_horizontal = 0
+texture_normal = ExtResource("19_1w6v2")
+texture_pressed = ExtResource("20_ueoa1")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="UI/Bouttons/Bouton/BreakButton" unique_id=1259410098]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -28.5
+offset_top = -20.0
+offset_right = 54.5
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_font_sizes/font_size = 30
+text = "PAUSE"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TutorialController" type="Node" parent="." unique_id=1832623938]
 script = ExtResource("17_h1bgf")

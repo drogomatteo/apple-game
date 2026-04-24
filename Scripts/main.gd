@@ -7,7 +7,7 @@ extends Node3D
 @onready var voir_recap = $UI/Bouttons/Bouton/Recap
 @onready var message_alerte = $"UI/Zone de texte/AlertMessage"
 @onready var temps_restant = $"UI/Zone de texte/TempsRestant"
-@onready var textToDo = $"UI/Zone de texte/ToDo"
+@onready var textToDo = $"UI/Zone de texte/VBoxContainer/ToDo"
 
 #Scène
 @export_group("Scènes")

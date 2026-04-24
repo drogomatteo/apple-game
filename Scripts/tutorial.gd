@@ -35,13 +35,14 @@ const HIGHLIGHT_COLOR := Color(1.0, 0.95, 0.55, 1.0)
 @onready var message_label = $"../UI/TutorialUI/BoiteMessage/Message"
 @onready var next_button = $"../UI/TutorialUI/BoiteMessage/Next"
 @onready var highlight = $"../UI/TutorialUI/Highlight"
+@onready var ToDo = $"../UI/Zone de texte/VBoxContainer/ToDo"
 
 # Boutons de la scène Player
 @onready var Left = $"../Player/CanvasLayer/MarginContainer/HBoxContainer/Control/Left"
 @onready var Right = $"../Player/CanvasLayer/MarginContainer/HBoxContainer/Control3/Right"
 @onready var forward_button_ui = $"../Player/CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward"
 var messages := [
-	"Bienvenue dans le tutoriel de l'Apple Game.\n\nAppuyez sur le bouton 'Next' afin de continuer.",
+	"Bienvenue dans le tutoriel de l'Apple Game.\n\nAppuyez sur le bouton 'SUIVANT' afin de continuer.",
 	"Parfait !\n\nCommençons sans plus tarder.",
 	"Essayons un peu de regarder aux alentours.\n\nAppuyez sur les boutons 'Pivoter'.",
 	"Super !\n\nMaintenant, avançons en appuyant sur le bouton 'Avancer'.",
@@ -78,6 +79,7 @@ func start_tutorial() -> void:
 	current_step = TutorialStep.NONE
 	action_timer = 0.0
 	waiting_final_popup = false
+	ToDo.visible = false
 
 	_disable_all_player_actions()
 	_stop_player_motion()
@@ -204,6 +206,7 @@ func _show_basket_instruction() -> void:
 
 func _start_basket_search() -> void:
 	current_step = TutorialStep.WAIT_BASKET
+	ToDo.visible = true
 	hide_tutorial_box()
 	_allow_all_player_actions()
 	clear_highlight()

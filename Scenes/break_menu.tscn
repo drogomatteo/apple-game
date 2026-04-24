@@ -12,7 +12,7 @@ shader_parameter/blur_amount = 2.50000011875
 shader_parameter/mix_color = Color(0.19607843, 0.23529412, 0.19607843, 0.23529412)
 
 [sub_resource type="LabelSettings" id="LabelSettings_f6h6w"]
-font_size = 150
+font_size = 120
 outline_size = 50
 outline_color = Color(0.69803923, 0, 0.09803922, 1)
 shadow_size = 50
