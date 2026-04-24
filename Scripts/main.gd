@@ -18,6 +18,12 @@ extends Node3D
 
 #Noeud
 @onready var Player = $Player
+@onready var player_camera: Camera3D = $Player/Camera3D
+@onready var player_left = $Player/CanvasLayer/MarginContainer/HBoxContainer/Control/Left
+@onready var player_right = $Player/CanvasLayer/MarginContainer/HBoxContainer/Control3/Right
+@onready var player_forward = $Player/CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward
+@onready var player_node_3d = $Player/Node3D
+
 var Basket : Node
 var Apple_tree : Node
 var Visual : Node
@@ -136,10 +142,10 @@ func _physics_process(_delta: float) -> void:
 			return
 		
 		validate_button.visible = false
-		Player.get_child(2).visible = false
-		Player.get_child(3).visible = false
-		Player.get_child(4).visible = false
-		Player.get_child(5).visible = false
+		player_left.visible = false
+		player_forward.visible = false
+		player_right.visible = false
+		player_node_3d.visible = false
 		next_level.visible = true
 		voir_recap.visible = true
 
@@ -204,7 +210,7 @@ func _physics_process(_delta: float) -> void:
 				Player.set_collision_mask(11)
 			else:
 				Player.set_collision_mask(9)
-			Player.get_child(5).visible = true
+			player_node_3d.visible = true
 			break
 		
 		elif collision.get_collider() == Arbre[index_Tree] and phase == 1:
@@ -252,9 +258,9 @@ func Initialisation() -> void:
 		Fences.set_visible(false)
 	else:
 		Fences.set_visible(true)
-	Player.get_child(2).set_visible(true)
-	Player.get_child(3).set_visible(true)
-	Player.get_child(4).set_visible(true)
+	player_left.visible = true
+	player_forward.visible = true
+	player_right.visible = true
 	validate_button.visible = false
 	next_level.visible = false
 	message_label.visible = false
@@ -262,9 +268,7 @@ func Initialisation() -> void:
 	temps_restant.visible = false
 	voir_recap.visible = false
 
-	Player.get_child(1).make_current()
-
-	Player.get_child(1).make_current()
+	player_camera.make_current()
 
 	map = []
 	Arbre = []
@@ -390,10 +394,10 @@ func continuer_fin_apres_tuto() -> void:
 	pending_end_results = false
 
 	validate_button.visible = false
-	Player.get_child(2).visible = false
-	Player.get_child(3).visible = false
-	Player.get_child(4).visible = false
-	Player.get_child(5).visible = false
+	player_left.visible = false
+	player_forward.visible = false
+	player_right.visible = false
+	player_node_3d.visible = false
 	next_level.visible = true
 
 	if niveau == niveau_max:

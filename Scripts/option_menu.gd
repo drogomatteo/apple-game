@@ -1,6 +1,6 @@
 extends Control
 
-@onready var sound_button = $CenterContainer/VBoxContainer/Sound
+@onready var sound_button = $CenterContainer/VBoxContainer/HBoxContainer/Sound
 @onready var daltonien_button = $CenterContainer/VBoxContainer/Daltonien
 
 

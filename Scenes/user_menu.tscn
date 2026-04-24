@@ -4,6 +4,7 @@
 [ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="1_kvj4v"]
 [ext_resource type="Texture2D" uid="uid://cncukdfpa4t3e" path="res://Assets/UI-UX/Images/icons/key.png" id="3_qkyn1"]
 [ext_resource type="Theme" uid="uid://yk6efy6kitav" path="res://Style_bouton/button_theme.tres" id="3_sioj2"]
+[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="4_klneb"]
 [ext_resource type="Texture2D" uid="uid://c71rrne3upjp8" path="res://Assets/UI-UX/Images/icons/calendar.png" id="4_ywo72"]
 [ext_resource type="Texture2D" uid="uid://blgvorb3i7drs" path="res://Assets/UI-UX/Images/icons/MedecinBlanc.png" id="5_a328f"]
 [ext_resource type="Texture2D" uid="uid://cepaqr2ycd5l0" path="res://Assets/UI-UX/Images/icons/adduser.png" id="6_63wj3"]
@@ -14,6 +15,11 @@
 [ext_resource type="Texture2D" uid="uid://c8fmefymdrm78" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_grand.png" id="9_4ve82"]
 [ext_resource type="Texture2D" uid="uid://ctjl301ecdrtp" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-9_My_pressed_buttons.png" id="10_e2dhf"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ywo72"]
+shader = ExtResource("4_klneb")
+shader_parameter/blur_amount = 2.50000011875
+shader_parameter/mix_color = Color(0, 0, 0, 0)
+
 [node name="UserMenu" type="Control" unique_id=1594275488]
 layout_mode = 3
 anchors_preset = 15
@@ -23,6 +29,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_kvj4v")
 script = ExtResource("1_8yq43")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1905059466]
+material = SubResource("ShaderMaterial_ywo72")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=153784424]
 layout_mode = 1
