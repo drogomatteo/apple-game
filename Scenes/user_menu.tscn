@@ -1,15 +1,13 @@
-[gd_scene format=4 uid="uid://ddp6q8ogqv3m"]
+[gd_scene format=3 uid="uid://ddp6q8ogqv3m"]
 
 [ext_resource type="Script" uid="uid://ch4kx0pyviu0t" path="res://Scripts/user_menu.gd" id="1_8yq43"]
+[ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="1_kvj4v"]
 [ext_resource type="StyleBox" uid="uid://kau1g88bg1yc" path="res://Style_bouton/UI_mouvement.tres" id="3_klneb"]
 [ext_resource type="Theme" uid="uid://yk6efy6kitav" path="res://Style_bouton/button_theme.tres" id="3_sioj2"]
-[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="4_klneb"]
 [ext_resource type="FontFile" uid="uid://bctpgbaqqopbm" path="res://Assets/UI-UX/Images/Font/Bubble Sans 1.01.otf" id="5_sioj2"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_sioj2"]
-shader = ExtResource("4_klneb")
-shader_parameter/blur_amount = 2.50000011875
-shader_parameter/mix_color = Color(0, 0, 0, 0)
+[ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="6_wwld1"]
+[ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="7_5owdv"]
+[ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="8_wwld1"]
 
 [node name="UserMenu" type="Control" unique_id=1594275488]
 layout_mode = 3
@@ -18,72 +16,102 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_kvj4v")
 script = ExtResource("1_8yq43")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1921400131]
-material = SubResource("ShaderMaterial_sioj2")
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=153784424]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 40
 
-[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1472082945]
-
-[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1739198720]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 3.0
-offset_top = 80.0
-offset_right = 3.0
-offset_bottom = 80.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.99086016, 1)
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer" unique_id=1889733681]
+[node name="fond" type="Panel" parent="MarginContainer" unique_id=1256783435]
 layout_mode = 2
+theme_type_variation = &"PanelBasic"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/HBoxContainer" unique_id=1583284448]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/fond" unique_id=293096395]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/fond/MarginContainer" unique_id=1583284448]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="AgeLabel" type="Label" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=1415559971]
+[node name="AgeBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2107690068]
 layout_mode = 2
-text = "Age du patient"
 
-[node name="AgeInput" type="LineEdit" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=1463654330]
+[node name="AgeInput" type="LineEdit" parent="MarginContainer/fond/MarginContainer/VBoxContainer/AgeBox" unique_id=1463654330]
 layout_mode = 2
 placeholder_text = "Entrez votre âge"
 
-[node name="TokenLabel" type="Label" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=409879351]
+[node name="CleBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=1725412278]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "Clé du patient"
 
-[node name="TokenInput" type="LineEdit" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=546875884]
-custom_minimum_size = Vector2(400, 60)
+[node name="TokenInput" type="LineEdit" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox" unique_id=546875884]
+custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 placeholder_text = "Entrez votre clé"
 
-[node name="DoctorKeyLabel" type="Label" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=119887001]
+[node name="MedecinBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=874009146]
 layout_mode = 2
-text = "Clé médecin (optionnelle)"
 
-[node name="DoctorKeyInput" type="LineEdit" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=119887002]
+[node name="DoctorKeyInput" type="LineEdit" parent="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox" unique_id=119887002]
 custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 placeholder_text = "Entrez la clé médecin"
 
-[node name="SaveButton" type="Button" parent="CenterContainer/HBoxContainer/VBoxContainer" unique_id=916444429]
+[node name="HBoxContainer3" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2006103602]
+layout_mode = 2
+
+[node name="GenerateTokenLabel" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=7102908]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Le patient n'a pas encore de clé patient"
+
+[node name="GenererBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=340396748]
+layout_mode = 2
+
+[node name="GenerateTokenButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox" unique_id=1065400306]
+z_index = 1
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 2
+theme = ExtResource("3_sioj2")
+theme_type_variation = &"BouttonTertiaire"
+text = "Générer une clé patient"
+
+[node name="GuestMode" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=949653803]
+layout_mode = 2
+
+[node name="GuestButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode" unique_id=1365382072]
+z_index = 1
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 2
+theme = ExtResource("3_sioj2")
+theme_type_variation = &"BouttonTertiaire"
+text = "Mode Invité"
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=480007012]
+layout_mode = 2
+
+[node name="SaveButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=916444429]
 z_index = 1
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
@@ -95,67 +123,46 @@ theme_override_styles/pressed = ExtResource("3_klneb")
 theme_override_styles/hover = ExtResource("3_klneb")
 text = "Valider"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CenterContainer/HBoxContainer" unique_id=469450911]
-layout_mode = 2
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1472082945]
 
-[node name="GenerateTokenLabel" type="Label" parent="CenterContainer/HBoxContainer/VBoxContainer2" unique_id=7102908]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "Le patient n'a pas encore de clé patient"
-
-[node name="GenerateTokenButton" type="Button" parent="CenterContainer/HBoxContainer/VBoxContainer2" unique_id=1065400306]
+[node name="BackButton" type="TextureButton" parent="." unique_id=267540514]
 z_index = 1
-custom_minimum_size = Vector2(400, 100)
-layout_mode = 2
-theme = ExtResource("3_sioj2")
-theme_override_constants/outline_size = -61
-theme_override_fonts/font = ExtResource("5_sioj2")
-theme_override_font_sizes/font_size = 41
-theme_override_styles/normal = ExtResource("3_klneb")
-theme_override_styles/pressed = ExtResource("3_klneb")
-theme_override_styles/hover = ExtResource("3_klneb")
-text = "Générer une clé patient"
-
-[node name="GuestButton" type="Button" parent="CenterContainer/HBoxContainer/VBoxContainer2" unique_id=1365382072]
-z_index = 1
-custom_minimum_size = Vector2(400, 100)
-layout_mode = 2
-theme = ExtResource("3_sioj2")
-theme_override_constants/outline_size = -61
-theme_override_fonts/font = ExtResource("5_sioj2")
-theme_override_font_sizes/font_size = 41
-theme_override_styles/normal = ExtResource("3_klneb")
-theme_override_styles/pressed = ExtResource("3_klneb")
-theme_override_styles/hover = ExtResource("3_klneb")
-text = "Mode Invité"
-
-[node name="StatusLabel" type="Label" parent="CenterContainer/HBoxContainer/VBoxContainer2" unique_id=480007012]
-layout_mode = 2
-
-[node name="BackButton" type="Button" parent="." unique_id=371559620]
-z_index = 1
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = -1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -277.0
-offset_top = 31.000002
-offset_right = -90.0
-offset_bottom = 65.0
+offset_left = -109.0
+offset_top = 21.0
+offset_right = -45.0
+offset_bottom = 81.0
 grow_horizontal = 0
 scale = Vector2(1.2950073, 1.2950073)
-theme_override_fonts/font = ExtResource("5_sioj2")
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = ExtResource("3_klneb")
-theme_override_styles/pressed = ExtResource("3_klneb")
-theme_override_styles/hover = ExtResource("3_klneb")
-text = "Retour"
+texture_normal = ExtResource("6_wwld1")
+texture_pressed = ExtResource("7_5owdv")
+ignore_texture_size = true
+stretch_mode = 4
 
+[node name="TextureRect" type="TextureRect" parent="BackButton" unique_id=680773273]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_wwld1")
+expand_mode = 1
+stretch_mode = 4
+
+[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/AgeBox/AgeInput" to="." method="_on_age_input_text_changed"]
+[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput" to="." method="_on_token_input_text_changed"]
+[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput" to="." method="_on_input_changed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton" to="." method="_on_guest_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
-[connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/AgeInput" to="." method="_on_age_input_text_changed"]
-[connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/TokenInput" to="." method="_on_token_input_text_changed"]
-[connection signal="text_changed" from="CenterContainer/HBoxContainer/VBoxContainer/DoctorKeyInput" to="." method="_on_input_changed"]
-[connection signal="pressed" from="CenterContainer/HBoxContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
-[connection signal="pressed" from="CenterContainer/HBoxContainer/VBoxContainer2/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
-[connection signal="pressed" from="CenterContainer/HBoxContainer/VBoxContainer2/GuestButton" to="." method="_on_guest_button_pressed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
