@@ -6,10 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://c8fmefymdrm78" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_grand.png" id="4_yhxw7"]
 [ext_resource type="Texture2D" uid="uid://g5dtuipdk4n" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-2_My_pressed_buttons.png" id="5_16hvj"]
 [ext_resource type="Texture2D" uid="uid://fxpu5rubs1lj" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_icons.png" id="5_n45e2"]
-[ext_resource type="Texture2D" uid="uid://c3mml3rimmkqu" path="res://Assets/UI-UX/Images/UserBlanc.png" id="6_cp0ys"]
-[ext_resource type="Texture2D" uid="uid://dfocc5csoxbbh" path="res://Assets/UI-UX/Images/CadnasBlanc.png" id="6_yhxw7"]
+[ext_resource type="Texture2D" uid="uid://c3mml3rimmkqu" path="res://Assets/UI-UX/Images/icons/UserBlanc.png" id="6_cp0ys"]
+[ext_resource type="Texture2D" uid="uid://dfocc5csoxbbh" path="res://Assets/UI-UX/Images/icons/CadnasBlanc.png" id="6_yhxw7"]
 [ext_resource type="Texture2D" uid="uid://d27xihyb40k33" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1_My_pressed_buttons.png" id="7_vr1f0"]
-[ext_resource type="Texture2D" uid="uid://bclams2q5onvw" path="res://Assets/UI-UX/Images/OptionBlanc.png" id="7_yhxw7"]
+[ext_resource type="Texture2D" uid="uid://bclams2q5onvw" path="res://Assets/UI-UX/Images/icons/OptionBlanc.png" id="7_yhxw7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_trj04"]
 

@@ -7,9 +7,9 @@
 [ext_resource type="AudioStream" uid="uid://ocwfwq4sekqy" path="res://Assets/Sound/walkGrass3.mp3" id="4_gymyn"]
 [ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="5_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="6_gymyn"]
-[ext_resource type="Texture2D" uid="uid://cvnsiov81jtuu" path="res://Assets/UI-UX/Images/LeftFInal.png" id="7_pu2lt"]
-[ext_resource type="Texture2D" uid="uid://duy2lveo3acjx" path="res://Assets/UI-UX/Images/RightFinal.png" id="8_ukyrk"]
-[ext_resource type="Texture2D" uid="uid://bu414ernqro6j" path="res://Assets/UI-UX/Images/UpFinal.png" id="9_7dp3o"]
+[ext_resource type="Texture2D" uid="uid://cvnsiov81jtuu" path="res://Assets/UI-UX/Images/icons/LeftFInal.png" id="7_pu2lt"]
+[ext_resource type="Texture2D" uid="uid://duy2lveo3acjx" path="res://Assets/UI-UX/Images/icons/RightFinal.png" id="8_ukyrk"]
+[ext_resource type="Texture2D" uid="uid://bu414ernqro6j" path="res://Assets/UI-UX/Images/icons/UpFinal.png" id="9_7dp3o"]
 [ext_resource type="Script" uid="uid://bbcdtfa638wx" path="res://Scripts/basket.gd" id="9_tx1dd"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_x3wgy"]

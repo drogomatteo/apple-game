@@ -1,7 +1,7 @@
 extends Control
 
-@onready var checkbox = $CenterContainer/VBoxContainer/CheckBox
-@onready var continue_button = $CenterContainer/VBoxContainer/ContinueButton
+@onready var checkbox = $MarginContainer/CenterContainer/MarginContainer/VBoxContainer/CheckBox
+@onready var continue_button = $MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer/ContinueButton
 
 var force_show := false 
 var first_login_flow := false
