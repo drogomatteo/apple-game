@@ -85,7 +85,7 @@ offset_bottom = 22.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"labelGras"
-theme_override_colors/font_color = Color(0.69928354, 0, 0.09885319, 1)
+theme_override_colors/font_color = Color(0.69803923, 0, 0.09803922, 1)
 theme_override_font_sizes/font_size = 47
 text = "JOUER"
 
@@ -180,7 +180,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 0
 
 [node name="UserButton" type="TextureButton" parent="MarginContainer/VBoxContainer2" unique_id=945896313]
-custom_minimum_size = Vector2(150, 150)
+custom_minimum_size = Vector2(150, 130)
 layout_mode = 2
 texture_normal = ExtResource("5_n45e2")
 texture_pressed = ExtResource("7_vr1f0")

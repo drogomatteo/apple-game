@@ -1,7 +1,7 @@
 extends Control
 
-@onready var resume_button = $ResumeButton
-@onready var back_button = $BackButton
+@onready var resume_button = $VBoxContainer/ResumeButton
+@onready var back_button = $VBoxContainer/BackButton
 
 func _ready():
 	visible = false
