@@ -94,7 +94,7 @@ var validate_was_pressed := false
 func _ready() -> void:
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + str(PlayerData.user_id) + "_" + str(randi())
 	TutorialHighlight.visible = false
-	Paramètre.definir_tutorial_seen(false)
+	#Paramètre.definir_tutorial_seen(false)
 	Initialisation()
 
 	
