@@ -158,6 +158,19 @@ func _defer_current_action(reason: String) -> void:
 	if reason != "":
 		_log(reason)
 
+func _normalize_queued_session_id(action: Dictionary) -> void:
+	var session_id = str(action.get("session_id", ""))
+	if session_id.find("_-2_") == -1:
+		return
+
+	var player_token = str(PlayerData.token).strip_edges()
+	if player_token == "" or player_token.to_lower() == "guest":
+		return
+
+	action["session_id"] = session_id.replace("_-2_", "_" + player_token + "_")
+	_save_queue()
+	_log("Queued session_id migrated from local user_id to player token")
+
 func _migrate_legacy_doctor_report_action(action: Dictionary) -> bool:
 	if str(action.get("type", "")) != "file":
 		return false
@@ -380,6 +393,7 @@ func _process_next():
 
 	is_running = true
 	var action = queue[0]
+	_normalize_queued_session_id(action)
 	request_start_time = Time.get_ticks_msec()
 	_log("Processing action | type=%s | retries=%s" % [str(action.get("type", "unknown")), str(action.get("retries", 0))])
 

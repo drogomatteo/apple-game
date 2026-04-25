@@ -228,9 +228,11 @@ func ensure_valid_access_token() -> bool:
 # -------- FILE UPLOADS --------
 func send_file(filepath, url, session_id := "", extra_fields := {}):
 	_log("send_file -> %s" % filepath)
-	if PlayerData.user_id == -1:
-		_log("No user_id: queue file upload")
+	if PlayerData.user_id < 0:
+		_log("No server user_id: queue file upload")
 		_queue_file_upload(filepath, url, session_id, extra_fields)
+		if not SyncManager.is_running:
+			SyncManager.force_sync()
 		return
 
 	var file = FileAccess.open(filepath, FileAccess.READ)

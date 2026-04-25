@@ -89,10 +89,20 @@ var next_level_was_pressed := false
 var recap_was_pressed := false
 var validate_was_pressed := false
 
+func _get_session_owner_id() -> String:
+	var player_token = str(PlayerData.token).strip_edges()
+	if player_token != "":
+		return player_token
+
+	var player_uuid = str(PlayerData.uuid).strip_edges()
+	if player_uuid != "":
+		return player_uuid
+
+	return str(PlayerData.user_id)
 
 #Tuto désactivé de base:
 func _ready() -> void:
-	session_id = str(int(Time.get_unix_time_from_system())) + "_" + str(PlayerData.user_id) + "_" + str(randi())
+	session_id = str(int(Time.get_unix_time_from_system())) + "_" + _get_session_owner_id() + "_" + str(randi())
 	TutorialHighlight.visible = false
 	#Paramètre.definir_tutorial_seen(false)
 	Initialisation()
