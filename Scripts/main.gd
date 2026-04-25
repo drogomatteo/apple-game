@@ -94,7 +94,9 @@ var validate_was_pressed := false
 func _ready() -> void:
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + str(PlayerData.user_id) + "_" + str(randi())
 	TutorialHighlight.visible = false
+	Paramètre.definir_tutorial_seen(false)
 	Initialisation()
+
 	
 	if not Paramètre.tutorial_seen:
 		TutorialController.start_tutorial()
@@ -435,11 +437,11 @@ func continuer_fin_apres_tuto() -> void:
 
 func toDo():
 	if phase == 0:
-		return "Trouvez le panier"
+		return "Cherchez le panier"
 	elif phase == 1:
-		return "Trouvez l'arbre"
+		return "Cherchez l'arbre"
 	elif phase == 2:
-		return "Trouvez le pommier"
+		return "Cherchez le pommier"
 	elif phase == 3:
 		return "Déposez le panier"
 	return ""

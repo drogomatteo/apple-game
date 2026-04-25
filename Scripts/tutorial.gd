@@ -49,9 +49,9 @@ const HIGHLIGHT_COLOR := Color(1.0, 0.95, 0.55, 1.0)
 var messages := [
 	"Bienvenue dans le tutoriel de l'Apple Game.\n\nAppuyez sur le bouton 'SUIVANT' afin de continuer.",
 	"Parfait !\n\nCommençons sans plus tarder.",
-	"Essayons un peu de regarder aux alentours.\n\nAppuyez sur les boutons 'Pivoter'.",
+	"Essayons un peu de regarder aux alentours.\n\nLaissez appuyer sur les boutons 'Pivoter'.",
 	"Super !\n\nMaintenant, avançons en appuyant sur le bouton 'Avancer'.",
-	"Vous êtes prêt !\n\nPassons désormais à l'étape suivante.\n\nSuivez les instructions notées au dessus de votre écran.",
+	"Vous êtes prêt !\nPassons désormais à l'étape suivante.\n\nSuivez les instructions notées au dessus de votre écran. \n Avancez jusque l'objet recherché",
 	"Continuez comme ça.\n\nCherchons maintenant l'arbre.",
 	"Très bien.\n\nAu tour du pommier.",
 	"Nous arrivons à l'étape finale.\n\nConnaissez-vous le principe de l'Apple Game ?",
