@@ -1,0 +1,298 @@
+[gd_scene format=3 uid="uid://c6q22i7evcoqk"]
+
+[ext_resource type="Texture2D" uid="uid://dtkg7mxlgqjnx" path="res://Assets/UI-UX/Images/UI Texture 1.png" id="1_y21ko"]
+[ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="2_qbbrt"]
+[ext_resource type="Script" uid="uid://fn8mtqyf2if" path="res://Assets/UI-UX/test_ui.gd" id="2_tlafp"]
+[ext_resource type="Texture2D" uid="uid://cvnsiov81jtuu" path="res://Assets/UI-UX/Images/icons/LeftFInal.png" id="3_qbbrt"]
+[ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="5_3ncok"]
+[ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="6_1wmm5"]
+[ext_resource type="Texture2D" uid="uid://duy2lveo3acjx" path="res://Assets/UI-UX/Images/icons/RightFinal.png" id="7_22au5"]
+[ext_resource type="Texture2D" uid="uid://bu414ernqro6j" path="res://Assets/UI-UX/Images/icons/UpFinal.png" id="8_5vjdp"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tlafp"]
+
+[sub_resource type="Theme" id="Theme_y21ko"]
+
+[node name="Control" type="Control" unique_id=2071607787]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_qbbrt")
+script = ExtResource("2_tlafp")
+
+[node name="Panel" type="Panel" parent="." unique_id=1531904979]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1685.3333
+offset_bottom = 948.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+theme = ExtResource("2_qbbrt")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=1707784424]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -54.0
+offset_bottom = -81.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_y21ko")
+region_rect = Rect2(0, 0, 534, 535)
+patch_margin_left = 145
+patch_margin_top = 176
+patch_margin_right = 149
+patch_margin_bottom = 199
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+
+[node name="Label" type="Label" parent="NinePatchRect" unique_id=1478784812]
+visible = false
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -99.0
+offset_bottom = 99.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.38235286, 0.1736848, 0.056204416, 1)
+theme_override_font_sizes/font_size = 145
+text = "TEST"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+
+[node name="LineEdit" type="LineEdit" parent="." unique_id=623843456]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -261.3125
+offset_right = 261.3125
+offset_bottom = 88.5
+grow_horizontal = 2
+placeholder_text = "entrez la clé du patient"
+max_length = 10
+context_menu_enabled = false
+
+[node name="Button2" type="Button" parent="." unique_id=1493953278]
+visible = false
+material = SubResource("CanvasItemMaterial_tlafp")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -229.0
+offset_top = -160.0
+offset_right = 258.0
+offset_bottom = -97.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_qbbrt")
+theme_type_variation = &"BouttonTertiaire"
+text = "test"
+
+[node name="Button3" type="Button" parent="." unique_id=756147584]
+layout_mode = 0
+offset_left = 2702.0
+offset_top = 238.0
+offset_right = 3289.0
+offset_bottom = 682.0
+theme = ExtResource("2_qbbrt")
+theme_type_variation = &"ButtonClassique"
+
+[node name="MarginContainer" type="MarginContainer" parent="Button3" unique_id=1036831843]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -153.5
+offset_top = -148.5
+offset_right = 153.5
+offset_bottom = 148.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Button3/MarginContainer" unique_id=1069221743]
+visible = false
+layout_mode = 2
+texture = ExtResource("3_qbbrt")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=243374555]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 526.0
+offset_top = 238.0
+offset_right = 528.0
+offset_bottom = 687.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.3, 0.3)
+theme_override_constants/margin_left = 201
+theme_override_constants/margin_top = 158
+theme_override_constants/margin_right = -122
+theme_override_constants/margin_bottom = 97
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1624315996]
+layout_mode = 2
+
+[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1943040086]
+texture_filter = 2
+layout_mode = 2
+theme = ExtResource("2_qbbrt")
+theme_type_variation = &"BouttonSecondaire"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Button2" unique_id=1393532202]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.148
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.33198547
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_y21ko")
+theme_type_variation = &"labelGras"
+text = "RETURN"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=1085721325]
+texture_filter = 2
+layout_mode = 0
+offset_left = 209.0
+offset_top = 30.0
+offset_right = 3852.0
+offset_bottom = 374.99994
+scale = Vector2(0.2, 0.2)
+theme = ExtResource("2_qbbrt")
+theme_type_variation = &"ButtonClassique"
+
+[node name="Label" type="Label" parent="Button" unique_id=1222039090]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.148
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.33198547
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_y21ko")
+theme_type_variation = &"labelGras"
+text = "START"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=2088692863]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 209.0
+offset_top = 30.0
+offset_right = 209.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer2" unique_id=1484269895]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="MarginContainer2/HBoxContainer" unique_id=328924703]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 2
+
+[node name="Left" type="TouchScreenButton" parent="MarginContainer2/HBoxContainer/Control" unique_id=2120903878]
+position = Vector2(17, 434.00003)
+scale = Vector2(0.3, 0.3)
+texture_normal = ExtResource("5_3ncok")
+texture_pressed = ExtResource("6_1wmm5")
+action = "Gauche"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer2/HBoxContainer/Control/Left" unique_id=794013467]
+custom_minimum_size = Vector2(300, 300)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_qbbrt")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Control3" type="Control" parent="MarginContainer2/HBoxContainer" unique_id=108859199]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Right" type="TouchScreenButton" parent="MarginContainer2/HBoxContainer/Control3" unique_id=2036018755]
+position = Vector2(-4, 434.00003)
+scale = Vector2(0.3, 0.3)
+texture_normal = ExtResource("5_3ncok")
+texture_pressed = ExtResource("6_1wmm5")
+action = "Droite"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer2/HBoxContainer/Control3/Right" unique_id=1004026082]
+custom_minimum_size = Vector2(300, 300)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_22au5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer2" unique_id=110870644]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Control2" type="Control" parent="MarginContainer2/HBoxContainer2" unique_id=1578898301]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Forward" type="TouchScreenButton" parent="MarginContainer2/HBoxContainer2/Control2" unique_id=1233083459]
+position = Vector2(57, 433.99997)
+scale = Vector2(0.322, 0.322)
+texture_normal = ExtResource("5_3ncok")
+texture_pressed = ExtResource("6_1wmm5")
+action = "Avancer"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer2/HBoxContainer2/Control2/Forward" unique_id=2068684018]
+custom_minimum_size = Vector2(300, 300)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_5vjdp")
+expand_mode = 1
+stretch_mode = 5

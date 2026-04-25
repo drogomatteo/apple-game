@@ -1,0 +1,13 @@
+[gd_resource type="StyleBoxTexture" format=3 uid="uid://cose4ipacwvk7"]
+
+[ext_resource type="Texture2D" uid="uid://fsx1qesifs2g" path="res://Assets/UI-UX/Images/UI Texture 2.png" id="1_ttqlo"]
+
+[resource]
+texture = ExtResource("1_ttqlo")
+texture_margin_left = 289.0
+texture_margin_top = 120.0
+texture_margin_right = 153.0
+texture_margin_bottom = 129.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(0.67058825, 0.5568628, 0.5372549, 1)
