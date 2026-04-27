@@ -9,7 +9,8 @@ func _log(message: String) -> void:
 @onready var token_input = $MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput
 @onready var birth_year_input = $MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox/BirthYearInput
 @onready var doctor_key_input = $MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput
-@onready var save_button = $MarginContainer/fond/MarginContainer/VBoxContainer/SaveButton
+@onready var save_button = $MarginContainer/fond/MarginContainer/VBoxContainer/Button/SaveButton
+@onready var deco_button = $MarginContainer/fond/MarginContainer/VBoxContainer/Button/DecoButton
 @onready var guest_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton
 @onready var status_label = $MarginContainer/fond/MarginContainer/VBoxContainer/StatusLabel
 @onready var generate_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton
@@ -1061,3 +1062,7 @@ func _on_doctor_token_input_text_changed(new_text: String) -> void:
 		return
 
 	_update_button()
+
+
+func _on_deco_button_pressed() -> void:
+	pass # Replace with function body.

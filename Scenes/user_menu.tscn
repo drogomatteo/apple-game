@@ -7,13 +7,14 @@
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="4_klneb"]
 [ext_resource type="Texture2D" uid="uid://c71rrne3upjp8" path="res://Assets/UI-UX/Images/icons/calendar.png" id="4_ywo72"]
 [ext_resource type="Texture2D" uid="uid://blgvorb3i7drs" path="res://Assets/UI-UX/Images/icons/MedecinBlanc.png" id="5_a328f"]
-[ext_resource type="Texture2D" uid="uid://cepaqr2ycd5l0" path="res://Assets/UI-UX/Images/icons/adduser.png" id="6_63wj3"]
-[ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="6_wwld1"]
+[ext_resource type="Texture2D" uid="uid://jnjvq6jag6cs" path="res://Assets/UI-UX/Images/icons/adduser.png" id="6_63wj3"]
+[ext_resource type="Texture2D" uid="uid://k6o1hussf1rl" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="6_wwld1"]
 [ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="7_5owdv"]
-[ext_resource type="Texture2D" uid="uid://dfocc5csoxbbh" path="res://Assets/UI-UX/Images/icons/CadnasBlanc.png" id="8_t0q12"]
+[ext_resource type="Texture2D" uid="uid://l526bnw2e6ed" path="res://Assets/UI-UX/Images/icons/CadnasBlanc.png" id="8_t0q12"]
 [ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="8_wwld1"]
-[ext_resource type="Texture2D" uid="uid://c8fmefymdrm78" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_grand.png" id="9_4ve82"]
+[ext_resource type="Texture2D" uid="uid://btr7i30eqx476" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_grand.png" id="9_4ve82"]
 [ext_resource type="Texture2D" uid="uid://ctjl301ecdrtp" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-9_My_pressed_buttons.png" id="10_e2dhf"]
+[ext_resource type="Texture2D" uid="uid://g5dtuipdk4n" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-2_My_pressed_buttons.png" id="12_a328f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ywo72"]
 shader = ExtResource("4_klneb")
@@ -185,7 +186,10 @@ theme = ExtResource("3_sioj2")
 theme_type_variation = &"BouttonTertiaire"
 text = "Mode Invité"
 
-[node name="SaveButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=807662277]
+[node name="Button" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=678183834]
+layout_mode = 2
+
+[node name="SaveButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button" unique_id=807662277]
 z_index = 1
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
@@ -195,7 +199,7 @@ texture_pressed = ExtResource("10_e2dhf")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/SaveButton" unique_id=1516457861]
+[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button/SaveButton" unique_id=1516457861]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -211,6 +215,33 @@ grow_vertical = 2
 theme_type_variation = &"labelGras"
 theme_override_font_sizes/font_size = 39
 text = "VALIDER"
+
+[node name="DecoButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button" unique_id=2050583325]
+z_index = 1
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+theme = ExtResource("3_sioj2")
+texture_normal = ExtResource("9_4ve82")
+texture_pressed = ExtResource("12_a328f")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button/DecoButton" unique_id=394335066]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 20.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_font_sizes/font_size = 37
+text = "DECONNEXION"
 
 [node name="StatusLabel" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=480007012]
 layout_mode = 2
@@ -263,6 +294,7 @@ stretch_mode = 4
 [connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput" to="." method="_on_doctor_token_input_text_changed"]
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton" to="." method="_on_guest_button_pressed"]
-[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/Button/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/Button/DecoButton" to="." method="_on_deco_button_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
