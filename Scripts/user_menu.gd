@@ -24,6 +24,7 @@ const TOKEN_LENGTH := 8
 const MAX_TOKEN_GENERATION_ATTEMPTS := 20
 const PREFILL_MIN_TOKEN_LENGTH := 1
 const MAX_BIRTH_YEAR_AGE := 110
+const MIN_BIRTH_YEAR_AGE := 6
 
 # -------- STATE --------
 var is_request_running = false
@@ -129,11 +130,11 @@ func _is_valid_birth_year(birth_year_text: String) -> bool:
 
 	var birth_year = int(birth_year_text)
 	var current_year = int(Time.get_datetime_dict_from_system()["year"])
-	return birth_year >= current_year - MAX_BIRTH_YEAR_AGE and birth_year <= current_year
+	return birth_year >= current_year - MAX_BIRTH_YEAR_AGE and birth_year <= current_year - MIN_BIRTH_YEAR_AGE
 
 func _get_birth_year_range_text() -> String:
 	var current_year = int(Time.get_datetime_dict_from_system()["year"])
-	return "%s et %s" % [str(current_year - MAX_BIRTH_YEAR_AGE), str(current_year)]
+	return "%s et %s" % [str(current_year - MAX_BIRTH_YEAR_AGE), str(current_year -  MIN_BIRTH_YEAR_AGE)]
 
 # -------- FORM HELPERS --------
 func _set_ui_locked(locked: bool) -> void:
@@ -1063,6 +1064,14 @@ func _on_doctor_token_input_text_changed(new_text: String) -> void:
 
 	_update_button()
 
+func _on_logout_button_pressed() -> void:
+	PlayerData.logout_user()
+	SaveRgpd.set_accepted(false, true)
+	GestionFichier.save_data()
 
-func _on_deco_button_pressed() -> void:
-	pass # Replace with function body.
+	var interface = _get_interface()
+	if interface:
+		interface.first_login_flow = true
+		interface.show_gdpr()
+	else:
+		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
