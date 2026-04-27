@@ -144,7 +144,7 @@ theme_type_variation = &"labelBasic"
 theme_override_colors/font_color = Color(0.1764706, 0.09411765, 0, 1)
 text = "Cette application a été réalisé par quatre étudiants en ingénieur civil dans le cadre d'un projet au sein de l'UMONS lié au domaine de la recherche médicale sur la maladie de l'Alzheimer.
 
-Visuels & Frontend: Kabelis Eva
+Visuels & Frontend : Kabelis Eva
 Création & Gestion de la base de données : Lempire Matrtin & Boreux Tom
 Script & Logique du joueur : Drogo Matteo
 
