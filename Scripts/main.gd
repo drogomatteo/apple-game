@@ -170,7 +170,7 @@ func _physics_process(_delta: float) -> void:
 
 
 		if niveau == niveau_max:
-			next_level.text = "Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour retourner au menu principal"
+			next_level.get_child(0).text = "Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour retourner au menu principal"
 
 		if timeout:
 			message_alerte.visible = true
