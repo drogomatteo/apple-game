@@ -10,7 +10,7 @@ func _log(message: String) -> void:
 @onready var birth_year_input = $MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox/BirthYearInput
 @onready var doctor_key_input = $MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput
 @onready var save_button = $MarginContainer/fond/MarginContainer/VBoxContainer/Button/SaveButton
-@onready var deco_button = $MarginContainer/fond/MarginContainer/VBoxContainer/Button/DecoButton
+@onready var deco_button = $MarginContainer/fond/MarginContainer/VBoxContainer/Button/LogoutButton
 @onready var guest_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton
 @onready var status_label = $MarginContainer/fond/MarginContainer/VBoxContainer/StatusLabel
 @onready var generate_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton
@@ -24,6 +24,7 @@ const TOKEN_LENGTH := 8
 const MAX_TOKEN_GENERATION_ATTEMPTS := 20
 const PREFILL_MIN_TOKEN_LENGTH := 1
 const MAX_BIRTH_YEAR_AGE := 110
+const MIN_BIRTH_YEAR_AGE := 6
 
 # -------- STATE --------
 var is_request_running = false
@@ -72,6 +73,7 @@ func _ready():
 		birth_year_input.text = str(PlayerData.birth_year)
 		doctor_key_input.text = PlayerData.doctor_key
 
+	_sync_guest_fields_state()
 	_update_button()
 	_show_pending_token_update_notice()
 
@@ -90,16 +92,11 @@ func _show_pending_token_update_notice() -> void:
 # -------- UI HELPERS --------
 func _on_token_input_text_changed(_text=""):
 	token_input_generation += 1
-	var token = token_input.text.strip_edges().to_lower()
 	if offline_generated_token_value != "" and token_input.text.strip_edges() != offline_generated_token_value:
 		offline_generated_token_value = ""
 
-	if token == "guest":
-		is_guest_mode = true
-		_set_guest_only_fields_locked(true)
-	else:
-		is_guest_mode = false
-		_set_guest_only_fields_locked(false)
+	_sync_guest_fields_state()
+	if not is_guest_mode:
 		_clear_previous_autofill_if_still_present()
 
 	_update_button()
@@ -112,13 +109,16 @@ func _update_button():
 	var birth_year = birth_year_input.text.strip_edges()
 	var is_guest_token = token.to_lower() == "guest"
 
-	save_button.disabled = (token == "" or (not is_guest_token and birth_year == ""))
+	save_button.disabled = false
 
 	if token != "" and (is_guest_token or _is_valid_birth_year(birth_year)):
 		status_label.text = ""
 
 func _get_device_uuid() -> String:
 	return OS.get_unique_id()
+
+func _is_guest_token() -> bool:
+	return token_input.text.strip_edges().to_lower() == "guest"
 
 func _is_valid_birth_year(birth_year_text: String) -> bool:
 	if birth_year_text == "":
@@ -129,11 +129,11 @@ func _is_valid_birth_year(birth_year_text: String) -> bool:
 
 	var birth_year = int(birth_year_text)
 	var current_year = int(Time.get_datetime_dict_from_system()["year"])
-	return birth_year >= current_year - MAX_BIRTH_YEAR_AGE and birth_year <= current_year
+	return birth_year >= current_year - MAX_BIRTH_YEAR_AGE and birth_year <= current_year - MIN_BIRTH_YEAR_AGE
 
 func _get_birth_year_range_text() -> String:
 	var current_year = int(Time.get_datetime_dict_from_system()["year"])
-	return "%s et %s" % [str(current_year - MAX_BIRTH_YEAR_AGE), str(current_year)]
+	return "%s et %s" % [str(current_year - MAX_BIRTH_YEAR_AGE), str(current_year -  MIN_BIRTH_YEAR_AGE)]
 
 # -------- FORM HELPERS --------
 func _set_ui_locked(locked: bool) -> void:
@@ -148,17 +148,23 @@ func _set_ui_locked(locked: bool) -> void:
 		_update_button()
 
 func _set_guest_only_fields_locked(locked: bool) -> void:
-	birth_year_input.text = ""
+	if locked:
+		birth_year_input.text = ""
 	birth_year_input.editable = not locked
 	birth_year_input.focus_mode = Control.FOCUS_NONE if locked else Control.FOCUS_ALL
 	if locked and birth_year_input.has_focus():
 		birth_year_input.release_focus()
 
-	doctor_key_input.text = ""
+	if locked:
+		doctor_key_input.text = ""
 	doctor_key_input.editable = not locked
 	doctor_key_input.focus_mode = Control.FOCUS_NONE if locked else Control.FOCUS_ALL
 	if locked and doctor_key_input.has_focus():
 		doctor_key_input.release_focus()
+
+func _sync_guest_fields_state() -> void:
+	is_guest_mode = _is_guest_token()
+	_set_guest_only_fields_locked(is_guest_mode)
 
 # -------- TOKEN HELPERS --------
 func _generate_token() -> String:
@@ -733,8 +739,8 @@ func _on_save_button_pressed():
 	var token = token_input.text.strip_edges()
 	var birth_year = birth_year_input.text.strip_edges()
  
-	if token == "" and birth_year =="":
-		status_label.text = "Champs requis"
+	if token == "" and birth_year == "":
+		status_label.text = "Clé patient et année de naissance requises"
 		return
 	if token == "":
 		status_label.text = "Clé patient requise"
@@ -745,7 +751,7 @@ func _on_save_button_pressed():
 		return
 
 	if birth_year == "":
-		status_label.text = "Année de naissance du patient requise"
+		status_label.text = "Année de naissance requise"
 		return
 
 	if not _is_valid_birth_year(birth_year):
@@ -1052,8 +1058,12 @@ func _on_birth_year_input_text_changed(new_text: String) -> void:
 	_update_button()
 
 func _on_doctor_token_input_text_changed(new_text: String) -> void:
-	if is_guest_mode:
+	if is_guest_mode or _is_guest_token():
+		is_guest_mode = true
+		doctor_key_input.editable = false
+		doctor_key_input.focus_mode = Control.FOCUS_NONE
 		doctor_key_input.text = ""
+		doctor_key_input.release_focus()
 		return
 
 	var sanitized = new_text.strip_edges()
@@ -1063,6 +1073,14 @@ func _on_doctor_token_input_text_changed(new_text: String) -> void:
 
 	_update_button()
 
+func _on_logout_button_pressed() -> void:
+	PlayerData.logout_user()
+	SaveRgpd.set_accepted(false, true)
+	GestionFichier.save_data()
 
-func _on_deco_button_pressed() -> void:
-	pass # Replace with function body.
+	var interface = _get_interface()
+	if interface:
+		interface.first_login_flow = true
+		interface.show_gdpr()
+	else:
+		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")

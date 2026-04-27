@@ -216,7 +216,7 @@ theme_type_variation = &"labelGras"
 theme_override_font_sizes/font_size = 39
 text = "VALIDER"
 
-[node name="DecoButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button" unique_id=2050583325]
+[node name="LogoutButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button" unique_id=2050583325]
 z_index = 1
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
@@ -226,7 +226,7 @@ texture_pressed = ExtResource("12_a328f")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button/DecoButton" unique_id=394335066]
+[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button/LogoutButton" unique_id=394335066]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -295,6 +295,6 @@ stretch_mode = 4
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton" to="." method="_on_guest_button_pressed"]
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/Button/SaveButton" to="." method="_on_save_button_pressed"]
-[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/Button/DecoButton" to="." method="_on_deco_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/Button/LogoutButton" to="." method="_on_logout_button_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
