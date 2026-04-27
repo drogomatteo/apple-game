@@ -170,6 +170,7 @@ func _physics_process(_delta: float) -> void:
 
 
 		if niveau == niveau_max:
+			next_level.set_self_modulate(Color(1,1,1,0))
 			next_level.get_child(0).text = "Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour retourner au menu principal"
 
 		if timeout:
