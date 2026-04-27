@@ -3,9 +3,10 @@
 [ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="1_cu7qk"]
 [ext_resource type="Script" uid="uid://n4rkg4crefk3" path="res://Scripts/info_menu.gd" id="2_rhvn0"]
 [ext_resource type="Texture2D" uid="uid://cg6xhyklt5q5j" path="res://Assets/UI-UX/Images/Buttons Texture/My_Panel.png" id="3_itbll"]
-[ext_resource type="Texture2D" uid="uid://k6o1hussf1rl" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="4_0ldwx"]
+[ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="4_0ldwx"]
 [ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="5_rhvn0"]
 [ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="6_v2mt7"]
+[ext_resource type="FontFile" uid="uid://cerbarmw7oyi5" path="res://Assets/UI-UX/Images/Font/Fredoka-Regular.ttf" id="7_0ldwx"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n57yk"]
 texture = ExtResource("3_itbll")
@@ -13,7 +14,8 @@ texture = ExtResource("3_itbll")
 [sub_resource type="LabelSettings" id="LabelSettings_pquc7"]
 line_spacing = 1.0
 paragraph_spacing = -5.0
-font_size = 28
+font = ExtResource("7_0ldwx")
+font_size = 30
 font_color = Color(0.1764706, 0.09411765, 0, 1)
 
 [node name="RgpdMenu" type="Control" unique_id=58320947]
@@ -112,13 +114,13 @@ layout_mode = 2
 theme = ExtResource("1_cu7qk")
 theme_type_variation = &"labelBasic"
 theme_override_colors/font_color = Color(0.1764706, 0.09411765, 0, 1)
-text = "Cette application a été réalisé par quatre étudiants en ingénieur civil dans le cadre d'un projet au sein de l'UMONS pour le domaine de la recherche médicale.
+text = "Cette application a été réalisé par quatre étudiants en ingénieur civil dans le cadre d'un projet au sein de l'UMONS lié au domaine de la recherche médicale sur la maladie de l'Alzheimer.
 
-Designeuse : Eva Kabelis
-Création & Gestion de la base de données : Martin Lempire & Tom Boreux
+Visuels & Frontend: Kabelis Eva
+Création & Gestion de la base de données : Lempire Matrtin & Boreux Tom
 Script & Logique du joueur : Drogo Matteo
 
-L'application est encore en cours de développement
+L'application est encore en cours de développement.
 "
 label_settings = SubResource("LabelSettings_pquc7")
 autowrap_mode = 3
