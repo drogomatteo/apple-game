@@ -23,7 +23,6 @@ const TOKEN_LENGTH := 8
 const MAX_TOKEN_GENERATION_ATTEMPTS := 20
 const PREFILL_MIN_TOKEN_LENGTH := 1
 const MAX_BIRTH_YEAR_AGE := 110
-const MIN_BIRTH_YEAR_AGE = 5
 
 # -------- STATE --------
 var is_request_running = false
@@ -110,10 +109,11 @@ func _on_input_changed(_text=""):
 func _update_button():
 	var token = token_input.text.strip_edges()
 	var birth_year = birth_year_input.text.strip_edges()
+	var is_guest_token = token.to_lower() == "guest"
 
-	save_button.disabled = (token == "" or not _is_valid_birth_year(birth_year))
+	save_button.disabled = (token == "" or (not is_guest_token and birth_year == ""))
 
-	if token != "" and _is_valid_birth_year(birth_year):
+	if token != "" and (is_guest_token or _is_valid_birth_year(birth_year)):
 		status_label.text = ""
 
 func _get_device_uuid() -> String:
@@ -127,7 +127,7 @@ func _is_valid_birth_year(birth_year_text: String) -> bool:
 			return false
 
 	var birth_year = int(birth_year_text)
-	var current_year = int(Time.get_datetime_dict_from_system()["year"]) - MIN_BIRTH_YEAR_AGE
+	var current_year = int(Time.get_datetime_dict_from_system()["year"])
 	return birth_year >= current_year - MAX_BIRTH_YEAR_AGE and birth_year <= current_year
 
 func _get_birth_year_range_text() -> String:
@@ -149,8 +149,15 @@ func _set_ui_locked(locked: bool) -> void:
 func _set_guest_only_fields_locked(locked: bool) -> void:
 	birth_year_input.text = ""
 	birth_year_input.editable = not locked
+	birth_year_input.focus_mode = Control.FOCUS_NONE if locked else Control.FOCUS_ALL
+	if locked and birth_year_input.has_focus():
+		birth_year_input.release_focus()
+
 	doctor_key_input.text = ""
 	doctor_key_input.editable = not locked
+	doctor_key_input.focus_mode = Control.FOCUS_NONE if locked else Control.FOCUS_ALL
+	if locked and doctor_key_input.has_focus():
+		doctor_key_input.release_focus()
 
 # -------- TOKEN HELPERS --------
 func _generate_token() -> String:
@@ -731,16 +738,17 @@ func _on_save_button_pressed():
 	if token == "":
 		status_label.text = "Clé patient requise"
 		return
-	if birth_year == "":
-		status_label.text = "Année de naissance du patient requise"
-		return
 
 	if token.to_lower() == "guest":
 		_on_guest_button_pressed()
 		return
 
+	if birth_year == "":
+		status_label.text = "Année de naissance du patient requise"
+		return
+
 	if not _is_valid_birth_year(birth_year):
-		status_label.text = "Année de naissance invalide (" + _get_birth_year_range_text() + ")"
+		status_label.text = "L'année de naissance doit être comprise entre " + _get_birth_year_range_text()
 		return
 
 	is_guest_mode = false
