@@ -117,7 +117,7 @@ custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 25
-placeholder_text = "Entrez votre année de naissance (obligatoire)"
+placeholder_text = "Entrez votre année de naissance"
 
 [node name="MedecinBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=874009146]
 layout_mode = 2

@@ -109,7 +109,7 @@ func _update_button():
 	var birth_year = birth_year_input.text.strip_edges()
 	var is_guest_token = token.to_lower() == "guest"
 
-	save_button.disabled = (token == "" or (not is_guest_token and birth_year == ""))
+	save_button.disabled = false
 
 	if token != "" and (is_guest_token or _is_valid_birth_year(birth_year)):
 		status_label.text = ""
@@ -739,8 +739,8 @@ func _on_save_button_pressed():
 	var token = token_input.text.strip_edges()
 	var birth_year = birth_year_input.text.strip_edges()
  
-	if token == "" and birth_year =="":
-		status_label.text = "Champs requis"
+	if token == "" and birth_year == "":
+		status_label.text = "Clé patient et année de naissance requises"
 		return
 	if token == "":
 		status_label.text = "Clé patient requise"
@@ -751,7 +751,7 @@ func _on_save_button_pressed():
 		return
 
 	if birth_year == "":
-		status_label.text = "Année de naissance du patient requise"
+		status_label.text = "Année de naissance requise"
 		return
 
 	if not _is_valid_birth_year(birth_year):
