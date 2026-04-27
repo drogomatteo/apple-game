@@ -7,7 +7,7 @@ func _log(message: String) -> void:
 # -------- NODES --------
 @onready var http = $HTTPRequest
 @onready var token_input = $MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput
-@onready var age_input = $MarginContainer/fond/MarginContainer/VBoxContainer/AgeBox/AgeInput
+@onready var birth_year_input = $MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox/BirthYearInput
 @onready var doctor_key_input = $MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput
 @onready var save_button = $MarginContainer/fond/MarginContainer/VBoxContainer/SaveButton
 @onready var guest_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton
@@ -22,6 +22,8 @@ const REQUEST_TIMEOUT_SECONDS := 5.0
 const TOKEN_LENGTH := 8
 const MAX_TOKEN_GENERATION_ATTEMPTS := 20
 const PREFILL_MIN_TOKEN_LENGTH := 1
+const MAX_BIRTH_YEAR_AGE := 110
+const MIN_BIRTH_YEAR_AGE = 5
 
 # -------- STATE --------
 var is_request_running = false
@@ -38,7 +40,7 @@ var pending_prefill_token := ""
 var pending_prefill_generation := 0
 var token_input_generation := 0
 var last_autofill_token := ""
-var last_autofill_age := ""
+var last_autofill_birth_year := ""
 var last_autofill_doctor_key := ""
 var is_generating_token = false
 var generated_token = ""
@@ -67,7 +69,7 @@ func _ready():
 
 	if PlayerData.user_id != -1:
 		token_input.text = PlayerData.token
-		age_input.text = str(PlayerData.age)
+		birth_year_input.text = str(PlayerData.birth_year)
 		doctor_key_input.text = PlayerData.doctor_key
 
 	_update_button()
@@ -94,16 +96,10 @@ func _on_token_input_text_changed(_text=""):
 
 	if token == "guest":
 		is_guest_mode = true
-		age_input.text = ""
-		age_input.editable = false
-		doctor_key_input.text = ""
-		doctor_key_input.editable = false
+		_set_guest_only_fields_locked(true)
 	else:
-		age_input.text = ""
-		doctor_key_input.text = ""
 		is_guest_mode = false
-		age_input.editable = true
-		doctor_key_input.editable = true
+		_set_guest_only_fields_locked(false)
 		_clear_previous_autofill_if_still_present()
 
 	_update_button()
@@ -113,23 +109,30 @@ func _on_input_changed(_text=""):
 
 func _update_button():
 	var token = token_input.text.strip_edges()
-	var age = age_input.text.strip_edges()
+	var birth_year = birth_year_input.text.strip_edges()
 
-	save_button.disabled = (token == "" or age == "")
+	save_button.disabled = (token == "" or not _is_valid_birth_year(birth_year))
 
-	if token != "" and age != "":
+	if token != "" and _is_valid_birth_year(birth_year):
 		status_label.text = ""
 
 func _get_device_uuid() -> String:
 	return OS.get_unique_id()
 
-func _is_valid_age(age_text: String) -> bool:
-	if age_text == "":
+func _is_valid_birth_year(birth_year_text: String) -> bool:
+	if birth_year_text == "":
 		return false
-	for c in age_text:
+	for c in birth_year_text:
 		if not c.is_valid_int():
 			return false
-	return true
+
+	var birth_year = int(birth_year_text)
+	var current_year = int(Time.get_datetime_dict_from_system()["year"]) - MIN_BIRTH_YEAR_AGE
+	return birth_year >= current_year - MAX_BIRTH_YEAR_AGE and birth_year <= current_year
+
+func _get_birth_year_range_text() -> String:
+	var current_year = int(Time.get_datetime_dict_from_system()["year"])
+	return "%s et %s" % [str(current_year - MAX_BIRTH_YEAR_AGE), str(current_year)]
 
 # -------- FORM HELPERS --------
 func _set_ui_locked(locked: bool) -> void:
@@ -137,11 +140,17 @@ func _set_ui_locked(locked: bool) -> void:
 	guest_button.disabled = locked
 	back_button.disabled = locked or first_login
 	token_input.editable = not locked
-	age_input.editable = not locked and not is_guest_mode
+	birth_year_input.editable = not locked and not is_guest_mode
 	doctor_key_input.editable = not locked and not is_guest_mode
 	generate_button.disabled = locked
 	if not locked:
 		_update_button()
+
+func _set_guest_only_fields_locked(locked: bool) -> void:
+	birth_year_input.text = ""
+	birth_year_input.editable = not locked
+	doctor_key_input.text = ""
+	doctor_key_input.editable = not locked
 
 # -------- TOKEN HELPERS --------
 func _generate_token() -> String:
@@ -152,7 +161,7 @@ func _generate_token() -> String:
 	return token
 
 func _clear_fields_for_generated_token() -> void:
-	age_input.text = ""
+	birth_year_input.text = ""
 	doctor_key_input.text = ""
 	pending_prefill_token = ""
 	pending_prefill_generation = 0
@@ -343,15 +352,14 @@ func _generate_token_offline() -> void:
 func _build_user_request_payload(data: Dictionary) -> Dictionary:
 	var payload := {
 		"token": data.get("token", ""),
-		"age": data.get("age", null)
+		"birth_year": data.get("birth_year", null)
 	}
 
 	if data.has("uuid"):
 		payload["uuid"] = data.get("uuid")
 
-	# Compatibilité backend: certains endpoints lisent un alias différent pour l'âge.
-	payload["user_age"] = payload["age"]
-	payload["patient_age"] = payload["age"]
+	payload["user_birth_year"] = payload["birth_year"]
+	payload["patient_birth_year"] = payload["birth_year"]
 
 	var doctor_key = str(data.get("doctor_key", data.get("medecin_key", ""))).strip_edges()
 	if doctor_key != "":
@@ -395,24 +403,24 @@ func _extract_user_by_token(body_text: String, token_to_find: String) -> Diction
 	var parsed = JSON.parse_string(body_text)
 	return _find_user_by_token_in_parsed_response(parsed, token_to_find)
 
-func _extract_user_age_from_lookup(user_data: Dictionary) -> String:
-	for key in ["age", "user_age", "patient_age", "patientAge", "userAge"]:
+func _extract_user_birth_year_from_lookup(user_data: Dictionary) -> String:
+	for key in ["birth_year", "user_birth_year", "patient_birth_year", "patientBirthYear", "userBirthYear"]:
 		var raw_value = user_data.get(key, null)
 		if raw_value == null:
 			continue
 		if typeof(raw_value) == TYPE_INT:
 			return str(int(raw_value))
 		if typeof(raw_value) == TYPE_FLOAT:
-			var age_float = float(raw_value)
-			if is_equal_approx(age_float, floor(age_float)):
-				return str(int(age_float))
+			var birth_year_float = float(raw_value)
+			if is_equal_approx(birth_year_float, floor(birth_year_float)):
+				return str(int(birth_year_float))
 			continue
 
-		var age_text = str(raw_value).strip_edges()
-		if age_text == "" or age_text == "null":
+		var birth_year_text = str(raw_value).strip_edges()
+		if birth_year_text == "" or birth_year_text == "null":
 			continue
-		if age_text.is_valid_int():
-			return str(int(age_text))
+		if birth_year_text.is_valid_int():
+			return str(int(birth_year_text))
 	return ""
 
 func _extract_doctor_token_from_entry(entry: Dictionary) -> String:
@@ -465,25 +473,25 @@ func _extract_latest_doctor_token_from_lookup(user_data: Dictionary) -> String:
 	return latest_token
 
 func _clear_previous_autofill_if_still_present() -> void:
-	if last_autofill_age != "" and age_input.text.strip_edges() == last_autofill_age:
-		age_input.text = ""
+	if last_autofill_birth_year != "" and birth_year_input.text.strip_edges() == last_autofill_birth_year:
+		birth_year_input.text = ""
 	if last_autofill_doctor_key != "" and doctor_key_input.text.strip_edges() == last_autofill_doctor_key:
 		doctor_key_input.text = ""
 	last_autofill_token = ""
-	last_autofill_age = ""
+	last_autofill_birth_year = ""
 	last_autofill_doctor_key = ""
 
 func _apply_lookup_prefill(user_data: Dictionary, looked_up_token: String) -> void:
-	var looked_up_age = _extract_user_age_from_lookup(user_data)
+	var looked_up_birth_year = _extract_user_birth_year_from_lookup(user_data)
 	var looked_up_doctor_key = _extract_latest_doctor_token_from_lookup(user_data)
 
-	if looked_up_age != "":
-		age_input.text = looked_up_age
+	if looked_up_birth_year != "":
+		birth_year_input.text = looked_up_birth_year
 	if looked_up_doctor_key != "":
 		doctor_key_input.text = looked_up_doctor_key
 
 	last_autofill_token = looked_up_token
-	last_autofill_age = looked_up_age
+	last_autofill_birth_year = looked_up_birth_year
 	last_autofill_doctor_key = looked_up_doctor_key
 	_update_button()
 
@@ -715,24 +723,24 @@ func _on_save_button_pressed():
 		return
 
 	var token = token_input.text.strip_edges()
-	var age = age_input.text.strip_edges()
+	var birth_year = birth_year_input.text.strip_edges()
  
-	if token == "" and age =="":
+	if token == "" and birth_year =="":
 		status_label.text = "Champs requis"
 		return
 	if token == "":
 		status_label.text = "Clé patient requise"
 		return
-	if age == "":
-		status_label.text = "Age du patient requis"
+	if birth_year == "":
+		status_label.text = "Année de naissance du patient requise"
 		return
 
 	if token.to_lower() == "guest":
 		_on_guest_button_pressed()
 		return
 
-	if not _is_valid_age(age):
-		status_label.text = "Age invalide"
+	if not _is_valid_birth_year(birth_year):
+		status_label.text = "Année de naissance invalide (" + _get_birth_year_range_text() + ")"
 		return
 
 	is_guest_mode = false
@@ -742,7 +750,7 @@ func _on_save_button_pressed():
 	var data = {
 		"token": token,
 		"uuid": uuid,
-		"age": int(age)
+		"birth_year": int(birth_year)
 	}
 	data["doctor_key"] = doctor_key_input.text.strip_edges()
 	data["token_generated_offline"] = (offline_generated_token_value != "" and token == offline_generated_token_value)
@@ -787,12 +795,12 @@ func _on_guest_button_pressed():
 	offline_generated_token_value = ""
 
 	token_input.text = "guest"
-	age_input.text = ""
-	age_input.editable = false
+	token_input.editable = true
+	_set_guest_only_fields_locked(true)
 
 	var data = {
 		"token": "guest",
-		"age": null
+		"birth_year": null
 	}
 	data["token_generated_offline"] = false
 
@@ -949,24 +957,24 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 		PlayerData.set_guest(user_id)
 		PlayerData.token = "guest"
 		PlayerData.uuid = "none"
-		PlayerData.age = ""
+		PlayerData.birth_year = ""
 		PlayerData.doctor_key = ""
 	else:
 		var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", _get_device_uuid())))
 
-		var age = pending_login_data.get("age", "")
-		if str(age).is_valid_int():
-			age = int(age)
+		var birth_year = pending_login_data.get("birth_year", "")
+		if str(birth_year).is_valid_int():
+			birth_year = int(birth_year)
 
 		PlayerData.set_user(
 			user_id,
 			resolved_uuid,
 			str(pending_login_data.get("token")),
-			age,
+			birth_year,
 			str(pending_login_data.get("doctor_key", pending_login_data.get("medecin_key", "")))
 		)
 
-		PlayerData.age = age
+		PlayerData.birth_year = birth_year
 
 	_finalize_login_and_go_to_menu()
 
@@ -976,25 +984,25 @@ func _offline_login(data):
 	var local_id = 1 if is_guest_mode else -2
 
 	if is_guest_mode:
-		data["age"] = null
+		data["birth_year"] = null
 		data.erase("doctor_key")
 		data.erase("medecin_key")
 		PlayerData.set_guest(local_id)
-		PlayerData.age = ""
+		PlayerData.birth_year = ""
 	else:
-		var age = data.get("age", "")
-		if str(age).is_valid_int():
-			age = int(age)
+		var birth_year = data.get("birth_year", "")
+		if str(birth_year).is_valid_int():
+			birth_year = int(birth_year)
 
 		PlayerData.set_user(
 			local_id,
 			str(data.get("uuid", _get_device_uuid())),
 			data["token"],
-			age,
+			birth_year,
 			str(data.get("doctor_key", data.get("medecin_key", "")))
 		)
 
-		PlayerData.age = age
+		PlayerData.birth_year = birth_year
 	SyncManager.add_action({
 		"type": "login",
 		"data": data
@@ -1019,9 +1027,9 @@ func _on_back_button_pressed():
 	_get_interface().show_menu()
 
 # -------- INPUT CALLBACKS --------
-func _on_age_input_text_changed(new_text: String) -> void:
+func _on_birth_year_input_text_changed(new_text: String) -> void:
 	if is_guest_mode:
-		age_input.text = ""
+		birth_year_input.text = ""
 		return
 
 	var filtered = ""
@@ -1030,7 +1038,7 @@ func _on_age_input_text_changed(new_text: String) -> void:
 			filtered += c
 
 	if filtered != new_text:
-		age_input.text = filtered
+		birth_year_input.text = filtered
 
 	_update_button()
 

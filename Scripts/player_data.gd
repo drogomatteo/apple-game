@@ -4,7 +4,7 @@ extends Node
 var user_id = -1
 var token = ""
 var uuid = ""
-var age = ""
+var birth_year = ""
 var doctor_key = ""
 var is_guest = true
 var session_id : String
@@ -22,7 +22,7 @@ func _clear_profile() -> void:
 	user_id = -1
 	token = ""
 	uuid = ""
-	age = ""
+	birth_year = ""
 	doctor_key = ""
 	token_update_pending = false
 	previous_token = ""
@@ -34,11 +34,11 @@ func _clear_api_tokens() -> void:
 	access_token_expires_at = 0
 
 # -------- PUBLIC API --------
-func set_user(id, u, t, a, m = ""):
+func set_user(id, u, t, birth_year_value, m = ""):
 	user_id = id
 	uuid = u
 	token = t
-	age = a
+	birth_year = birth_year_value
 	doctor_key = m
 	is_guest = false
 
@@ -46,7 +46,7 @@ func set_guest(id):
 	user_id = id
 	uuid = ""
 	token = ""
-	age = ""
+	birth_year = ""
 	doctor_key = ""
 	is_guest = true
 

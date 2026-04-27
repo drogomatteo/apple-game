@@ -63,7 +63,6 @@ func _apply_refusal_flow() -> void:
 
 	if checkbox.button_pressed:
 		checkbox.button_pressed = false
-	PlayerData.logout_user()
 	GestionFichier.save_data()
 
 	var interface = _get_interface()

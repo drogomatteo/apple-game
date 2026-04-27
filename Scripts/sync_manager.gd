@@ -287,15 +287,14 @@ func _extract_lookup_doctor_id(code: int, body_text: String, token_to_find: Stri
 func _build_user_request_payload(data: Dictionary) -> Dictionary:
 	var payload := {
 		"token": data.get("token", ""),
-		"age": data.get("age", null)
+		"birth_year": data.get("birth_year", null)
 	}
 
 	if data.has("uuid"):
 		payload["uuid"] = data.get("uuid")
 
-	# Compatibilité backend: certains endpoints lisent un alias différent pour l'âge.
-	payload["user_age"] = payload["age"]
-	payload["patient_age"] = payload["age"]
+	payload["user_birth_year"] = payload["birth_year"]
+	payload["patient_birth_year"] = payload["birth_year"]
 
 	var doctor_key = str(data.get("doctor_key", data.get("medecin_key", ""))).strip_edges()
 	if doctor_key != "":
@@ -405,7 +404,7 @@ func _process_next():
 	if action["type"] == "login":
 		var login_data = action.get("data", {})
 		if str(login_data.get("token", "")).to_lower() == "guest":
-			login_data["age"] = null
+			login_data["birth_year"] = null
 			login_data.erase("doctor_key")
 			login_data.erase("medecin_key")
 			login_data["token_generated_offline"] = false
@@ -734,27 +733,27 @@ func _on_request_completed(result, code, _headers, body):
 
 			var synced_token = str(login_data.get("token", PlayerData.token))
 			var synced_uuid = str(response.get("uuid", login_data.get("uuid", PlayerData.uuid)))
-			var synced_age = login_data.get("age", "") # ← AGE
+			var synced_birth_year = login_data.get("birth_year", "")
 			var synced_doctor_key = str(login_data.get("doctor_key", login_data.get("medecin_key", "")))
 
 			if synced_token.to_lower() == "guest":
 				PlayerData.set_guest(synced_user_id)
 				PlayerData.token = "guest"
 				PlayerData.uuid = "none"
-				PlayerData.age = "" # ← AGE
+				PlayerData.birth_year = ""
 				PlayerData.doctor_key = ""
 			else:
-				PlayerData.set_user(synced_user_id, synced_uuid, synced_token, synced_age, synced_doctor_key)
+				PlayerData.set_user(synced_user_id, synced_uuid, synced_token, synced_birth_year, synced_doctor_key)
 
-				if str(synced_age).is_valid_int(): # ← AGE
-					PlayerData.age = int(synced_age)
+				if str(synced_birth_year).is_valid_int():
+					PlayerData.birth_year = int(synced_birth_year)
 				else:
-					PlayerData.age = -1
+					PlayerData.birth_year = -1
 
 			for a in queue:
 				if a["type"] == "report":
 					a["data"]["user_id"] = PlayerData.user_id
-					a["data"]["age"] = PlayerData.age # ← AGE
+					a["data"]["birth_year"] = PlayerData.birth_year
 
 			_save_queue()
 			GestionFichier.save_data()

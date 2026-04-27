@@ -99,11 +99,11 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 25
 placeholder_text = "Entrez votre clé"
 
-[node name="AgeBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2107690068]
+[node name="BirthYearBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2107690068]
 layout_mode = 2
 theme_override_constants/separation = 40
 
-[node name="iconUser" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer/AgeBox" unique_id=145490617]
+[node name="iconUser" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox" unique_id=145490617]
 modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
 custom_minimum_size = Vector2(40, 50)
 layout_mode = 2
@@ -111,12 +111,12 @@ texture = ExtResource("4_ywo72")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="AgeInput" type="LineEdit" parent="MarginContainer/fond/MarginContainer/VBoxContainer/AgeBox" unique_id=1463654330]
+[node name="BirthYearInput" type="LineEdit" parent="MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox" unique_id=1463654330]
 custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 25
-placeholder_text = "Entrez votre âge"
+placeholder_text = "Entrez votre année de naissance"
 
 [node name="MedecinBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=874009146]
 layout_mode = 2
@@ -259,8 +259,8 @@ expand_mode = 1
 stretch_mode = 4
 
 [connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput" to="." method="_on_token_input_text_changed"]
-[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/AgeBox/AgeInput" to="." method="_on_age_input_text_changed"]
-[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput" to="." method="_on_input_changed"]
+[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox/BirthYearInput" to="." method="_on_birth_year_input_text_changed"]
+[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput" to="." method="_on_doctor_token_input_text_changed"]
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton" to="." method="_on_guest_button_pressed"]
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
