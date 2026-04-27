@@ -13,6 +13,7 @@ var options_scene = preload("res://Scenes/option_menu.tscn")
 var user_scene = preload("res://Scenes/user_menu.tscn")
 var game_scene = preload("res://Scenes/main.tscn")
 var rgpd_scene = preload("res://Scenes/gdpr_menu.tscn")
+var info_menu = preload("res://Scenes/info_menu.tscn")
 
 # -------- STATE --------
 var current_scene = null
@@ -115,3 +116,7 @@ func show_gdpr(opened_from_menu: bool = false):
 	scene.opened_from_menu = opened_from_menu
 	_show_scene(scene)
 	call_deferred("_prewarm_ui_scenes")
+
+func show_info():
+	_log("Transition -> Info")
+	_show_scene(_instantiate_scene(info_menu))

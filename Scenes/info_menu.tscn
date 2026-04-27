@@ -1,0 +1,126 @@
+[gd_scene format=3 uid="uid://dcbky5s5ol7bc"]
+
+[ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="1_cu7qk"]
+[ext_resource type="Script" uid="uid://n4rkg4crefk3" path="res://Scripts/info_menu.gd" id="2_rhvn0"]
+[ext_resource type="Texture2D" uid="uid://cg6xhyklt5q5j" path="res://Assets/UI-UX/Images/Buttons Texture/My_Panel.png" id="3_itbll"]
+[ext_resource type="Texture2D" uid="uid://k6o1hussf1rl" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="4_0ldwx"]
+[ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="5_rhvn0"]
+[ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="6_v2mt7"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n57yk"]
+texture = ExtResource("3_itbll")
+
+[sub_resource type="LabelSettings" id="LabelSettings_pquc7"]
+line_spacing = 1.0
+paragraph_spacing = -5.0
+font_size = 28
+font_color = Color(0.1764706, 0.09411765, 0, 1)
+
+[node name="RgpdMenu" type="Control" unique_id=58320947]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_cu7qk")
+script = ExtResource("2_rhvn0")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=874616595]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.27058825, 0.19607843, 0.1764706, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=891509355]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="CenterContainer" type="Panel" parent="MarginContainer" unique_id=123534808]
+layout_mode = 2
+theme = ExtResource("1_cu7qk")
+theme_override_styles/panel = SubResource("StyleBoxTexture_n57yk")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/CenterContainer" unique_id=1059500026]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer/MarginContainer" unique_id=1459582877]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer" unique_id=204818186]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="Separator" type="Control" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=247115262]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1132995083]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture_normal = ExtResource("4_0ldwx")
+texture_pressed = ExtResource("5_rhvn0")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer/TextureButton" unique_id=482116203]
+modulate = Color(0.27058825, 0.19607843, 0.1764706, 1)
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_v2mt7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Texte" type="Label" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer" unique_id=511690892]
+custom_minimum_size = Vector2(1032, 342)
+layout_mode = 2
+theme = ExtResource("1_cu7qk")
+theme_type_variation = &"labelBasic"
+theme_override_colors/font_color = Color(0.1764706, 0.09411765, 0, 1)
+text = "Cette application a été réalisé par quatre étudiants en ingénieur civil dans le cadre d'un projet au sein de l'UMONS pour le domaine de la recherche médicale.
+
+Designeuse : Eva Kabelis
+Création & Gestion de la base de données : Martin Lempire & Tom Boreux
+Script & Logique du joueur : Drogo Matteo
+
+L'application est encore en cours de développement
+"
+label_settings = SubResource("LabelSettings_pquc7")
+autowrap_mode = 3
+
+[connection signal="pressed" from="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer/TextureButton" to="." method="_on_texture_button_pressed"]

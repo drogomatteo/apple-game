@@ -76,3 +76,7 @@ func _on_quit_button_pressed():
 
 func _on_gdpr_button_pressed() -> void:
 	_get_interface().show_gdpr(true)
+
+
+func _on_info_button_pressed() -> void:
+	_get_interface().show_info()
