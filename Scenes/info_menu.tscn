@@ -4,12 +4,15 @@
 [ext_resource type="Script" uid="uid://n4rkg4crefk3" path="res://Scripts/info_menu.gd" id="2_rhvn0"]
 [ext_resource type="Texture2D" uid="uid://cg6xhyklt5q5j" path="res://Assets/UI-UX/Images/Buttons Texture/My_Panel.png" id="3_itbll"]
 [ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="4_0ldwx"]
+[ext_resource type="Texture2D" uid="uid://bjvhpahrg4hpq" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_verty.png" id="4_v2mt7"]
 [ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="5_rhvn0"]
 [ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="6_v2mt7"]
 [ext_resource type="FontFile" uid="uid://cerbarmw7oyi5" path="res://Assets/UI-UX/Images/Font/Fredoka-Regular.ttf" id="7_0ldwx"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n57yk"]
 texture = ExtResource("3_itbll")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cu7qk"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_pquc7"]
 line_spacing = 1.0
@@ -68,22 +71,47 @@ theme_override_constants/margin_bottom = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer/MarginContainer" unique_id=1459582877]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 30
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer" unique_id=204818186]
+custom_minimum_size = Vector2(800, 2.145)
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 10
 
-[node name="Separator" type="Control" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=247115262]
-custom_minimum_size = Vector2(900, 0)
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1885804906]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_cu7qk")
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=757546602]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("4_v2mt7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer/TextureRect" unique_id=620184790]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 42
+text = "À PROPOS"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TextureButton" type="TextureButton" parent="MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1132995083]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
+size_flags_horizontal = 8
 texture_normal = ExtResource("4_0ldwx")
 texture_pressed = ExtResource("5_rhvn0")
 ignore_texture_size = true
