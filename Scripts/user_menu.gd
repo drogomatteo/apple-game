@@ -554,6 +554,11 @@ func _apply_lookup_prefill(user_data: Dictionary, looked_up_token: String) -> vo
 	_update_button()
 
 func _maybe_prefill_user_fields() -> void:
+	if is_guest_creation_mode:
+		pending_prefill_token = ""
+		_clear_previous_autofill_if_still_present()
+		return
+
 	var token = token_input.text.strip_edges()
 	if token == "" or _is_reserved_patient_token(token):
 		pending_prefill_token = ""
@@ -894,7 +899,7 @@ func _on_save_button_pressed():
 		return
 
 	if not _is_valid_birth_year(birth_year):
-		_set_general_error("L'année de naissance doit être comprise entre " + _get_birth_year_range_text())
+		status_label.text = "L'année de naissance doit être comprise entre " + _get_birth_year_range_text()
 		return
 
 	var uuid = _get_device_uuid()
