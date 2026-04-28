@@ -6,7 +6,6 @@ var token = ""
 var uuid = ""
 var birth_year = ""
 var doctor_key = ""
-var is_guest = true
 var session_id : String
 var token_update_pending := false
 var previous_token = ""
@@ -40,19 +39,9 @@ func set_user(id, u, t, birth_year_value, m = ""):
 	token = t
 	birth_year = birth_year_value
 	doctor_key = m
-	is_guest = false
-
-func set_guest(id):
-	user_id = id
-	uuid = ""
-	token = ""
-	birth_year = ""
-	doctor_key = ""
-	is_guest = true
 
 func logout_user():
 	_clear_profile()
-	is_guest = false
 	_clear_api_tokens()
 
 # -------- DEBUG --------

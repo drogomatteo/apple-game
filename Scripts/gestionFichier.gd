@@ -21,7 +21,6 @@ func save_data():
 			"birth_year": PlayerData.birth_year,
 			"doctor_key": PlayerData.doctor_key,
 			"user_id": PlayerData.user_id,
-			"is_guest": PlayerData.is_guest,
 			"token_update_pending": PlayerData.token_update_pending,
 			"previous_token": PlayerData.previous_token,
 			"updated_token": PlayerData.updated_token,
@@ -59,7 +58,6 @@ func load_game():
 		PlayerData.token = player_data.get("token", "")
 		PlayerData.birth_year = player_data.get("birth_year", "")
 		PlayerData.doctor_key = player_data.get("doctor_key", player_data.get("medecin_key", ""))
-		PlayerData.is_guest = player_data.get("is_guest", true)
 		PlayerData.token_update_pending = bool(player_data.get("token_update_pending", false))
 		PlayerData.previous_token = player_data.get("previous_token", "")
 		PlayerData.updated_token = player_data.get("updated_token", "")

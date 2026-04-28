@@ -513,14 +513,13 @@ func queue_reports_for_sync() -> void:
 		"session_id": session_id
 	})
 
-	if not PlayerData.is_guest:
-		SyncManager.add_action({
-			"type": "create_seed",
-			"seed_value": str(graine),
-			"session_id": session_id,
-			"report_path": "user://doctor_report.dat",
-			"report_url": GameManager.BASE_URL + "doctor-report/"
-		})
+	SyncManager.add_action({
+		"type": "create_seed",
+		"seed_value": str(graine),
+		"session_id": session_id,
+		"report_path": "user://doctor_report.dat",
+		"report_url": GameManager.BASE_URL + "doctor-report/"
+	})
 
 
 #fonction pour écrire les rapports localement
@@ -535,15 +534,14 @@ func write_local_reports(interrompue: bool = false) -> void:
 		file.store_string(contenu)
 		file.close()
 
-	if not PlayerData.is_guest:
-		var file2 = FileAccess.open("user://doctor_report.dat", FileAccess.WRITE)
-		if file2:
-			var doctor_report_content = ""
-			doctor_report_content += "Score: " + str(score) + "\n"
-			doctor_report_content += "Niveau atteint: " + str(niveau) + "\n"
-			doctor_report_content += "Statut: " + ("interrompue" if interrompue else "terminee") + "\n"
-			file2.store_string(doctor_report_content)
-			file2.close()
+	var file2 = FileAccess.open("user://doctor_report.dat", FileAccess.WRITE)
+	if file2:
+		var doctor_report_content = ""
+		doctor_report_content += "Score: " + str(score) + "\n"
+		doctor_report_content += "Niveau atteint: " + str(niveau) + "\n"
+		doctor_report_content += "Statut: " + ("interrompue" if interrompue else "terminee") + "\n"
+		file2.store_string(doctor_report_content)
+		file2.close()
 			
 			
 # si le joueur ferme la fenêtre en plein jeu
@@ -560,5 +558,4 @@ func _notification(what):
 func sync_reports_now() -> void:
 	GameManager.send_full_report(session_id)
 	
-	if not PlayerData.is_guest:
-		GameManager.send_doctor_report(session_id, str(graine))
+	GameManager.send_doctor_report(session_id, str(graine))

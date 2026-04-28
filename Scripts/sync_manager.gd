@@ -164,7 +164,7 @@ func _normalize_queued_session_id(action: Dictionary) -> void:
 		return
 
 	var player_token = str(PlayerData.token).strip_edges()
-	if player_token == "" or player_token.to_lower() == "guest":
+	if player_token == "":
 		return
 
 	action["session_id"] = session_id.replace("_-2_", "_" + player_token + "_")
@@ -403,17 +403,9 @@ func _process_next():
 
 	if action["type"] == "login":
 		var login_data = action.get("data", {})
-		if str(login_data.get("token", "")).to_lower() == "guest":
-			login_data["birth_year"] = null
-			login_data.erase("doctor_key")
-			login_data.erase("medecin_key")
-			login_data["token_generated_offline"] = false
-			action["data"] = login_data
-			_save_queue()
-
 		if bool(login_data.get("token_generated_offline", false)):
 			var token_to_check = str(login_data.get("token", "")).strip_edges()
-			if token_to_check != "" and token_to_check.to_lower() != "guest":
+			if token_to_check != "":
 				var has_lookup_token = await GameManager.ensure_valid_access_token()
 				if not has_lookup_token:
 					_log("Token precheck auth unavailable")
@@ -736,19 +728,12 @@ func _on_request_completed(result, code, _headers, body):
 			var synced_birth_year = login_data.get("birth_year", "")
 			var synced_doctor_key = str(login_data.get("doctor_key", login_data.get("medecin_key", "")))
 
-			if synced_token.to_lower() == "guest":
-				PlayerData.set_guest(synced_user_id)
-				PlayerData.token = "guest"
-				PlayerData.uuid = "none"
-				PlayerData.birth_year = ""
-				PlayerData.doctor_key = ""
-			else:
-				PlayerData.set_user(synced_user_id, synced_uuid, synced_token, synced_birth_year, synced_doctor_key)
+			PlayerData.set_user(synced_user_id, synced_uuid, synced_token, synced_birth_year, synced_doctor_key)
 
-				if str(synced_birth_year).is_valid_int():
-					PlayerData.birth_year = int(synced_birth_year)
-				else:
-					PlayerData.birth_year = -1
+			if str(synced_birth_year).is_valid_int():
+				PlayerData.birth_year = int(synced_birth_year)
+			else:
+				PlayerData.birth_year = -1
 
 			for a in queue:
 				if a["type"] == "report":

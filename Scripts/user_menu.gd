@@ -6,6 +6,7 @@ func _log(message: String) -> void:
 
 # -------- NODES --------
 @onready var http = $HTTPRequest
+@onready var existing_key_label = $MarginContainer/fond/MarginContainer/VBoxContainer/jaiuncompte
 @onready var token_input = $MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput
 @onready var birth_year_input = $MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox/BirthYearInput
 @onready var doctor_key_input = $MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput
@@ -13,6 +14,7 @@ func _log(message: String) -> void:
 @onready var deco_button = $MarginContainer/fond/MarginContainer/VBoxContainer/Button/LogoutButton
 @onready var guest_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton
 @onready var status_label = $MarginContainer/fond/MarginContainer/VBoxContainer/StatusLabel
+@onready var generate_token_label = $MarginContainer/fond/MarginContainer/VBoxContainer/GenerateTokenLabel
 @onready var generate_button = $MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton
 @onready var back_button = $BackButton
 
@@ -25,12 +27,20 @@ const MAX_TOKEN_GENERATION_ATTEMPTS := 20
 const PREFILL_MIN_TOKEN_LENGTH := 1
 const MAX_BIRTH_YEAR_AGE := 110
 const MIN_BIRTH_YEAR_AGE := 6
+const RESERVED_PATIENT_TOKENS := ["guest", "invite", "invité"]
+const EXISTING_KEY_NORMAL_TEXT := "J'ai déjà une clé patient :"
+const GENERATE_KEY_NORMAL_TEXT := "Je n'ai pas encore de clé patient :"
+const GENERATE_BUTTON_NORMAL_TEXT := "Générer une nouvelle clé patient :"
+const EXISTING_KEY_GUEST_TEXT := "Créez votre clé :"
+const GENERATE_KEY_GUEST_TEXT := "Générez votre clé :"
+const GENERATE_BUTTON_GUEST_TEXT := "Générer une nouvelle clé"
 
 # -------- STATE --------
 var is_request_running = false
-var is_guest_mode = false
 var pending_login_data : Dictionary = {}
 var first_login := false
+var is_guest_creation_mode = false
+var is_user_token_lookup = false
 var is_doctor_key_lookup = false
 var pending_doctor_key = ""
 var pending_doctor_id := -1
@@ -46,6 +56,7 @@ var last_autofill_doctor_key := ""
 var is_generating_token = false
 var generated_token = ""
 var token_generation_attempts := 0
+var generated_patient_token_value := ""
 var offline_generated_token_value := ""
 
 # -------- SHARED HELPERS --------
@@ -60,6 +71,7 @@ func _ready():
 	prefill_http.timeout = REQUEST_TIMEOUT_SECONDS
 	prefill_http.request_completed.connect(_on_prefill_request_completed)
 	token_input.focus_exited.connect(_on_token_input_focus_exited)
+	token_input.focus_entered.connect(_on_token_input_focus_entered)
 
 	if first_login:
 		back_button.visible = false
@@ -73,7 +85,8 @@ func _ready():
 		birth_year_input.text = str(PlayerData.birth_year)
 		doctor_key_input.text = PlayerData.doctor_key
 
-	_sync_guest_fields_state()
+	is_guest_creation_mode = false
+	_sync_guest_creation_controls()
 	_update_button()
 	_show_pending_token_update_notice()
 
@@ -94,31 +107,38 @@ func _on_token_input_text_changed(_text=""):
 	token_input_generation += 1
 	if offline_generated_token_value != "" and token_input.text.strip_edges() != offline_generated_token_value:
 		offline_generated_token_value = ""
+	if generated_patient_token_value != "" and token_input.text.strip_edges() != generated_patient_token_value:
+		generated_patient_token_value = ""
 
-	_sync_guest_fields_state()
-	if not is_guest_mode:
-		_clear_previous_autofill_if_still_present()
+	_clear_fields_after_patient_token_input()
+	_clear_previous_autofill_if_still_present()
+	_sync_guest_creation_controls()
 
 	_update_button()
 
 func _on_input_changed(_text=""):
 	_update_button()
 
+func _on_token_input_focus_entered() -> void:
+	_clear_fields_after_patient_token_input()
+	_clear_previous_autofill_if_still_present()
+	_sync_guest_creation_controls()
+	_update_button()
+
 func _update_button():
 	var token = token_input.text.strip_edges()
 	var birth_year = birth_year_input.text.strip_edges()
-	var is_guest_token = token.to_lower() == "guest"
 
 	save_button.disabled = false
 
-	if token != "" and (is_guest_token or _is_valid_birth_year(birth_year)):
+	if token != "" and not _is_reserved_patient_token(token) and _is_valid_birth_year(birth_year):
 		status_label.text = ""
 
 func _get_device_uuid() -> String:
 	return OS.get_unique_id()
 
-func _is_guest_token() -> bool:
-	return token_input.text.strip_edges().to_lower() == "guest"
+func _is_reserved_patient_token(token: String) -> bool:
+	return RESERVED_PATIENT_TOKENS.has(token.strip_edges().to_lower())
 
 func _is_valid_birth_year(birth_year_text: String) -> bool:
 	if birth_year_text == "":
@@ -138,23 +158,20 @@ func _get_birth_year_range_text() -> String:
 # -------- FORM HELPERS --------
 func _set_ui_locked(locked: bool) -> void:
 	save_button.disabled = locked
-	guest_button.disabled = locked
+	guest_button.disabled = false
 	back_button.disabled = locked or first_login
 	token_input.editable = not locked
-	birth_year_input.editable = not locked and not is_guest_mode
-	doctor_key_input.editable = not locked and not is_guest_mode
-	generate_button.disabled = locked
+	birth_year_input.editable = not locked
+	doctor_key_input.editable = not locked and not _should_lock_doctor_key()
+	generate_button.disabled = false
 	if not locked:
+		_sync_guest_creation_controls()
 		_update_button()
 
-func _set_guest_only_fields_locked(locked: bool) -> void:
-	if locked:
-		birth_year_input.text = ""
-	birth_year_input.editable = not locked
-	birth_year_input.focus_mode = Control.FOCUS_NONE if locked else Control.FOCUS_ALL
-	if locked and birth_year_input.has_focus():
-		birth_year_input.release_focus()
+func _should_lock_doctor_key() -> bool:
+	return is_guest_creation_mode
 
+func _set_doctor_key_locked(locked: bool) -> void:
 	if locked:
 		doctor_key_input.text = ""
 	doctor_key_input.editable = not locked
@@ -162,9 +179,13 @@ func _set_guest_only_fields_locked(locked: bool) -> void:
 	if locked and doctor_key_input.has_focus():
 		doctor_key_input.release_focus()
 
-func _sync_guest_fields_state() -> void:
-	is_guest_mode = _is_guest_token()
-	_set_guest_only_fields_locked(is_guest_mode)
+func _sync_guest_creation_controls() -> void:
+	guest_button.disabled = is_guest_creation_mode
+	generate_button.disabled = false
+	existing_key_label.text = EXISTING_KEY_GUEST_TEXT if is_guest_creation_mode else EXISTING_KEY_NORMAL_TEXT
+	generate_token_label.text = GENERATE_KEY_GUEST_TEXT if is_guest_creation_mode else GENERATE_KEY_NORMAL_TEXT
+	generate_button.text = GENERATE_BUTTON_GUEST_TEXT if is_guest_creation_mode else GENERATE_BUTTON_NORMAL_TEXT
+	_set_doctor_key_locked(_should_lock_doctor_key())
 
 # -------- TOKEN HELPERS --------
 func _generate_token() -> String:
@@ -177,14 +198,14 @@ func _generate_token() -> String:
 func _clear_fields_for_generated_token() -> void:
 	birth_year_input.text = ""
 	doctor_key_input.text = ""
+	generated_patient_token_value = ""
 	pending_prefill_token = ""
 	pending_prefill_generation = 0
 	_clear_previous_autofill_if_still_present()
+	_sync_guest_creation_controls()
 	_update_button()
 
 func _on_generate_token_button_pressed() -> void:
-	if is_request_running:
-		return
 	_log("Token generation requested")
 	token_generation_attempts = 0
 	_clear_fields_for_generated_token()
@@ -197,7 +218,7 @@ func _try_generate_token():
 	if token_generation_attempts > MAX_TOKEN_GENERATION_ATTEMPTS:
 		is_generating_token = false
 		is_request_running = false
-		status_label.text = "Impossible de générer une clé patient"
+		_set_general_error("Impossible de générer une clé patient")
 		_log("Token generation failed after max attempts")
 		_set_ui_locked(false)
 		return
@@ -327,7 +348,7 @@ func _collect_local_reserved_tokens() -> Dictionary:
 	var reserved := {}
 
 	var current_player_token = str(PlayerData.token).strip_edges()
-	if current_player_token != "" and current_player_token.to_lower() != "guest":
+	if current_player_token != "":
 		reserved[current_player_token] = true
 
 	for action in SyncManager.queue:
@@ -354,12 +375,13 @@ func _generate_token_offline() -> void:
 
 		token_input.text = candidate
 		_clear_fields_for_generated_token()
+		generated_patient_token_value = candidate
 		offline_generated_token_value = candidate
 		status_label.text = "Clé générée hors ligne (vérification au prochain sync)"
 		_set_ui_locked(false)
 		return
 
-	status_label.text = "Impossible de générer une clé patient"
+	_set_general_error("Impossible de générer une clé patient")
 	_log("Offline token generation failed")
 	_set_ui_locked(false)
 
@@ -495,13 +517,35 @@ func _clear_previous_autofill_if_still_present() -> void:
 	last_autofill_birth_year = ""
 	last_autofill_doctor_key = ""
 
+func _clear_login_fields() -> void:
+	token_input.text = ""
+	birth_year_input.text = ""
+	doctor_key_input.text = ""
+	generated_patient_token_value = ""
+	offline_generated_token_value = ""
+	pending_prefill_token = ""
+	pending_prefill_generation = 0
+	_clear_previous_autofill_if_still_present()
+	_sync_guest_creation_controls()
+	_update_button()
+
+func _clear_fields_after_patient_token_input() -> void:
+	birth_year_input.text = ""
+	doctor_key_input.text = ""
+	pending_prefill_token = ""
+	pending_prefill_generation = 0
+
+func _set_general_error(message: String) -> void:
+	_clear_login_fields()
+	status_label.text = message
+
 func _apply_lookup_prefill(user_data: Dictionary, looked_up_token: String) -> void:
 	var looked_up_birth_year = _extract_user_birth_year_from_lookup(user_data)
 	var looked_up_doctor_key = _extract_latest_doctor_token_from_lookup(user_data)
 
 	if looked_up_birth_year != "":
 		birth_year_input.text = looked_up_birth_year
-	if looked_up_doctor_key != "":
+	if looked_up_doctor_key != "" and not _should_lock_doctor_key():
 		doctor_key_input.text = looked_up_doctor_key
 
 	last_autofill_token = looked_up_token
@@ -511,7 +555,7 @@ func _apply_lookup_prefill(user_data: Dictionary, looked_up_token: String) -> vo
 
 func _maybe_prefill_user_fields() -> void:
 	var token = token_input.text.strip_edges()
-	if token == "" or token.to_lower() == "guest":
+	if token == "" or _is_reserved_patient_token(token):
 		pending_prefill_token = ""
 		_clear_previous_autofill_if_still_present()
 		return
@@ -700,6 +744,7 @@ func _clear_invalid_doctor_key(reason: String) -> void:
 
 func _reset_doctor_lookup_state() -> void:
 	is_request_running = false
+	is_user_token_lookup = false
 	is_doctor_key_lookup = false
 	pending_doctor_key = ""
 	pending_doctor_id = -1
@@ -717,6 +762,7 @@ func _fallback_doctor_lookup_to_offline(log_message: String) -> void:
 	_log(log_message)
 	status_label.text = "Mode hors ligne"
 	is_request_running = false
+	is_user_token_lookup = false
 	is_doctor_key_lookup = false
 	pending_doctor_key = ""
 	pending_doctor_id = -1
@@ -725,59 +771,82 @@ func _fallback_doctor_lookup_to_offline(log_message: String) -> void:
 func _finalize_login_and_go_to_menu() -> void:
 	PlayerData.print_data()
 	GestionFichier.save_data()
+	is_guest_creation_mode = false
 	pending_login_data.clear()
 	pending_doctor_id = -1
 	pending_existing_doctors.clear()
 	offline_generated_token_value = ""
+	generated_patient_token_value = ""
 	call_deferred("_go_to_menu")
 
-# -------- LOGIN --------
-func _on_save_button_pressed():
-	if is_request_running:
+func _can_create_missing_user_from_token(token: String) -> bool:
+	return is_guest_creation_mode or token == generated_patient_token_value
+
+func _handle_user_token_not_found() -> void:
+	_log("User token lookup returned no matching user")
+	var token = str(pending_login_data.get("token", "")).strip_edges()
+	if _can_create_missing_user_from_token(token):
+		_send_login_request(pending_login_data)
 		return
 
-	var token = token_input.text.strip_edges()
-	var birth_year = birth_year_input.text.strip_edges()
- 
-	if token == "" and birth_year == "":
-		status_label.text = "Clé patient et année de naissance requises"
+	is_request_running = false
+	is_user_token_lookup = false
+	pending_login_data.clear()
+	_set_general_error("L'utilisateur n'existe pas")
+
+func _handle_user_token_lookup_blocked(log_message: String) -> void:
+	_log(log_message)
+	is_request_running = false
+	is_user_token_lookup = false
+	pending_login_data.clear()
+	_set_general_error("Impossible de vérifier l'utilisateur")
+	_sync_guest_creation_controls()
+
+func _handle_guest_creation_token_exists() -> void:
+	_log("Guest creation blocked: token already exists")
+	is_request_running = false
+	is_user_token_lookup = false
+	pending_login_data.clear()
+	offline_generated_token_value = ""
+	_set_general_error("Cette clé existe déjà, générez-en une autre")
+	_sync_guest_creation_controls()
+
+func _handle_guest_creation_failed(log_message: String, status_message := "Impossible de créer l'utilisateur") -> void:
+	_log(log_message)
+	is_request_running = false
+	is_user_token_lookup = false
+	is_doctor_key_lookup = false
+	pending_doctor_key = ""
+	pending_doctor_id = -1
+	pending_login_data.clear()
+	_set_general_error(status_message)
+	_sync_guest_creation_controls()
+
+func _start_user_token_lookup(token: String) -> void:
+	is_user_token_lookup = true
+	status_label.text = "Vérification utilisateur..."
+	var has_token = await GameManager.ensure_valid_access_token()
+	if not has_token:
+		_handle_user_token_lookup_blocked("User token lookup auth unavailable")
 		return
-	if token == "":
-		status_label.text = "Clé patient requise"
-		return
 
-	if token.to_lower() == "guest":
-		_on_guest_button_pressed()
-		return
+	var err = http.request(
+		BASE_URL + "user/?token=" + token,
+		GameManager.get_api_headers(),
+		HTTPClient.METHOD_GET
+	)
+	if err != OK:
+		_handle_user_token_lookup_blocked("User token lookup request failed immediately")
 
-	if birth_year == "":
-		status_label.text = "Année de naissance requise"
-		return
-
-	if not _is_valid_birth_year(birth_year):
-		status_label.text = "L'année de naissance doit être comprise entre " + _get_birth_year_range_text()
-		return
-
-	is_guest_mode = false
-
-	var uuid = _get_device_uuid()
-
-	var data = {
-		"token": token,
-		"uuid": uuid,
-		"birth_year": int(birth_year)
-	}
-	data["doctor_key"] = doctor_key_input.text.strip_edges()
-	data["token_generated_offline"] = (offline_generated_token_value != "" and token == offline_generated_token_value)
-	if data["doctor_key"] == "":
-		data.erase("doctor_key")
-
-	pending_login_data = data.duplicate(true)
-
+func _continue_login_after_user_token_verified() -> void:
 	is_request_running = true
-	if data.has("doctor_key"):
+	if is_guest_creation_mode:
+		_handle_guest_creation_token_exists()
+		return
+
+	if pending_login_data.has("doctor_key"):
 		_log("Doctor key verification started")
-		pending_doctor_key = str(data.get("doctor_key", "")).strip_edges()
+		pending_doctor_key = str(pending_login_data.get("doctor_key", "")).strip_edges()
 		pending_doctor_id = -1
 		is_doctor_key_lookup = true
 		status_label.text = "Vérification médecin..."
@@ -799,47 +868,53 @@ func _on_save_button_pressed():
 				"Doctor key check request failed immediately, login blocked"
 			)
 	else:
-		_send_login_request(data)
+		_send_login_request(pending_login_data)
 
-# -------- GUEST --------
-func _on_guest_button_pressed():
+# -------- LOGIN --------
+func _on_save_button_pressed():
 	if is_request_running:
 		return
 
-	is_guest_mode = true
-	offline_generated_token_value = ""
+	var token = token_input.text.strip_edges()
+	var birth_year = birth_year_input.text.strip_edges()
 
-	token_input.text = "guest"
-	token_input.editable = true
-	_set_guest_only_fields_locked(true)
+	if token == "" and birth_year == "":
+		status_label.text = "Clé patient et année de naissance requises"
+		return
+	if token == "":
+		status_label.text = "Clé patient requise"
+		return
+
+	if _is_reserved_patient_token(token):
+		_set_general_error("Cette clé patient est invalide")
+		return
+
+	if birth_year == "":
+		status_label.text = "Année de naissance requise"
+		return
+
+	if not _is_valid_birth_year(birth_year):
+		_set_general_error("L'année de naissance doit être comprise entre " + _get_birth_year_range_text())
+		return
+
+	var uuid = _get_device_uuid()
 
 	var data = {
-		"token": "guest",
-		"birth_year": null
+		"token": token,
+		"uuid": uuid,
+		"birth_year": int(birth_year)
 	}
-	data["token_generated_offline"] = false
+	if is_guest_creation_mode:
+		data["guest_created"] = true
+	data["doctor_key"] = "" if is_guest_creation_mode else doctor_key_input.text.strip_edges()
+	data["token_generated_offline"] = (offline_generated_token_value != "" and token == offline_generated_token_value)
+	if data["doctor_key"] == "":
+		data.erase("doctor_key")
 
 	pending_login_data = data.duplicate(true)
 
 	is_request_running = true
-	status_label.text = "Mode invité..."
-	_log("Sending guest login request")
-	var has_token = await GameManager.ensure_valid_access_token()
-	if not has_token:
-		_log("API auth unavailable for guest login, fallback to offline login")
-		_offline_login(data)
-		return
-
-	var err = http.request(
-		BASE_URL + "user/",
-		GameManager.get_json_post_headers(),
-		HTTPClient.METHOD_POST,
-		JSON.stringify(_build_user_request_payload(data))
-	)
-
-	if err != OK:
-		_log("Immediate guest request error, fallback to offline login")
-		_offline_login(data)
+	_start_user_token_lookup(token)
 
 func _send_login_request(data: Dictionary) -> void:
 	is_request_running = true
@@ -848,8 +923,11 @@ func _send_login_request(data: Dictionary) -> void:
 	_log("Sending /api/user/ login request")
 	var has_token = await GameManager.ensure_valid_access_token()
 	if not has_token:
-		_log("API auth unavailable for login, fallback to offline login")
-		_offline_login(data)
+		if bool(data.get("guest_created", false)):
+			_handle_guest_creation_failed("API auth unavailable for guest creation")
+		else:
+			_log("API auth unavailable for login, fallback to offline login")
+			_offline_login(data)
 		return
 	var err = http.request(
 		BASE_URL + "user/",
@@ -858,8 +936,11 @@ func _send_login_request(data: Dictionary) -> void:
 		JSON.stringify(payload)
 	)
 	if err != OK:
-		_log("Immediate login request error, fallback to offline login")
-		_offline_login(data)
+		if bool(data.get("guest_created", false)):
+			_handle_guest_creation_failed("Immediate guest creation request error")
+		else:
+			_log("Immediate login request error, fallback to offline login")
+			_offline_login(data)
 
 # -------- HTTP RESPONSE --------
 func _on_http_request_request_completed(result, response_code, _headers, body):
@@ -882,6 +963,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 		if _is_token_available(response_code, token_body_text):
 			token_input.text = generated_token
 			_clear_fields_for_generated_token()
+			generated_patient_token_value = generated_token
 			offline_generated_token_value = ""
 			status_label.text = "Token généré ✔"
 			_log("Token generation success")
@@ -889,6 +971,26 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 		else:
 			_try_generate_token()
 
+		return
+
+	if is_user_token_lookup:
+		is_user_token_lookup = false
+		var lookup_token = str(pending_login_data.get("token", "")).strip_edges()
+		var user_body_text = body.get_string_from_utf8()
+
+		if result != HTTPRequest.RESULT_SUCCESS:
+			_handle_user_token_lookup_blocked("User token lookup failed | result=%s" % str(result))
+			return
+
+		if response_code != 404 and (response_code < 200 or response_code >= 300):
+			_handle_user_token_lookup_blocked("User token lookup failed | code=%s" % str(response_code))
+			return
+
+		if not _is_lookup_token_found(response_code, user_body_text, lookup_token):
+			_handle_user_token_not_found()
+			return
+
+		_continue_login_after_user_token_verified()
 		return
 
 	if is_doctor_key_lookup:
@@ -930,7 +1032,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 			_log("Doctor key validated | doctor_id=%s" % str(doctor_id))
 
 		var login_token = str(pending_login_data.get("token", "")).strip_edges()
-		if doctor_id >= 0 and login_token != "" and login_token.to_lower() != "guest":
+		if doctor_id >= 0 and login_token != "":
 			_merge_doctor_and_send_login(login_token, doctor_id)
 			return
 
@@ -938,8 +1040,11 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 		return
 
 	if result != HTTPRequest.RESULT_SUCCESS:
-		_log("Login HTTP failure, fallback offline")
-		_offline_login(pending_login_data)
+		if bool(pending_login_data.get("guest_created", false)):
+			_handle_guest_creation_failed("Guest creation HTTP failure")
+		else:
+			_log("Login HTTP failure, fallback offline")
+			_offline_login(pending_login_data)
 		return
 
 	var body_text = body.get_string_from_utf8()
@@ -954,70 +1059,61 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 		return
 
 	if response_code != 200 and response_code != 201:
-		_log("Login rejected (code=%s), fallback offline" % str(response_code))
-		_offline_login(pending_login_data)
+		if bool(pending_login_data.get("guest_created", false)):
+			_handle_guest_creation_failed("Guest creation rejected | code=%s" % str(response_code))
+		else:
+			_log("Login rejected (code=%s), fallback offline" % str(response_code))
+			_offline_login(pending_login_data)
 		return
 
 	var response = JSON.parse_string(body_text)
 
 	if typeof(response) != TYPE_DICTIONARY or not response.has("id"):
-		_log("Invalid login response payload, fallback offline")
-		_offline_login(pending_login_data)
+		if bool(pending_login_data.get("guest_created", false)):
+			_handle_guest_creation_failed("Invalid guest creation response payload")
+		else:
+			_log("Invalid login response payload, fallback offline")
+			_offline_login(pending_login_data)
 		return
 
 	var user_id = int(response["id"])
 	_log("Login success | user_id=%s" % str(user_id))
 
-	if is_guest_mode:
-		PlayerData.set_guest(user_id)
-		PlayerData.token = "guest"
-		PlayerData.uuid = "none"
-		PlayerData.birth_year = ""
-		PlayerData.doctor_key = ""
-	else:
-		var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", _get_device_uuid())))
+	var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", _get_device_uuid())))
 
-		var birth_year = pending_login_data.get("birth_year", "")
-		if str(birth_year).is_valid_int():
-			birth_year = int(birth_year)
+	var birth_year = pending_login_data.get("birth_year", "")
+	if str(birth_year).is_valid_int():
+		birth_year = int(birth_year)
 
-		PlayerData.set_user(
-			user_id,
-			resolved_uuid,
-			str(pending_login_data.get("token")),
-			birth_year,
-			str(pending_login_data.get("doctor_key", pending_login_data.get("medecin_key", "")))
-		)
+	PlayerData.set_user(
+		user_id,
+		resolved_uuid,
+		str(pending_login_data.get("token")),
+		birth_year,
+		str(pending_login_data.get("doctor_key", pending_login_data.get("medecin_key", "")))
+	)
 
-		PlayerData.birth_year = birth_year
+	PlayerData.birth_year = birth_year
 
 	_finalize_login_and_go_to_menu()
 
 # -------- OFFLINE --------
 func _offline_login(data):
 	_log("Offline login mode enabled")
-	var local_id = 1 if is_guest_mode else -2
+	var local_id = -2
+	var birth_year = data.get("birth_year", "")
+	if str(birth_year).is_valid_int():
+		birth_year = int(birth_year)
 
-	if is_guest_mode:
-		data["birth_year"] = null
-		data.erase("doctor_key")
-		data.erase("medecin_key")
-		PlayerData.set_guest(local_id)
-		PlayerData.birth_year = ""
-	else:
-		var birth_year = data.get("birth_year", "")
-		if str(birth_year).is_valid_int():
-			birth_year = int(birth_year)
+	PlayerData.set_user(
+		local_id,
+		str(data.get("uuid", _get_device_uuid())),
+		data["token"],
+		birth_year,
+		str(data.get("doctor_key", data.get("medecin_key", "")))
+	)
 
-		PlayerData.set_user(
-			local_id,
-			str(data.get("uuid", _get_device_uuid())),
-			data["token"],
-			birth_year,
-			str(data.get("doctor_key", data.get("medecin_key", "")))
-		)
-
-		PlayerData.birth_year = birth_year
+	PlayerData.birth_year = birth_year
 	SyncManager.add_action({
 		"type": "login",
 		"data": data
@@ -1041,12 +1137,16 @@ func _on_back_button_pressed():
 	
 	_get_interface().show_menu()
 
+func _on_guest_button_pressed() -> void:
+	pending_login_data.clear()
+	_clear_login_fields()
+	is_guest_creation_mode = true
+	status_label.text = "Créez une clé"
+	_sync_guest_creation_controls()
+	_update_button()
+
 # -------- INPUT CALLBACKS --------
 func _on_birth_year_input_text_changed(new_text: String) -> void:
-	if is_guest_mode:
-		birth_year_input.text = ""
-		return
-
 	var filtered = ""
 	for c in new_text:
 		if c.is_valid_int():
@@ -1058,14 +1158,6 @@ func _on_birth_year_input_text_changed(new_text: String) -> void:
 	_update_button()
 
 func _on_doctor_token_input_text_changed(new_text: String) -> void:
-	if is_guest_mode or _is_guest_token():
-		is_guest_mode = true
-		doctor_key_input.editable = false
-		doctor_key_input.focus_mode = Control.FOCUS_NONE
-		doctor_key_input.text = ""
-		doctor_key_input.release_focus()
-		return
-
 	var sanitized = new_text.strip_edges()
 	if sanitized != new_text:
 		doctor_key_input.text = sanitized
