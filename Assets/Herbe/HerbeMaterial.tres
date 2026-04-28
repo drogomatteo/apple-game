@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bboslgsskuo6v"]
+
+[ext_resource type="Shader" uid="uid://jqrwa1d8fqbj" path="res://Assets/Herbe/src/shader/grass.gdshader" id="1_cfd4i"]
+[ext_resource type="Texture2D" uid="uid://di62ixsr75dl2" path="res://Assets/Herbe/src/palette/palette_01.tres" id="2_khneh"]
+[ext_resource type="Texture2D" uid="uid://bjauy7ej6k0a6" path="res://Assets/Herbe/new_noise_texture_2d_for_coloring_grass.tres" id="3_khneh"]
+[ext_resource type="Texture2D" uid="uid://c224g1fw1i2db" path="res://Assets/Herbe/src/texture/basic/grass_basic_02.png" id="4_dq75s"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_cfd4i")
+shader_parameter/billboard = false
+shader_parameter/shape_texture = ExtResource("4_dq75s")
+shader_parameter/noise_texture = ExtResource("3_khneh")
+shader_parameter/color_gradient = ExtResource("2_khneh")
+shader_parameter/alpha_cut_start = 0.4
+shader_parameter/alpha_cut_end = 0.6

@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://bwq3eicpmx7gl"]
+
+[ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="1_cp0ys"]
+[ext_resource type="Script" uid="uid://bgub81fhtsdig" path="res://Scripts/main_menu.gd" id="1_n45e2"]
+[ext_resource type="Texture2D" uid="uid://di04rh4eish3e" path="res://Assets/UI-UX/Images/Logo.png" id="3_trj04"]
+[ext_resource type="Texture2D" uid="uid://c8fmefymdrm78" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_grand.png" id="4_yhxw7"]
+[ext_resource type="Texture2D" uid="uid://g5dtuipdk4n" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-2_My_pressed_buttons.png" id="5_16hvj"]
+[ext_resource type="Texture2D" uid="uid://fxpu5rubs1lj" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_icons.png" id="5_n45e2"]
+[ext_resource type="Texture2D" uid="uid://c3mml3rimmkqu" path="res://Assets/UI-UX/Images/icons/UserBlanc.png" id="6_cp0ys"]
+[ext_resource type="Texture2D" uid="uid://dfocc5csoxbbh" path="res://Assets/UI-UX/Images/icons/CadnasBlanc.png" id="6_yhxw7"]
+[ext_resource type="Texture2D" uid="uid://d27xihyb40k33" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1_My_pressed_buttons.png" id="7_vr1f0"]
+[ext_resource type="Texture2D" uid="uid://bclams2q5onvw" path="res://Assets/UI-UX/Images/icons/OptionBlanc.png" id="7_yhxw7"]
+[ext_resource type="Texture2D" uid="uid://cjhjnohmjeook" path="res://Assets/UI-UX/Images/icons/Info.png" id="8_vr1f0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_trj04"]
+
+[node name="MainMenu" type="Control" unique_id=1142539147]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_cp0ys")
+script = ExtResource("1_n45e2")
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1863948896]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=252485785]
+layout_mode = 2
+alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer" unique_id=1736047804]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CenterContainer" unique_id=183065039]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=1208740050]
+custom_minimum_size = Vector2(500, 250)
+layout_mode = 2
+texture = ExtResource("3_trj04")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=1854983580]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_trj04")
+
+[node name="StartButton" type="TextureButton" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=1103198651]
+custom_minimum_size = Vector2(120, 110)
+layout_mode = 2
+theme_type_variation = &"ButtonClassique"
+texture_normal = ExtResource("4_yhxw7")
+texture_pressed = ExtResource("5_16hvj")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/StartButton" unique_id=977546055]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -24.5
+offset_right = 66.5
+offset_bottom = 22.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(0.69803923, 0, 0.09803922, 1)
+theme_override_font_sizes/font_size = 47
+text = "JOUER"
+
+[node name="Quit Button" type="TextureButton" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer" unique_id=2016246964]
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+texture_normal = ExtResource("4_yhxw7")
+texture_pressed = ExtResource("5_16hvj")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/Quit Button" unique_id=1368990678]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -24.5
+offset_right = 66.5
+offset_bottom = 22.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_font_sizes/font_size = 38
+text = "QUITTER"
+
+[node name="SpacerBottom" type="Control" parent="MarginContainer/VBoxContainer" unique_id=1699160874]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1236421359]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="InfoButton" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=710888862]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+texture_normal = ExtResource("5_n45e2")
+texture_pressed = ExtResource("7_vr1f0")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/InfoButton" unique_id=1030293160]
+modulate = Color(0.1764706, 0.09411765, 0, 1)
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_vr1f0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=889861993]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GdprButton" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=30557419]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+texture_normal = ExtResource("5_n45e2")
+texture_pressed = ExtResource("7_vr1f0")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/GdprButton" unique_id=36168221]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(40, 60)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -31.0
+offset_right = 15.0
+offset_bottom = 29.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_yhxw7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="OptionButton" type="TextureButton" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1227175599]
+custom_minimum_size = Vector2(120, 100)
+layout_mode = 2
+texture_normal = ExtResource("5_n45e2")
+texture_pressed = ExtResource("7_vr1f0")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/OptionButton" unique_id=1750948479]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(50, 60)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("7_yhxw7")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer2" type="BoxContainer" parent="MarginContainer" unique_id=175165534]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="UserButton" type="TextureButton" parent="MarginContainer/VBoxContainer2" unique_id=945896313]
+custom_minimum_size = Vector2(150, 130)
+layout_mode = 2
+texture_normal = ExtResource("5_n45e2")
+texture_pressed = ExtResource("7_vr1f0")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer2/UserButton" unique_id=1823667585]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_cp0ys")
+expand_mode = 1
+stretch_mode = 5
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/CenterContainer/VBoxContainer/Quit Button" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/InfoButton" to="." method="_on_info_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/GdprButton" to="." method="_on_gdpr_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/OptionButton" to="." method="_on_option_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer2/UserButton" to="." method="_on_user_button_pressed"]

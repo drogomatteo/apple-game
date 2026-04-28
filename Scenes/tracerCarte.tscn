@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dvjmg6kxrphrs"]
+
+[ext_resource type="Script" uid="uid://blqaj5vsw5nrj" path="res://Scripts/tracer_carte.gd" id="1_lrq8w"]
+
+[node name="Parcours3D" type="Node3D" unique_id=2060279298]
+script = ExtResource("1_lrq8w")

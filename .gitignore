@@ -13,6 +13,7 @@ export/
 build/
 bin/
 Assets/Fences/Meshes
+Assets/ParticlePNG/
 # Godot mono builds
 .mono/
 data_*/

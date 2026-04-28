@@ -1,0 +1,289 @@
+[gd_scene format=3 uid="uid://ddp6q8ogqv3m"]
+
+[ext_resource type="Script" uid="uid://ch4kx0pyviu0t" path="res://Scripts/user_menu.gd" id="1_8yq43"]
+[ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="1_kvj4v"]
+[ext_resource type="Texture2D" uid="uid://cncukdfpa4t3e" path="res://Assets/UI-UX/Images/icons/key.png" id="3_qkyn1"]
+[ext_resource type="Theme" uid="uid://yk6efy6kitav" path="res://Style_bouton/button_theme.tres" id="3_sioj2"]
+[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="4_klneb"]
+[ext_resource type="Texture2D" uid="uid://6njqh54442c" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_brun.png" id="4_qkyn1"]
+[ext_resource type="Texture2D" uid="uid://c71rrne3upjp8" path="res://Assets/UI-UX/Images/icons/calendar.png" id="4_ywo72"]
+[ext_resource type="Texture2D" uid="uid://blgvorb3i7drs" path="res://Assets/UI-UX/Images/icons/MedecinBlanc.png" id="5_a328f"]
+[ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="6_wwld1"]
+[ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="7_5owdv"]
+[ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="8_wwld1"]
+[ext_resource type="Texture2D" uid="uid://c8fmefymdrm78" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_grand.png" id="9_4ve82"]
+[ext_resource type="Texture2D" uid="uid://g5dtuipdk4n" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-2_My_pressed_buttons.png" id="12_a328f"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ywo72"]
+shader = ExtResource("4_klneb")
+shader_parameter/blur_amount = 2.50000011875
+shader_parameter/mix_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ywo72"]
+
+[node name="UserMenu" type="Control" unique_id=1594275488]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_kvj4v")
+script = ExtResource("1_8yq43")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1905059466]
+material = SubResource("ShaderMaterial_ywo72")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=153784424]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 20
+
+[node name="fond" type="Panel" parent="MarginContainer" unique_id=1256783435]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"PanelBasic"
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/fond" unique_id=293096395]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 23
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/fond/MarginContainer" unique_id=1583284448]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Utilisateur" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2130911624]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("4_qkyn1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Utilisateur" unique_id=2129564658]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 42
+text = "Utilisateur"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="jaiuncompte" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=181783704]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.27450982, 0.12941177, 0.08627451, 1)
+theme_override_font_sizes/font_size = 25
+text = "Entrez vos informations:"
+
+[node name="CleBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=1725412278]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="IconKey" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox" unique_id=329187712]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+texture = ExtResource("3_qkyn1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TokenInput" type="LineEdit" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox" unique_id=546875884]
+custom_minimum_size = Vector2(400, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 25
+placeholder_text = "Identifiant"
+
+[node name="GenerateTokenButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox" unique_id=1065400306]
+z_index = 1
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme = ExtResource("3_sioj2")
+theme_type_variation = &"BouttonTertiaire"
+theme_override_font_sizes/font_size = 32
+text = "Aléatoire"
+
+[node name="BirthYearBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2107690068]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="iconUser" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox" unique_id=145490617]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(40, 50)
+layout_mode = 2
+texture = ExtResource("4_ywo72")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BirthYearInput" type="LineEdit" parent="MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox" unique_id=1463654330]
+custom_minimum_size = Vector2(400, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 25
+placeholder_text = "Année de naissance"
+
+[node name="MedecinBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=874009146]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="IconKeyMed" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox" unique_id=1465806973]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(40, 50)
+layout_mode = 2
+texture = ExtResource("5_a328f")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DoctorKeyInput" type="LineEdit" parent="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox" unique_id=119887002]
+custom_minimum_size = Vector2(400, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 25
+placeholder_text = "Identifiant du médecin (facultatif)"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=234164767]
+layout_mode = 2
+theme_override_constants/separation = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ywo72")
+
+[node name="CreerOuCo" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=949653803]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="GuestButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CreerOuCo" unique_id=1365382072]
+z_index = 1
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_sioj2")
+theme_type_variation = &"BouttonTertiaire"
+text = "Créer un compte"
+
+[node name="SaveButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CreerOuCo" unique_id=1303862217]
+z_index = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_sioj2")
+theme_type_variation = &"BouttonTertiaire"
+text = "Me connecter"
+
+[node name="Button" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=678183834]
+layout_mode = 2
+
+[node name="LogoutButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2050583325]
+z_index = 1
+custom_minimum_size = Vector2(300, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("3_sioj2")
+texture_normal = ExtResource("9_4ve82")
+texture_pressed = ExtResource("12_a328f")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/LogoutButton" unique_id=394335066]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = -20.5
+offset_right = 114.0
+offset_bottom = 20.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_font_sizes/font_size = 28
+text = "DECONNEXION"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=480007012]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.57, 0.09452498, 0.051299985, 1)
+theme_override_constants/line_spacing = 0
+theme_override_font_sizes/font_size = 25
+horizontal_alignment = 1
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=1472082945]
+
+[node name="BackButton" type="TextureButton" parent="." unique_id=267540514]
+z_index = 1
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -109.0
+offset_top = 21.0
+offset_right = -45.0
+offset_bottom = 81.0
+grow_horizontal = 0
+scale = Vector2(1.2950073, 1.2950073)
+texture_normal = ExtResource("6_wwld1")
+texture_pressed = ExtResource("7_5owdv")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="BackButton" unique_id=680773273]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.044312
+offset_top = -19.044392
+offset_right = 15.955688
+offset_bottom = 15.955608
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_wwld1")
+expand_mode = 1
+stretch_mode = 4
+
+[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput" to="." method="_on_token_input_text_changed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
+[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox/BirthYearInput" to="." method="_on_birth_year_input_text_changed"]
+[connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput" to="." method="_on_doctor_token_input_text_changed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CreerOuCo/GuestButton" to="." method="_on_guest_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CreerOuCo/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/LogoutButton" to="." method="_on_logout_button_pressed"]
+[connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

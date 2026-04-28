@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ciiarbj0qn64p"]
 
-[ext_resource type="Script" uid="uid://d2aioml31y8mv" path="res://Scripts/ScèneTransition.gd" id="1_jnsx0"]
+[ext_resource type="Script" uid="uid://d2aioml31y8mv" path="res://Scripts/scene_transition.gd" id="1_jnsx0"]
 [ext_resource type="Shader" uid="uid://bxj038tvxkitq" path="res://Assets/Shader/transition.gdshader" id="2_ah04o"]
 [ext_resource type="Texture2D" uid="uid://dfvgfi1rpxvlc" path="res://PommeAnimation/apple.png" id="3_vlteq"]
 
@@ -10,7 +10,7 @@ shader_parameter/mask_texture = ExtResource("3_vlteq")
 shader_parameter/progress = 0.0
 shader_parameter/transition_color = Color(0.627451, 0.078431375, 0.078431375, 1)
 
-[node name="Transition" type="CanvasLayer" unique_id=1988619540]
+[node name="Transition" type="CanvasLayer" unique_id=1988619540 groups=["transition"]]
 layer = 128
 script = ExtResource("1_jnsx0")
 

@@ -1,0 +1,225 @@
+[gd_scene format=3 uid="uid://chdd0d4tpey0p"]
+
+[ext_resource type="Script" uid="uid://cammce2u5gcrc" path="res://Scripts/option_menu.gd" id="1_47jcy"]
+[ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="1_sv1ki"]
+[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="1_xt6yv"]
+[ext_resource type="Texture2D" uid="uid://cg6xhyklt5q5j" path="res://Assets/UI-UX/Images/Buttons Texture/My_Panel.png" id="4_0rxwe"]
+[ext_resource type="Texture2D" uid="uid://bjvhpahrg4hpq" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_verty.png" id="5_ut6oe"]
+[ext_resource type="Texture2D" uid="uid://b77mdw0b5otpg" path="res://Assets/UI-UX/Images/icons/speaker-filled-audio-tool.png" id="6_yo2sp"]
+[ext_resource type="Texture2D" uid="uid://blweqq3h1dht6" path="res://Assets/UI-UX/Images/icons/Switch1.png" id="7_mtc0c"]
+[ext_resource type="Texture2D" uid="uid://drtuu5qnujamy" path="res://Assets/UI-UX/Images/icons/Switch2.png" id="8_dt6m2"]
+[ext_resource type="Texture2D" uid="uid://c8mr8wgpr514h" path="res://Assets/UI-UX/Images/icons/eye.png" id="9_oagh6"]
+[ext_resource type="FontFile" uid="uid://cerbarmw7oyi5" path="res://Assets/UI-UX/Images/Font/Fredoka-Regular.ttf" id="10_jbb3i"]
+[ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="11_la34a"]
+[ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="12_gvpwh"]
+[ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="13_ka34f"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3036b"]
+shader = ExtResource("1_xt6yv")
+shader_parameter/blur_amount = 2.50000011875
+shader_parameter/mix_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wgjf0"]
+texture = ExtResource("4_0rxwe")
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_r0q2k"]
+color = Color(0.27450982, 0.12941177, 0.08627451, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_af44q"]
+content_margin_left = 42.0
+bg_color = Color(0.43875003, 0.54, 0.29700002, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.47058824, 0.2627451, 0.20392157, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 13
+
+[node name="OptionMenu" type="Control" unique_id=588671567]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_sv1ki")
+script = ExtResource("1_47jcy")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=732051206]
+material = SubResource("ShaderMaterial_3036b")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=727404519]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 300
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 300
+theme_override_constants/margin_bottom = 50
+
+[node name="Panel" type="Panel" parent="MarginContainer" unique_id=1930275359]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_wgjf0")
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Panel" unique_id=595603616]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=941516543]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=1489609315]
+custom_minimum_size = Vector2(400, 500)
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer/VBoxContainer" unique_id=1906374063]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = ExtResource("5_ut6oe")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer/TextureRect" unique_id=1793765583]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 42
+text = "OPTIONS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1663767003]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_r0q2k")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=1561266626]
+layout_mode = 2
+
+[node name="IconInvite" type="TextureRect" parent="CenterContainer/VBoxContainer/HBoxContainer" unique_id=1452592419]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(40, 50)
+layout_mode = 2
+texture = ExtResource("6_yo2sp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Sound" type="CheckButton" parent="CenterContainer/VBoxContainer/HBoxContainer" unique_id=995335893]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.09411765, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.09411765, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_colors/button_checked_color = Color(1, 1, 1, 1)
+theme_override_icons/checked = ExtResource("7_mtc0c")
+theme_override_icons/unchecked = ExtResource("8_dt6m2")
+button_pressed = true
+text = "Bruits de pas : "
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=808394421]
+layout_mode = 2
+
+[node name="IconInvite" type="TextureRect" parent="CenterContainer/VBoxContainer/HBoxContainer2" unique_id=175760736]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(40, 50)
+layout_mode = 2
+texture = ExtResource("9_oagh6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer2" unique_id=1375716377]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.09411765, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "Daltonisme:"
+
+[node name="Daltonien" type="ItemList" parent="CenterContainer/VBoxContainer" unique_id=14817107]
+custom_minimum_size = Vector2(6.27, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9490196, 0.9490196, 1)
+theme_override_fonts/font = ExtResource("10_jbb3i")
+theme_override_font_sizes/font_size = 29
+theme_override_styles/panel = SubResource("StyleBoxFlat_af44q")
+allow_search = false
+auto_height = true
+item_count = 4
+icon_scale = 1.2
+item_0/text = "Aucun"
+item_1/text = "Protanopia"
+item_2/text = "Deuteranopia"
+item_3/text = "Tritanopia"
+
+[node name="BackButton" type="TextureButton" parent="." unique_id=2135478235]
+z_index = 1
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -109.0
+offset_top = 21.0
+offset_right = -45.0
+offset_bottom = 81.0
+grow_horizontal = 0
+scale = Vector2(1.3432018, 1.3432018)
+texture_normal = ExtResource("11_la34a")
+texture_pressed = ExtResource("12_gvpwh")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="BackButton" unique_id=1937640417]
+modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.73352
+offset_top = -17.5
+offset_right = 15.2664795
+offset_bottom = 17.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("13_ka34f")
+expand_mode = 1
+stretch_mode = 5
+
+[connection signal="toggled" from="CenterContainer/VBoxContainer/HBoxContainer/Sound" to="." method="_on_sound_toggled"]
+[connection signal="item_selected" from="CenterContainer/VBoxContainer/Daltonien" to="." method="_on_daltonien_item_selected"]
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

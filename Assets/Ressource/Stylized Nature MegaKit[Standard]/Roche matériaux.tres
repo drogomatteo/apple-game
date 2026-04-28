@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dfmrfwacnch0x"]
+
+[ext_resource type="Texture2D" uid="uid://nqxiw8jxbten" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/Textures/PathRocks_Diffuse.png" id="1_2845k"]
+
+[resource]
+albedo_texture = ExtResource("1_2845k")

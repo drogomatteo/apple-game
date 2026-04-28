@@ -11,15 +11,19 @@ config_version=5
 [application]
 
 config/name="AppleGame"
-run/main_scene="uid://jjyvhy1qlyy3"
+run/main_scene="uid://ch7v1mqkxobr1"
 config/features=PackedStringArray("4.6", "Mobile")
 
 [autoload]
 
-PlayerData="*uid://bnt3vxow8rqq7"
 "Paramètre"="*uid://ci78nbf2nkdwv"
 Transition="*uid://ciiarbj0qn64p"
 Daltonien="*uid://8y5yuplw0kyy"
+GestionFichier="*uid://dh3mvqhnwvgit"
+GameManager="*uid://crrfanuoph3go"
+PlayerData="*uid://cwrvjrtmo4u62"
+SyncManager="*uid://brt56jflktvu8"
+SaveRgpd="*uid://cgk45g5lrs7dc"
 
 [display]
 
@@ -30,6 +34,25 @@ window/stretch/aspect="expand"
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[input]
+
+Avancer={
+"deadzone": 0.2,
+"events": []
+}
+Droite={
+"deadzone": 0.2,
+"events": []
+}
+Gauche={
+"deadzone": 0.2,
+"events": []
+}
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [layer_names]
 
@@ -52,3 +75,5 @@ textures/vram_compression/import_etc2_astc=true
 lights_and_shadows/directional_shadow/size=1024
 lights_and_shadows/directional_shadow/size.mobile=1024
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality.mobile=2
+scaling_3d/scale=0.8
+occlusion_culling/use_occlusion_culling=true

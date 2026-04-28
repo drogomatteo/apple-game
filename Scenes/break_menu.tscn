@@ -1,0 +1,128 @@
+[gd_scene format=3 uid="uid://k6fu4jt18nip"]
+
+[ext_resource type="Script" uid="uid://3ehle6d77yti" path="res://Scripts/break_menu.gd" id="1_5hdlp"]
+[ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="1_n4pmk"]
+[ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="2_5hdlp"]
+[ext_resource type="Texture2D" uid="uid://c8fmefymdrm78" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_grand.png" id="4_f6h6w"]
+[ext_resource type="Texture2D" uid="uid://g5dtuipdk4n" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-2_My_pressed_buttons.png" id="5_n48fr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n4pmk"]
+shader = ExtResource("2_5hdlp")
+shader_parameter/blur_amount = 2.50000011875
+shader_parameter/mix_color = Color(0.19607843, 0.23529412, 0.19607843, 0.23529412)
+
+[sub_resource type="LabelSettings" id="LabelSettings_f6h6w"]
+font_size = 120
+outline_size = 50
+outline_color = Color(0.69803923, 0, 0.09803922, 1)
+shadow_size = 50
+shadow_color = Color(0.33333334, 0.13333334, 0.0627451, 0.5019608)
+shadow_offset = Vector2(5, 5)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sk3du"]
+
+[node name="BreakMenu" type="Control" unique_id=504863998]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_n4pmk")
+script = ExtResource("1_5hdlp")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1746775406]
+material = SubResource("ShaderMaterial_n4pmk")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=326213372]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -137.0
+offset_right = 250.0
+offset_bottom = 137.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=637009513]
+z_index = 1
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.3317709, 0.13235432, 0.06267958, 0.5019608)
+theme_override_colors/font_outline_color = Color(0.43875003, 0.54, 0.29700002, 1)
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 0
+text = "PAUSE"
+label_settings = SubResource("LabelSettings_f6h6w")
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=1391686498]
+layout_mode = 2
+theme_override_constants/separation = 20
+theme_override_styles/separator = SubResource("StyleBoxEmpty_sk3du")
+
+[node name="ResumeButton" type="TextureButton" parent="VBoxContainer" unique_id=1555555029]
+z_index = 1
+custom_minimum_size = Vector2(300, 130)
+layout_mode = 2
+texture_normal = ExtResource("4_f6h6w")
+texture_pressed = ExtResource("5_n48fr")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/ResumeButton" unique_id=1173725929]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 22.0
+offset_right = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(0.69803923, 0, 0.09803922, 1)
+theme_override_font_sizes/font_size = 47
+text = "CONTINUER"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" type="TextureButton" parent="VBoxContainer" unique_id=1610937232]
+z_index = 1
+custom_minimum_size = Vector2(400, 80)
+layout_mode = 2
+texture_normal = ExtResource("4_f6h6w")
+texture_pressed = ExtResource("5_n48fr")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="VBoxContainer/BackButton" unique_id=812698792]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 17.0
+offset_right = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_font_sizes/font_size = 30
+text = "MENU PRINCIPAL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

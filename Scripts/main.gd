@@ -1,0 +1,561 @@
+extends Node3D
+
+#Zone de texte
+@onready var validate_button = $UI/Bouttons/Bouton/ValidateButton
+@onready var message_label = $"UI/Zone de texte/MessageLabel"
+@onready var next_level = $UI/Bouttons/Bouton/NextLevel
+@onready var voir_recap = $UI/Bouttons/Bouton/Recap
+@onready var message_alerte = $"UI/Zone de texte/AlertMessage"
+@onready var temps_restant = $"UI/Zone de texte/TempsRestant"
+@onready var textToDo = $"UI/Zone de texte/VBoxContainer/ToDo"
+
+#Scène
+@export_group("Scènes")
+@export var basket : PackedScene
+@export var tree : PackedScene
+@export var apple_tree : PackedScene
+@export var visual : PackedScene
+
+#Noeud
+@onready var Player = $Player
+@onready var player_camera: Camera3D = $Player/Camera3D
+@onready var player_left = $Player/CanvasLayer/MarginContainer/HBoxContainer/Control/Left
+@onready var player_right = $Player/CanvasLayer/MarginContainer/HBoxContainer/Control3/Right
+@onready var player_forward = $Player/CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward
+@onready var player_node_3d = $Player/Node3D
+
+var Basket : Node
+var Apple_tree : Node
+var Visual : Node
+
+#Gravité
+@export var spawn_height := 3.0
+
+#Gestion des arbres
+var Arbre : Array
+var index_Tree : int
+var max_tree : int
+
+#Données joueur
+var position_joueur : Array
+var graine : int
+var list_to_save : Array
+
+#Grille
+var grid_size : int = 8
+var cell_size : int = 2
+var map : Array
+var Objet : Dictionary
+
+#Phase finale
+var position_Finale : Vector3
+var distance : float
+var distanceAParcourir : float
+var seuil1 = PI/9
+var seuil2 = 2*seuil1
+var Rayon1
+var Rayon2
+
+#Niveaux
+var niveau : int = 1
+var niveau_max : int = 20
+var phase : int = 0 
+
+#Temps
+@onready var max_timer = $Temps/Timer
+@onready var sampling = $Temps/Sampling
+var timeout : bool
+var temps_écoulé : float
+
+#Score
+var score = 15
+var Normal = 10
+var Difficile = 20
+var Difficulté_actuel : Array
+@export var use_generated_spawn := true
+@onready var Fences = $Monde/Fences
+var session_id : String 
+
+#Pause
+@onready var BreakButton = $UI/Bouttons/BreakButtonCanvas/BreakButton
+@onready var BreakMenu = $UI/Break/BreakMenu
+
+#Tuto
+@onready var TutorialUI = $UI/TutorialUI
+@onready var TutorialHighlight = $UI/TutorialUI/Highlight
+@onready var TutorialController = $TutorialController
+var pending_end_results: bool = false
+var next_level_was_pressed := false
+var recap_was_pressed := false
+var validate_was_pressed := false
+
+func _get_session_owner_id() -> String:
+	var player_token = str(PlayerData.token).strip_edges()
+	if player_token != "":
+		return player_token
+
+	var player_uuid = str(PlayerData.uuid).strip_edges()
+	if player_uuid != "":
+		return player_uuid
+
+	return str(PlayerData.user_id)
+
+#Tuto désactivé de base:
+func _ready() -> void:
+	session_id = str(int(Time.get_unix_time_from_system())) + "_" + _get_session_owner_id() + "_" + str(randi())
+	TutorialHighlight.visible = false
+	#Paramètre.definir_tutorial_seen(false)
+	Initialisation()
+
+	
+	if not Paramètre.tutorial_seen:
+		TutorialController.start_tutorial()
+
+func _physics_process(_delta: float) -> void:
+	textToDo.set_text(toDo())
+	var next_level_pressed = next_level.button_pressed
+	var recap_pressed = voir_recap.button_pressed
+	var validate_pressed = validate_button.button_pressed
+	
+	if phase == 3:
+		if max_timer.get_time_left() >= 1:
+			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" secondes")
+		else:
+			temps_restant.set_text(str(int(ceil(max_timer.get_time_left())))+" seconde")
+		var Red : float = (max_timer.get_wait_time()-max_timer.get_time_left())/max_timer.get_wait_time()
+		temps_restant.label_settings.font_color = Color(Red, 0.0, 0.0, 1.0)
+
+	if next_level_pressed and not next_level_was_pressed:
+		if niveau == niveau_max:
+			Transition.go_to_scene("main_menu")
+		else:
+			Basket.queue_free()
+			Visual.queue_free()
+		
+			for child in Arbre:
+				child.queue_free()
+			Apple_tree.queue_free()
+
+			Initialisation()
+			niveau += 1
+			phase = 0
+	
+	if recap_pressed and not recap_was_pressed:
+		voir_recap.visible = false
+		next_level.visible = false
+		message_label.visible = false
+		$Parcours3D.launch(position_joueur, Objet["basket0"], Rayon1, Rayon2)
+	
+	if ((validate_pressed and not validate_was_pressed) or timeout) and phase == 3:
+		phase += 1
+		if TutorialController.tutorial_active and TutorialController.waiting_final_popup:
+			pending_end_results = true
+			TutorialController.show_final_message_before_score()
+			return
+		
+		validate_button.visible = false
+		player_left.visible = false
+		player_forward.visible = false
+		player_right.visible = false
+		player_node_3d.visible = false
+		next_level.visible = true
+		voir_recap.visible = true
+
+		$TopView.make_current()
+
+		Basket.visible = true
+		for i in range(max_tree):
+			Arbre[i].visible = true
+		Apple_tree.visible = true
+
+
+		if niveau == niveau_max:
+			next_level.set_self_modulate(Color(1,1,1,0))
+			next_level.get_child(0).text = "Voici votre score : "+str(score)+"\nAppuyez sur le bouton pour retourner au menu principal"
+
+		if timeout:
+			message_alerte.visible = true
+
+		max_timer.stop()
+		temps_restant.visible = false
+		sampling.stop()
+		position_Finale = player_cell()
+
+		distance = sqrt((position_Finale.x-Objet["basket0"].x)**2+(position_Finale.z-Objet["basket0"].z)**2)
+		distanceAParcourir = sqrt((Objet["apple_tree0"].x-Objet["basket0"].x)**2+(Objet["apple_tree0"].z-Objet["basket0"].z)**2)
+
+		Rayon1 = distanceAParcourir*sin(seuil1)
+		Rayon2 = distanceAParcourir*sin(seuil2)
+
+		if distance <= Rayon1:
+			message_label.text = "Vous avez 3 étoiles"
+			score += 1
+		elif distance <= Rayon2:
+			message_label.text = "Vous avez 2 étoiles"
+		else:
+			message_label.text = "Vous avez 1 étoile"
+			score = max(score - 1, 0)
+
+		message_label.visible = true
+		
+		list_to_save.append(save_level())
+		write_local_reports(false)
+		sync_reports_now()
+
+	next_level_was_pressed = next_level_pressed
+	recap_was_pressed = recap_pressed
+	validate_was_pressed = validate_pressed
+
+
+
+	for index in range(Player.get_slide_collision_count()):
+		var collision = Player.get_slide_collision(index)
+
+		if collision.get_collider() == null:
+			continue
+
+		elif collision.get_collider().is_in_group("Basket") and phase == 0:
+			phase += 1
+			Basket.visible = false
+			Arbre[0].visible = true
+			index_Tree = 0
+			if Difficulté_actuel[0]:
+				Player.set_collision_mask(11)
+			else:
+				Player.set_collision_mask(9)
+			player_node_3d.visible = true
+			break
+		
+		elif collision.get_collider() == Arbre[index_Tree] and phase == 1:
+			if index_Tree == Arbre.size()-1:
+				phase += 1
+				Arbre[-1].visible = false
+				Apple_tree.visible = true
+				if Difficulté_actuel[0]:
+					Player.set_collision_mask(19)
+				else:
+					Player.set_collision_mask(17)
+			else:
+				var arbre_actuel = collision.get_collider()
+				arbre_actuel.visible = false
+				arbre_actuel.get_child(1).set_disabled(true)
+				index_Tree += 1
+				Arbre[index_Tree].visible = true
+			break
+		
+		elif collision.get_collider().is_in_group("Apple Tree") and phase == 2:
+			phase += 1
+			Apple_tree.visible = false
+			if Difficulté_actuel[0]:
+				Player.set_collision_mask(3)
+			else:
+				Player.set_collision_mask(1)
+			validate_button.visible = true
+			max_timer.start()
+			temps_restant.visible = true
+			break
+
+
+func Initialisation() -> void:
+	graine = randi()%10000000
+	seed(graine)
+	timeout = false
+	position_joueur = []
+	sampling.start()
+	temps_écoulé = 0
+
+	Difficulté_actuel = Gestion_Difficulté()
+	Player.set_collision_mask(7)
+
+	if Difficulté_actuel[2]:
+		Fences.set_visible(false)
+	else:
+		Fences.set_visible(true)
+	player_left.visible = true
+	player_forward.visible = true
+	player_right.visible = true
+	validate_button.visible = false
+	next_level.visible = false
+	message_label.visible = false
+	message_alerte.visible = false
+	temps_restant.visible = false
+	voir_recap.visible = false
+
+	player_camera.make_current()
+
+	map = []
+	Arbre = []
+
+	for i in range(grid_size):
+		var temp = []
+		for j in range(grid_size):
+			temp.append(0)
+		map.append(temp)
+
+	Placer_Objet_sur_map("visual")
+
+	Placer_Objet_sur_map("basket")
+
+	max_tree = max(1, int(ceil((score-20)/5)))
+
+	for i in range(max_tree):
+		Placer_Objet_sur_map("tree", str(i))
+
+	Placer_Objet_sur_map("apple_tree")
+	Placer_Objet_sur_map("player")
+
+	Basket = CreateNode(basket, "basket")
+
+	for i in range(max_tree):
+		Arbre.append(CreateNode(tree, "tree", str(i)))
+
+	Apple_tree = CreateNode(apple_tree, "apple_tree")
+
+	Visual = CreateNode(visual, "visual")
+
+	if use_generated_spawn:
+		Player.position = Vector3(Objet["player0"].x,spawn_height,Objet["player0"].z)
+	
+	Basket.set_visible(true)
+	for child in Arbre:
+		child.set_visible(false)
+	Apple_tree.set_visible(false)
+	
+	position_joueur.append(Objet["player0"])
+	
+	if not Difficulté_actuel[0]:
+		Player.set_collision_mask(5)
+		Visual.set_visible(false)
+
+
+func player_cell():
+	return Vector3(Player.position.x, 0, Player.position.z)
+
+
+func random_cell():
+	return Vector3(randi()%grid_size, 0, randi()%grid_size)
+
+
+func occupeAdj(x, z):
+	for i in range(-1, 2):
+		for j in range(-1, 2):
+			if x+i >= 0 and x+i < grid_size and z+j >= 0 and z+j < grid_size:
+				map[x+i][z+j] = 1
+
+
+func cellNotFree(x, z):
+	return map[int(x)][int(z)] == 1
+
+
+func CreateNode(scene: PackedScene, string: String, indice : String = "0"):
+	var new_node = scene.instantiate()
+	add_child(new_node)
+	new_node.position = Vector3(Objet[string+indice].x, 0, Objet[string+indice].z)
+	return new_node
+
+
+func Gestion_Difficulté():
+	if score < Normal:
+		return [true, false, false]
+	elif score < Difficile:
+		return [false, true, false]
+	else:
+		return [false, false, true]
+
+
+func Placer_Objet_sur_map(mot : String, indice : String = "0"):
+	var pos : Vector3
+	while true:
+		pos = random_cell()
+		if cellNotFree(pos.x, pos.z):
+			continue
+		occupeAdj(pos.x, pos.z)
+		Objet[mot+indice] = pos*cell_size
+		break
+
+
+func save_level():
+	var level = ""
+
+	level += str(graine)+"\n"
+	level += str(temps_écoulé)+"\n"
+	
+	level += str(int(Objet["basket0"].x))+" "+str(int(Objet["basket0"].z))+"\n"
+	level += str(int(Objet["apple_tree0"].x))+" "+str(int(Objet["apple_tree0"].z))+"\n"
+	if Difficulté_actuel[0]:
+		level += "1 "
+	else:
+		level += "0 "
+	level += str(int(Objet["visual0"].x))+" "+str(int(Objet["visual0"].z))+"\n"
+
+	level += str(max_tree)+"\n"
+	for j in range(max_tree):
+		level += str(int(Objet["tree"+str(j)].x))+" "+str(int(Objet["tree"+str(j)].z))+"\n"
+	
+	level += str(len(position_joueur))+"\n"
+	for vecteur in position_joueur:
+		level += str(snappedf(vecteur.x, 0.01))+" "+str(snappedf(vecteur.z, 0.01))+"\n"
+
+	level += str(snappedf(distance,0.01))+"\n"
+	level += str(score)+"\n"
+	return level
+
+func continuer_fin_apres_tuto() -> void:
+	if not pending_end_results:
+		return
+
+	pending_end_results = false
+
+	validate_button.visible = false
+	player_left.visible = false
+	player_forward.visible = false
+	player_right.visible = false
+	player_node_3d.visible = false
+	next_level.visible = true
+	
+
+	if niveau == niveau_max:
+		next_level.text = "Voici votre score : " + str(score) + "\nAppuyez sur le bouton pour quitter"
+
+	if timeout:
+		message_alerte.visible = true
+
+	max_timer.stop()
+	temps_restant.visible = false
+	
+	position_Finale = player_cell()
+
+	distance = sqrt((position_Finale.x - Objet["basket0"].x) ** 2 + (position_Finale.z - Objet["basket0"].z) ** 2)
+	distanceAParcourir = sqrt((Objet["apple_tree0"].x - Objet["basket0"].x) ** 2 + (Objet["apple_tree0"].z - Objet["basket0"].z) ** 2)
+
+	if distance <= distanceAParcourir * sin(seuil1):
+		message_label.text = "Vous avez 3 étoiles"
+		score += 1
+	elif distance <= distanceAParcourir * sin(seuil2):
+		message_label.text = "Vous avez 2 étoiles"
+	else:
+		message_label.text = "Vous avez 1 étoile"
+		score = max(score - 1, 0)
+
+	message_label.visible = true
+	
+	list_to_save.append(save_level())
+	write_local_reports(false)
+	sync_reports_now()
+
+	if niveau == niveau_max:
+		Transition.go_to_scene("main_menu")
+
+func toDo():
+	if phase == 0:
+		return "Cherchez le panier"
+	elif phase == 1:
+		return "Cherchez l'arbre"
+	elif phase == 2:
+		return "Cherchez le pommier"
+	elif phase == 3:
+		return "Déposez le panier"
+	return ""
+
+func animation_end():
+	voir_recap.visible = true
+	next_level.visible = true
+	message_label.visible = true
+
+func _on_timer_timeout() -> void:
+	timeout = true
+
+
+func _on_sampling_timeout() -> void:
+	var nouvelle_position = player_cell()
+	var DistanceAComparer = nouvelle_position-position_joueur[-1]
+	if sqrt(DistanceAComparer.x**2+DistanceAComparer.z**2) > 0.1:
+		position_joueur.append(player_cell())
+	temps_écoulé += 0.5
+
+
+func _on_break_button_pressed() -> void:
+	if not get_tree().paused:
+		BreakButton.visible = false
+		BreakMenu.open()
+	
+	
+#fonction pour le niveau interrompu
+func save_interrupted_level() -> String:
+	var level = ""
+	level += str(graine)+"\n"
+	level += str(temps_écoulé)+"\n"
+	
+	level += str(int(Objet["basket0"].x))+" "+str(int(Objet["basket0"].z))+"\n"
+	level += str(int(Objet["apple_tree0"].x))+" "+str(int(Objet["apple_tree0"].z))+"\n"
+	if Difficulté_actuel[0]:
+		level += "1 "
+	else:
+		level += "0 "
+	level += str(int(Objet["visual0"].x))+" "+str(int(Objet["visual0"].z))+"\n"
+
+	level += str(max_tree)+"\n"
+	for j in range(max_tree):
+		level += str(int(Objet["tree"+str(j)].x))+" "+str(int(Objet["tree"+str(j)].z))+"\n"
+	
+	level += str(len(position_joueur))+"\n"
+	for vecteur in position_joueur:
+		level += str(snappedf(vecteur.x, 0.01))+" "+str(snappedf(vecteur.z, 0.01))+"\n"
+
+	return level
+	
+#fonction pour mettre les rapports en attente d’envoi	
+func queue_reports_for_sync() -> void:
+	SyncManager.add_action({
+		"type": "file",
+		"path": "user://rapport_complet.dat",
+		"url": GameManager.BASE_URL + "full-report/",
+		"session_id": session_id
+	})
+
+	SyncManager.add_action({
+		"type": "create_seed",
+		"seed_value": str(graine),
+		"session_id": session_id,
+		"report_path": "user://doctor_report.dat",
+		"report_url": GameManager.BASE_URL + "doctor-report/"
+	})
+
+
+#fonction pour écrire les rapports localement
+func write_local_reports(interrompue: bool = false) -> void:
+	var contenu = str(len(list_to_save))+"\n"+"".join(list_to_save)
+
+	if interrompue:
+		contenu += save_interrupted_level()
+
+	var file = FileAccess.open("user://rapport_complet.dat", FileAccess.WRITE)
+	if file:
+		file.store_string(contenu)
+		file.close()
+
+	var file2 = FileAccess.open("user://doctor_report.dat", FileAccess.WRITE)
+	if file2:
+		var doctor_report_content = ""
+		doctor_report_content += "Score: " + str(score) + "\n"
+		doctor_report_content += "Niveau atteint: " + str(niveau) + "\n"
+		doctor_report_content += "Statut: " + ("interrompue" if interrompue else "terminee") + "\n"
+		file2.store_string(doctor_report_content)
+		file2.close()
+			
+			
+# si le joueur ferme la fenêtre en plein jeu
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		write_local_reports(true)
+		queue_reports_for_sync()
+
+		GestionFichier.save_data()
+		get_tree().quit()
+
+
+# fonction unique d’envoi qui met à jour à la fin de chaque niveau, elle est appelée à la fin de chaque niveau et on tente d'envoyer dans la DB
+func sync_reports_now() -> void:
+	GameManager.send_full_report(session_id)
+	
+	GameManager.send_doctor_report(session_id, str(graine))
