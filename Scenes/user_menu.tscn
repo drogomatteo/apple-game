@@ -5,15 +5,13 @@
 [ext_resource type="Texture2D" uid="uid://cncukdfpa4t3e" path="res://Assets/UI-UX/Images/icons/key.png" id="3_qkyn1"]
 [ext_resource type="Theme" uid="uid://yk6efy6kitav" path="res://Style_bouton/button_theme.tres" id="3_sioj2"]
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="4_klneb"]
+[ext_resource type="Texture2D" uid="uid://6njqh54442c" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_brun.png" id="4_qkyn1"]
 [ext_resource type="Texture2D" uid="uid://c71rrne3upjp8" path="res://Assets/UI-UX/Images/icons/calendar.png" id="4_ywo72"]
 [ext_resource type="Texture2D" uid="uid://blgvorb3i7drs" path="res://Assets/UI-UX/Images/icons/MedecinBlanc.png" id="5_a328f"]
-[ext_resource type="Texture2D" uid="uid://cepaqr2ycd5l0" path="res://Assets/UI-UX/Images/icons/adduser.png" id="6_63wj3"]
 [ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="6_wwld1"]
 [ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="7_5owdv"]
-[ext_resource type="Texture2D" uid="uid://dfocc5csoxbbh" path="res://Assets/UI-UX/Images/icons/CadnasBlanc.png" id="8_t0q12"]
 [ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="8_wwld1"]
 [ext_resource type="Texture2D" uid="uid://c8fmefymdrm78" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_grand.png" id="9_4ve82"]
-[ext_resource type="Texture2D" uid="uid://ctjl301ecdrtp" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-9_My_pressed_buttons.png" id="10_e2dhf"]
 [ext_resource type="Texture2D" uid="uid://g5dtuipdk4n" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-2_My_pressed_buttons.png" id="12_a328f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ywo72"]
@@ -21,7 +19,7 @@ shader = ExtResource("4_klneb")
 shader_parameter/blur_amount = 2.50000011875
 shader_parameter/mix_color = Color(0, 0, 0, 0)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a328f"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ywo72"]
 
 [node name="UserMenu" type="Control" unique_id=1594275488]
 layout_mode = 3
@@ -50,13 +48,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 150
-theme_override_constants/margin_top = 30
+theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 150
-theme_override_constants/margin_bottom = 30
+theme_override_constants/margin_bottom = 20
 
 [node name="fond" type="Panel" parent="MarginContainer" unique_id=1256783435]
 layout_mode = 2
+mouse_filter = 2
 theme_type_variation = &"PanelBasic"
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/fond" unique_id=293096395]
@@ -67,9 +67,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 57
+theme_override_constants/margin_top = 14
 theme_override_constants/margin_right = 60
-theme_override_constants/margin_bottom = 40
+theme_override_constants/margin_bottom = 23
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/fond/MarginContainer" unique_id=1583284448]
 custom_minimum_size = Vector2(200, 0)
@@ -77,11 +77,35 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
+[node name="Utilisateur" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2130911624]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+size_flags_horizontal = 6
+texture = ExtResource("4_qkyn1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Utilisateur" unique_id=2129564658]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"labelGras"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 42
+text = "Utilisateur"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="jaiuncompte" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=181783704]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.27450982, 0.12941177, 0.08627451, 1)
 theme_override_font_sizes/font_size = 25
-text = "J'ai déjà une clé patient:"
+text = "Entrez vos informations:"
 
 [node name="CleBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=1725412278]
 layout_mode = 2
@@ -100,7 +124,16 @@ custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 25
-placeholder_text = "Entrez votre clé"
+placeholder_text = "Identifiant"
+
+[node name="GenerateTokenButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox" unique_id=1065400306]
+z_index = 1
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme = ExtResource("3_sioj2")
+theme_type_variation = &"BouttonTertiaire"
+theme_override_font_sizes/font_size = 32
+text = "Aléatoire"
 
 [node name="BirthYearBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2107690068]
 layout_mode = 2
@@ -119,7 +152,7 @@ custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 25
-placeholder_text = "Entrez votre année de naissance"
+placeholder_text = "Année de naissance"
 
 [node name="MedecinBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=874009146]
 layout_mode = 2
@@ -138,121 +171,63 @@ custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 25
-placeholder_text = "Entrez la clé médecin (facultatif)"
+placeholder_text = "Identifiant du médecin (facultatif)"
 
-[node name="GenerateTokenLabel" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=7102908]
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=234164767]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.27450982, 0.12941177, 0.08627451, 1)
-theme_override_font_sizes/font_size = 25
-text = "Je n'ai pas encore de clé patient:"
+theme_override_constants/separation = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ywo72")
 
-[node name="GenererBox" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=340396748]
+[node name="CreerOuCo" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=949653803]
 layout_mode = 2
 theme_override_constants/separation = 40
 
-[node name="IconGenerate" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox" unique_id=750943496]
-modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
-custom_minimum_size = Vector2(40, 50)
-layout_mode = 2
-texture = ExtResource("6_63wj3")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="GenerateTokenButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox" unique_id=1065400306]
+[node name="GuestButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CreerOuCo" unique_id=1365382072]
 z_index = 1
-custom_minimum_size = Vector2(400, 60)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_sioj2")
 theme_type_variation = &"BouttonTertiaire"
-text = "Générer une nouvelle clé patient"
+text = "Créer un compte"
 
-[node name="GuestMode" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=949653803]
-layout_mode = 2
-theme_override_constants/separation = 40
-
-[node name="IconInvite" type="TextureRect" parent="MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode" unique_id=868218766]
-modulate = Color(0.27450982, 0.12941177, 0.08627451, 1)
-custom_minimum_size = Vector2(40, 50)
-layout_mode = 2
-texture = ExtResource("8_t0q12")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="GuestButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode" unique_id=1365382072]
+[node name="SaveButton" type="Button" parent="MarginContainer/fond/MarginContainer/VBoxContainer/CreerOuCo" unique_id=1303862217]
 z_index = 1
-custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_sioj2")
 theme_type_variation = &"BouttonTertiaire"
-text = "Mode Invité"
-
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=1489846407]
-layout_mode = 2
+text = "Me connecter"
 
 [node name="Button" type="HBoxContainer" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=678183834]
 layout_mode = 2
 
-[node name="VSeparator2" type="VSeparator" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button" unique_id=1119108144]
-custom_minimum_size = Vector2(40, 50)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_a328f")
-
-[node name="SaveButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button" unique_id=807662277]
+[node name="LogoutButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer" unique_id=2050583325]
 z_index = 1
-custom_minimum_size = Vector2(341.265, 88.625)
+custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
-theme = ExtResource("3_sioj2")
-texture_normal = ExtResource("9_4ve82")
-texture_pressed = ExtResource("10_e2dhf")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button/SaveButton" unique_id=1516457861]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -9.0
-offset_top = -10.0
-offset_right = 31.0
-offset_bottom = 10.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_type_variation = &"labelGras"
-theme_override_font_sizes/font_size = 33
-text = "VALIDER"
-
-[node name="VSeparator" type="VSeparator" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button" unique_id=1675492088]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/separator = SubResource("StyleBoxEmpty_a328f")
-
-[node name="LogoutButton" type="TextureButton" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button" unique_id=2050583325]
-z_index = 1
-custom_minimum_size = Vector2(341.265, 88.625)
-layout_mode = 2
+size_flags_horizontal = 4
 theme = ExtResource("3_sioj2")
 texture_normal = ExtResource("9_4ve82")
 texture_pressed = ExtResource("12_a328f")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/Button/LogoutButton" unique_id=394335066]
+[node name="Label" type="Label" parent="MarginContainer/fond/MarginContainer/VBoxContainer/LogoutButton" unique_id=394335066]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 6.0
-offset_right = 6.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = -20.5
+offset_right = 114.0
+offset_bottom = 20.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"labelGras"
-theme_override_font_sizes/font_size = 33
+theme_override_font_sizes/font_size = 28
 text = "DECONNEXION"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -304,11 +279,11 @@ expand_mode = 1
 stretch_mode = 4
 
 [connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput" to="." method="_on_token_input_text_changed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
 [connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox/BirthYearInput" to="." method="_on_birth_year_input_text_changed"]
 [connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/MedecinBox/DoctorKeyInput" to="." method="_on_doctor_token_input_text_changed"]
-[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GenererBox/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
-[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/GuestMode/GuestButton" to="." method="_on_guest_button_pressed"]
-[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/Button/SaveButton" to="." method="_on_save_button_pressed"]
-[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/Button/LogoutButton" to="." method="_on_logout_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CreerOuCo/GuestButton" to="." method="_on_guest_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CreerOuCo/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/LogoutButton" to="." method="_on_logout_button_pressed"]
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_http_request_request_completed"]
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

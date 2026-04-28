@@ -1,14 +1,14 @@
 [gd_resource type="Theme" format=3 uid="uid://cvcc2hrac8ktk"]
 
 [ext_resource type="StyleBox" uid="uid://bc0eef8h2x48a" path="res://Assets/UI-UX/theme/StyleBoxButton2.tres" id="1_r8t2j"]
-[ext_resource type="FontFile" uid="uid://ddqmf6srjxjyh" path="res://Assets/UI-UX/Images/Font/Fredoka_SemiCondensed-SemiBold.ttf" id="2_4qav8"]
+[ext_resource type="FontFile" uid="uid://dd8eexcadnoj1" path="res://Assets/UI-UX/Images/Font/Fredoka_SemiCondensed-SemiBold.ttf" id="2_4qav8"]
 [ext_resource type="StyleBox" uid="uid://cose4ipacwvk7" path="res://Assets/UI-UX/theme/StyleBoxButton2Pressed.tres" id="2_poq07"]
 [ext_resource type="StyleBox" uid="uid://dlq3eda3hvvks" path="res://Assets/UI-UX/theme/StyleBoxButtons1.tres" id="3_3gm72"]
 [ext_resource type="StyleBox" uid="uid://bo2ngq41j103v" path="res://Assets/UI-UX/theme/StyleBoxButton1Pressed.tres" id="4_4qav8"]
 [ext_resource type="StyleBox" uid="uid://bxbwp0lygyqa2" path="res://Assets/UI-UX/theme/StyleBoxButtonTertiaire.tres" id="4_ok6xb"]
 [ext_resource type="StyleBox" uid="uid://ustj3iyrhrhu" path="res://Assets/UI-UX/theme/StyleBoxLineEdit.tres" id="4_qf32j"]
 [ext_resource type="StyleBox" uid="uid://c7v7tcvq0xk1r" path="res://Assets/UI-UX/theme/StyleBoxButtonTertiairePressed.tres" id="5_c5vwv"]
-[ext_resource type="FontFile" uid="uid://sjs3a4iwksdm" path="res://Assets/UI-UX/Images/Font/Fredoka-Regular.ttf" id="5_poq07"]
+[ext_resource type="FontFile" uid="uid://cerbarmw7oyi5" path="res://Assets/UI-UX/Images/Font/Fredoka-Regular.ttf" id="5_poq07"]
 [ext_resource type="Texture2D" uid="uid://cg6xhyklt5q5j" path="res://Assets/UI-UX/Images/Buttons Texture/My_Panel.png" id="9_ok6xb"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_c5vwv"]
