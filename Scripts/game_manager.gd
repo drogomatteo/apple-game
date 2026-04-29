@@ -11,6 +11,8 @@ const AUTH_REFRESH_PATH := "auth/refresh/"
 const ACCESS_TOKEN_DEFAULT_LIFETIME_SECONDS := 900
 const ACCESS_TOKEN_REFRESH_LEEWAY_SECONDS := 60
 const REQUEST_TIMEOUT_SECONDS := 5.0
+const APP_VERSION_CODE := 1
+const LEVEL_GENERATION_VERSION := "levels-v1"
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 
 # -------- STATE --------
@@ -57,6 +59,14 @@ func get_multipart_post_headers(boundary: String) -> PackedStringArray:
 	var headers = get_api_headers()
 	headers.insert(0, "Content-Type: multipart/form-data; boundary=" + boundary)
 	return headers
+
+func get_client_metadata() -> Dictionary:
+	return {
+		"app_version": str(ProjectSettings.get_setting("application/config/version", "0.1.0")),
+		"app_version_code": APP_VERSION_CODE,
+		"level_generation_version": LEVEL_GENERATION_VERSION,
+		"client_platform": OS.get_name()
+	}
 
 # -------- QUEUE HELPERS --------
 func _queue_file_upload(filepath, url, session_id := "", extra_fields := {}) -> void:
@@ -308,7 +318,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 	)
 
 func send_full_report(session_id := ""):
-	send_file("user://rapport_complet.dat", BASE_URL + "full-report/", session_id)
+	send_file("user://rapport_complet.dat", BASE_URL + "full-report/", session_id, get_client_metadata())
 
 func send_doctor_report(session_id := "", seed_value := ""):
 	_log("Queue create_seed action")
@@ -317,7 +327,8 @@ func send_doctor_report(session_id := "", seed_value := ""):
 		"seed_value": seed_value,
 		"session_id": session_id,
 		"report_path": "user://doctor_report.dat",
-		"report_url": BASE_URL + "doctor-report/"
+		"report_url": BASE_URL + "doctor-report/",
+		"extra_fields": get_client_metadata()
 	})
 	if not SyncManager.is_running:
 		SyncManager.force_sync()

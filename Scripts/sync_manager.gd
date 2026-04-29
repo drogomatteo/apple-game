@@ -198,6 +198,7 @@ func _migrate_legacy_doctor_report_action(action: Dictionary) -> bool:
 		"session_id": str(action.get("session_id", "")),
 		"report_path": str(action.get("path", "user://doctor_report.dat")),
 		"report_url": url,
+		"extra_fields": extra_fields,
 		"retries": int(action.get("retries", 0))
 	})
 	_save_queue()
@@ -747,15 +748,19 @@ func _on_request_completed(result, code, _headers, body):
 		var response = JSON.parse_string(body_text)
 		if typeof(response) == TYPE_DICTIONARY and response.has("id"):
 			var seed_id = int(response["id"])
+			var extra_fields = action.get("extra_fields", {})
+			if typeof(extra_fields) != TYPE_DICTIONARY:
+				extra_fields = {}
+			else:
+				extra_fields = extra_fields.duplicate(true)
+			extra_fields["seed"] = seed_id
 			queue.insert(0, {
 				"type": "file",
 				"path": str(action.get("report_path", "user://doctor_report.dat")),
 				"url": str(action.get("report_url", BASE_URL + "doctor-report/")),
 				"session_id": str(action.get("session_id", "")),
 				"retries": 0,
-				"extra_fields": {
-					"seed": seed_id
-				}
+				"extra_fields": extra_fields
 			})
 			_save_queue()
 		else:

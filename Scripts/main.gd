@@ -510,7 +510,8 @@ func queue_reports_for_sync() -> void:
 		"type": "file",
 		"path": "user://rapport_complet.dat",
 		"url": GameManager.BASE_URL + "full-report/",
-		"session_id": session_id
+		"session_id": session_id,
+		"extra_fields": GameManager.get_client_metadata()
 	})
 
 	SyncManager.add_action({
@@ -518,7 +519,8 @@ func queue_reports_for_sync() -> void:
 		"seed_value": str(graine),
 		"session_id": session_id,
 		"report_path": "user://doctor_report.dat",
-		"report_url": GameManager.BASE_URL + "doctor-report/"
+		"report_url": GameManager.BASE_URL + "doctor-report/",
+		"extra_fields": GameManager.get_client_metadata()
 	})
 
 
