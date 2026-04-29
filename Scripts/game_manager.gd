@@ -11,7 +11,6 @@ const AUTH_REFRESH_PATH := "auth/refresh/"
 const ACCESS_TOKEN_DEFAULT_LIFETIME_SECONDS := 900
 const ACCESS_TOKEN_REFRESH_LEEWAY_SECONDS := 60
 const REQUEST_TIMEOUT_SECONDS := 5.0
-const APP_VERSION_CODE := 1
 const LEVEL_GENERATION_VERSION := "levels-v1"
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 
@@ -63,7 +62,7 @@ func get_multipart_post_headers(boundary: String) -> PackedStringArray:
 func get_client_metadata() -> Dictionary:
 	return {
 		"app_version": str(ProjectSettings.get_setting("application/config/version", "0.1.0")),
-		"app_version_code": APP_VERSION_CODE,
+		"app_version_code": int(ProjectSettings.get_setting("application/config/version_code", 1)),
 		"level_generation_version": LEVEL_GENERATION_VERSION,
 		"client_platform": OS.get_name()
 	}

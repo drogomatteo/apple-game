@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="AppleGame"
-config/version="0.1.0"
+config/version="1.0.0"
+config/version_code=1
 run/main_scene="uid://ch7v1mqkxobr1"
 config/features=PackedStringArray("4.6", "Mobile")
 
