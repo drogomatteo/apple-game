@@ -49,6 +49,7 @@ theme_override_constants/margin_bottom = 40
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=921903911]
 layout_mode = 2
+size_flags_horizontal = 8
 
 [node name="Control" type="Control" parent="CanvasLayer/MarginContainer/HBoxContainer" unique_id=571888486]
 custom_minimum_size = Vector2(200, 100)
@@ -75,7 +76,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Control3" type="Control" parent="CanvasLayer/MarginContainer/HBoxContainer" unique_id=2133924880]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [node name="Right" type="TouchScreenButton" parent="CanvasLayer/MarginContainer/HBoxContainer/Control3" unique_id=919508615]
@@ -100,7 +101,7 @@ stretch_mode = 5
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=1454826637]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
 
 [node name="Control2" type="Control" parent="CanvasLayer/MarginContainer/HBoxContainer2" unique_id=269790900]
 custom_minimum_size = Vector2(200, 0)
