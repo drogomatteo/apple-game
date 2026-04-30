@@ -95,3 +95,11 @@ editor_layout.cfg
 *.bak
 *.backup
 *.old
+
+
+# Android signing keys
+*.keystore
+*.jks
+*.p12
+applegame_keystore
+keys/
