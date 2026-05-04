@@ -12,9 +12,9 @@ config_version=5
 
 config/name="AppleGame"
 config/version="1.0.0"
-config/version_code=2
 run/main_scene="uid://ch7v1mqkxobr1"
 config/features=PackedStringArray("4.6", "Mobile")
+config/version_code=2
 
 [autoload]
 
