@@ -25,6 +25,7 @@ height = 1.8
 [node name="Player" type="CharacterBody3D" unique_id=506067122]
 collision_mask = 6
 script = ExtResource("1_v0iea")
+bob_amp = 0.016
 bruit_pas = SubResource("AudioStreamRandomizer_x3wgy")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1677382866]
@@ -32,6 +33,7 @@ shape = SubResource("CapsuleShape3D_v0iea")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=861068424]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36437988, 0)
+fov = 55.0
 far = 100.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=222044724]
@@ -128,12 +130,11 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Node3D" type="Node3D" parent="." unique_id=20595595]
-visible = false
 script = ExtResource("9_tx1dd")
 max_rotation = 2.0
 
 [node name="Basket" parent="Node3D" unique_id=1088006378 instance=ExtResource("2_cvnsp")]
-transform = Transform3D(0.07268713, -0.0018370437, -0.34236407, 0.10231077, 0.33411857, 0.019928744, 0.32672456, -0.10421742, 0.06992594, 0.5146241, -0.19758195, -0.43680832)
+transform = Transform3D(0.070439026, -0.024388833, -0.18558967, 0.03688913, 0.196215, -0.011784173, 0.1835144, -0.030080875, 0.073604375, 0.2899385, 0.05319619, -0.41614127)
 collision_layer = 0
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=686640594]

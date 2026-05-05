@@ -2,9 +2,9 @@ extends CharacterBody3D
 
 # Déplacement du joueur
 const SPEED := 2.0
-const ACCELERATION := 8.0
-const DECELERATION := 10.0
-const SENSITIVITY := PI / 2.0
+const ACCELERATION := 4.0
+const DECELERATION := 5.0
+const SENSITIVITY := PI / 3.0
 const GRAVITY := 9.8
 
 # Tutoriel
@@ -81,13 +81,13 @@ func _physics_process(delta: float) -> void:
 
 	# Déplacement
 	if temp_vel < SPEED and avance:
-		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * ACCELERATION * delta
+		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * ACCELERATION * delta * 2
 		velocity.x += horizontal_velocity.x
 		velocity.z += horizontal_velocity.z
 		temp_vel = min(temp_vel + sqrt(horizontal_velocity.dot(horizontal_velocity)), SPEED)
 
 	elif temp_vel > 0.0 and not avance:
-		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * DECELERATION * delta
+		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * DECELERATION * delta * 3
 		velocity.x += horizontal_velocity.x
 		velocity.z += horizontal_velocity.z
 		temp_vel = max(temp_vel - sqrt(horizontal_velocity.dot(horizontal_velocity)), 0.0)
@@ -106,7 +106,7 @@ func _physics_process(delta: float) -> void:
 		rotate_y(direction_rot * temp_sens * delta)
 
 	elif temp_sens > 0.0 and not (tourner_droite or tourner_gauche):
-		temp_sens = max(temp_sens - delta * DECELERATION, 0.0)
+		temp_sens = max(temp_sens - delta * DECELERATION * 1.5, 0.0)
 		rotate_y(direction_rot * temp_sens * delta)
 
 	elif temp_sens == SENSITIVITY and (tourner_droite or tourner_gauche):
