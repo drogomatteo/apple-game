@@ -799,6 +799,10 @@ func _handle_user_token_lookup_blocked(log_message: String) -> void:
 	_log(log_message)
 	is_request_running = false
 	is_user_token_lookup = false
+	if not pending_login_data.is_empty():
+		_log("User lookup unavailable, fallback to offline login")
+		_offline_login(pending_login_data)
+		return
 	pending_login_data.clear()
 	_set_general_error("Impossible de vérifier l'utilisateur")
 	_sync_guest_creation_controls()
@@ -931,7 +935,8 @@ func _send_login_request(data: Dictionary) -> void:
 	var has_token = await GameManager.ensure_valid_access_token()
 	if not has_token:
 		if bool(data.get("guest_created", false)):
-			_handle_guest_creation_failed("API auth unavailable for guest creation")
+			_log("API auth unavailable for guest creation, fallback to offline login")
+			_offline_login(data)
 		else:
 			_log("API auth unavailable for login, fallback to offline login")
 			_offline_login(data)
@@ -944,7 +949,8 @@ func _send_login_request(data: Dictionary) -> void:
 	)
 	if err != OK:
 		if bool(data.get("guest_created", false)):
-			_handle_guest_creation_failed("Immediate guest creation request error")
+			_log("Immediate guest creation request error, fallback to offline login")
+			_offline_login(data)
 		else:
 			_log("Immediate login request error, fallback to offline login")
 			_offline_login(data)
@@ -1048,7 +1054,8 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 
 	if result != HTTPRequest.RESULT_SUCCESS:
 		if bool(pending_login_data.get("guest_created", false)):
-			_handle_guest_creation_failed("Guest creation HTTP failure")
+			_log("Guest creation HTTP failure, fallback offline")
+			_offline_login(pending_login_data)
 		else:
 			_log("Login HTTP failure, fallback offline")
 			_offline_login(pending_login_data)

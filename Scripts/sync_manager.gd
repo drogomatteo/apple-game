@@ -134,9 +134,19 @@ func _remove_temp_seed_file(seed_value: String) -> void:
 	if FileAccess.file_exists(temp_file_path):
 		DirAccess.remove_absolute(temp_file_path)
 
+func _remove_snapshot_file(action: Dictionary, path_key := "path", flag_key := "snapshot_file") -> void:
+	if not bool(action.get(flag_key, false)):
+		return
+	var filepath = str(action.get(path_key, ""))
+	if filepath != "" and FileAccess.file_exists(filepath):
+		DirAccess.remove_absolute(filepath)
+
 func _drop_current_action(action: Dictionary) -> void:
 	if action.get("type", "") == "create_seed":
 		_remove_temp_seed_file(str(action.get("seed_value", "")))
+		_remove_snapshot_file(action, "report_path", "report_snapshot_file")
+	elif action.get("type", "") == "file":
+		_remove_snapshot_file(action)
 	queue.pop_front()
 	_save_queue()
 	retry_delay = 0.5
@@ -745,6 +755,7 @@ func _on_request_completed(result, code, _headers, body):
 			GestionFichier.save_data()
 
 	elif action["type"] == "create_seed":
+		_remove_temp_seed_file(str(action.get("seed_value", "")))
 		var response = JSON.parse_string(body_text)
 		if typeof(response) == TYPE_DICTIONARY and response.has("id"):
 			var seed_id = int(response["id"])
@@ -760,10 +771,15 @@ func _on_request_completed(result, code, _headers, body):
 				"url": str(action.get("report_url", BASE_URL + "doctor-report/")),
 				"session_id": str(action.get("session_id", "")),
 				"retries": 0,
-				"extra_fields": extra_fields
+				"extra_fields": extra_fields,
+				"snapshot_file": bool(action.get("report_snapshot_file", false))
 			})
 			_save_queue()
 		else:
 			_log("Seed creation response invalid | body=%s" % body_text)
+			_remove_snapshot_file(action, "report_path", "report_snapshot_file")
+
+	elif action["type"] == "file":
+		_remove_snapshot_file(action)
 
 	_process_next()

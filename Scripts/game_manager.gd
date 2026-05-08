@@ -12,6 +12,7 @@ const ACCESS_TOKEN_DEFAULT_LIFETIME_SECONDS := 900
 const ACCESS_TOKEN_REFRESH_LEEWAY_SECONDS := 60
 const REQUEST_TIMEOUT_SECONDS := 5.0
 const LEVEL_GENERATION_VERSION := "levels-v1"
+const QUEUED_UPLOAD_DIR := "user://offline_uploads"
 var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 
 # -------- STATE --------
@@ -68,13 +69,97 @@ func get_client_metadata() -> Dictionary:
 	}
 
 # -------- QUEUE HELPERS --------
-func _queue_file_upload(filepath, url, session_id := "", extra_fields := {}) -> void:
+func _ensure_queued_upload_dir() -> void:
+	if not DirAccess.dir_exists_absolute(QUEUED_UPLOAD_DIR):
+		DirAccess.make_dir_recursive_absolute(QUEUED_UPLOAD_DIR)
+
+func _get_extension_from_path(filepath: String) -> String:
+	var filename = filepath.get_file()
+	var dot_index = filename.rfind(".")
+	if dot_index == -1:
+		return ""
+	return filename.substr(dot_index)
+
+func _snapshot_file_for_queue(filepath: String) -> Dictionary:
+	if filepath == "" or not FileAccess.file_exists(filepath):
+		return {
+			"path": filepath,
+			"is_snapshot": false
+		}
+
+	var source = FileAccess.open(filepath, FileAccess.READ)
+	if source == null:
+		return {
+			"path": filepath,
+			"is_snapshot": false
+		}
+
+	_ensure_queued_upload_dir()
+	var extension = _get_extension_from_path(filepath)
+	var snapshot_path = "%s/%s_%s_%s%s" % [
+		QUEUED_UPLOAD_DIR,
+		filepath.get_file().replace(".", "_"),
+		str(Time.get_unix_time_from_system()),
+		str(randi()),
+		extension
+	]
+
+	var target = FileAccess.open(snapshot_path, FileAccess.WRITE)
+	if target == null:
+		source.close()
+		return {
+			"path": filepath,
+			"is_snapshot": false
+		}
+
+	target.store_buffer(source.get_buffer(source.get_length()))
+	source.close()
+	target.close()
+	return {
+		"path": snapshot_path,
+		"is_snapshot": true
+	}
+
+func _add_file_upload_action(filepath, url, session_id := "", extra_fields := {}, snapshot_file := false) -> void:
 	SyncManager.add_action({
 		"type": "file",
 		"path": filepath,
 		"url": url,
 		"session_id": session_id,
-		"extra_fields": extra_fields
+		"extra_fields": extra_fields,
+		"snapshot_file": snapshot_file
+	})
+
+func _queue_file_upload(filepath, url, session_id := "", extra_fields := {}) -> void:
+	var queued_file = _snapshot_file_for_queue(str(filepath))
+	_add_file_upload_action(
+		queued_file["path"],
+		url,
+		session_id,
+		extra_fields,
+		bool(queued_file["is_snapshot"])
+	)
+
+func _remove_queued_snapshot(snapshot: Dictionary) -> void:
+	if not bool(snapshot.get("is_snapshot", false)):
+		return
+	var filepath = str(snapshot.get("path", ""))
+	if filepath != "" and FileAccess.file_exists(filepath):
+		DirAccess.remove_absolute(filepath)
+
+func queue_full_report(session_id := "") -> void:
+	_queue_file_upload("user://rapport_complet.dat", BASE_URL + "full-report/", session_id, get_client_metadata())
+
+func queue_doctor_report(session_id := "", seed_value := "") -> void:
+	var queued_report = _snapshot_file_for_queue("user://doctor_report.dat")
+	SyncManager.add_action({
+		"type": "create_seed",
+		"seed_value": seed_value,
+		"session_id": session_id,
+		"report_path": queued_report["path"],
+		"report_url": BASE_URL + "doctor-report/",
+		"extra_fields": get_client_metadata(),
+		"report_snapshot_file": bool(queued_report["is_snapshot"])
 	})
 
 # -------- TOKEN HELPERS --------
@@ -251,6 +336,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 
 	var file_bytes = file.get_buffer(file.get_length())
 	file.close()
+	var fallback_file = _snapshot_file_for_queue(str(filepath))
 
 	var boundary = "----GodotBoundary"
 	var body = ""
@@ -280,7 +366,13 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 	var has_token = await ensure_valid_access_token()
 	if not has_token:
 		_log("ERROR: no API access token available, queueing upload")
-		_queue_file_upload(filepath, url, session_id, extra_fields)
+		_add_file_upload_action(
+			fallback_file["path"],
+			url,
+			session_id,
+			extra_fields,
+			bool(fallback_file["is_snapshot"])
+		)
 		return
 
 	var headers = get_multipart_post_headers(boundary)
@@ -292,17 +384,25 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 
 	if err != OK:
 		_log("ERROR: immediate upload request failed, queueing")
-		_queue_file_upload(filepath, url, session_id, extra_fields)
+		_add_file_upload_action(
+			fallback_file["path"],
+			url,
+			session_id,
+			extra_fields,
+			bool(fallback_file["is_snapshot"])
+		)
 		http.queue_free()
 		return
 
 	http.request_completed.connect(func(result, code, _headers, _body):
 		if _is_http_success(result, code):
 			_log("Upload success | code=%s" % str(code))
+			_remove_queued_snapshot(fallback_file)
 		if not _is_http_success(result, code):
 			var body_text: String = _body.get_string_from_utf8().strip_edges()
 			if _is_duplicate_report_response(url, code, body_text):
 				_log("Upload already persisted remotely | url=%s | body=%s" % [url, body_text])
+				_remove_queued_snapshot(fallback_file)
 				http.queue_free()
 				return
 			_log("Upload failed, queueing retry | code=%s | result=%s | url=%s | body=%s" % [
@@ -311,7 +411,13 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 				url,
 				body_text
 			])
-			_queue_file_upload(filepath, url, session_id, extra_fields)
+			_add_file_upload_action(
+				fallback_file["path"],
+				url,
+				session_id,
+				extra_fields,
+				bool(fallback_file["is_snapshot"])
+			)
 
 		http.queue_free()
 	)
@@ -321,13 +427,6 @@ func send_full_report(session_id := ""):
 
 func send_doctor_report(session_id := "", seed_value := ""):
 	_log("Queue create_seed action")
-	SyncManager.add_action({
-		"type": "create_seed",
-		"seed_value": seed_value,
-		"session_id": session_id,
-		"report_path": "user://doctor_report.dat",
-		"report_url": BASE_URL + "doctor-report/",
-		"extra_fields": get_client_metadata()
-	})
+	queue_doctor_report(session_id, seed_value)
 	if not SyncManager.is_running:
 		SyncManager.force_sync()
