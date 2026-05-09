@@ -328,7 +328,7 @@ func finish_tutorial() -> void:
 	_reset_button_emphasis()
 	_allow_all_player_actions()
 
-	Paramètre.definir_tutorial_seen(true)
+	Settings.set_tutorial_seen(true)
 	if world.pending_end_results:
 		world.continuer_fin_apres_tuto()
 

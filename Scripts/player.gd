@@ -66,7 +66,7 @@ func _physics_process(delta: float) -> void:
 	if avance:
 		direction.z -= 1.0
 
-		if not footstep_player.is_playing() and Paramètre.sound:
+		if not footstep_player.is_playing() and Settings.sound:
 			footstep_player.stream = bruit_pas
 			footstep_player.play()
 	else:

@@ -19,8 +19,18 @@ var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
 var auth_http := HTTPRequest.new()
 var access_token_check_in_progress := false
 
-func _log(message: String) -> void:
-	print("%s %s" % [LOG_TAG, message])
+func _warn(message: String) -> void:
+	push_warning("%s %s" % [LOG_TAG, message])
+
+func _error(message: String) -> void:
+	push_error("%s %s" % [LOG_TAG, message])
+
+func _save_player_data() -> void:
+	var root = get_tree().root
+	if root.has_node("GestionFichier"):
+		root.get_node("GestionFichier").save_data()
+	elif root.has_node("FileManager"):
+		root.get_node("FileManager").save_game()
 
 # -------- LIFECYCLE --------
 func _ready() -> void:
@@ -168,7 +178,7 @@ func clear_api_tokens(save := true) -> void:
 	PlayerData.refresh_token = ""
 	PlayerData.access_token_expires_at = 0
 	if save:
-		GestionFichier.save_data()
+		_save_player_data()
 
 func _has_usable_access_token() -> bool:
 	var access_token = str(PlayerData.access_token).strip_edges()
@@ -198,7 +208,7 @@ func _parse_token_response(body_text: String, context: String) -> Dictionary:
 	var parsed = JSON.parse_string(body_text)
 	if typeof(parsed) == TYPE_DICTIONARY:
 		return parsed
-	_log("%s response invalid | body=%s" % [context, body_text.strip_edges()])
+	_warn("%s response invalid | body=%s" % [context, body_text.strip_edges()])
 	return {}
 
 # -------- TOKEN FLOW --------
@@ -242,8 +252,7 @@ func _store_api_tokens(response_data: Dictionary) -> bool:
 	PlayerData.access_token = access_token
 	PlayerData.refresh_token = refresh_token
 	PlayerData.access_token_expires_at = _extract_expiry_timestamp(response_data)
-	GestionFichier.save_data()
-	_log("API tokens updated | expires_at=%s" % str(PlayerData.access_token_expires_at))
+	_save_player_data()
 	return true
 
 func fetch_api_tokens() -> bool:
@@ -254,7 +263,7 @@ func fetch_api_tokens() -> bool:
 		HTTPClient.METHOD_POST
 	)
 	if not response.get("ok", false):
-		_log("Bootstrap token request failed | code=%s result=%s body=%s" % [
+		_warn("Bootstrap token request failed | code=%s result=%s body=%s" % [
 			str(response.get("code", 0)),
 			str(response.get("result", 0)),
 			str(response.get("body_text", "")).strip_edges()
@@ -284,7 +293,7 @@ func refresh_api_tokens() -> bool:
 		})
 	)
 	if not response.get("ok", false):
-		_log("Refresh token request failed | code=%s result=%s body=%s" % [
+		_warn("Refresh token request failed | code=%s result=%s body=%s" % [
 			str(response.get("code", 0)),
 			str(response.get("result", 0)),
 			str(response.get("body_text", "")).strip_edges()
@@ -321,9 +330,7 @@ func ensure_valid_access_token() -> bool:
 
 # -------- FILE UPLOADS --------
 func send_file(filepath, url, session_id := "", extra_fields := {}):
-	_log("send_file -> %s" % filepath)
 	if PlayerData.user_id < 0:
-		_log("No server user_id: queue file upload")
 		_queue_file_upload(filepath, url, session_id, extra_fields)
 		if not SyncManager.is_running:
 			SyncManager.force_sync()
@@ -331,7 +338,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 
 	var file = FileAccess.open(filepath, FileAccess.READ)
 	if file == null:
-		_log("ERROR: file open failed -> %s" % filepath)
+		_error("File open failed -> %s" % filepath)
 		return
 
 	var file_bytes = file.get_buffer(file.get_length())
@@ -365,7 +372,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 
 	var has_token = await ensure_valid_access_token()
 	if not has_token:
-		_log("ERROR: no API access token available, queueing upload")
+		_warn("No API access token available, queueing upload")
 		_add_file_upload_action(
 			fallback_file["path"],
 			url,
@@ -383,7 +390,7 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 	var err = http.request_raw(url, headers, HTTPClient.METHOD_POST, final_body)
 
 	if err != OK:
-		_log("ERROR: immediate upload request failed, queueing")
+		_warn("Immediate upload request failed, queueing")
 		_add_file_upload_action(
 			fallback_file["path"],
 			url,
@@ -396,16 +403,14 @@ func send_file(filepath, url, session_id := "", extra_fields := {}):
 
 	http.request_completed.connect(func(result, code, _headers, _body):
 		if _is_http_success(result, code):
-			_log("Upload success | code=%s" % str(code))
 			_remove_queued_snapshot(fallback_file)
 		if not _is_http_success(result, code):
 			var body_text: String = _body.get_string_from_utf8().strip_edges()
 			if _is_duplicate_report_response(url, code, body_text):
-				_log("Upload already persisted remotely | url=%s | body=%s" % [url, body_text])
 				_remove_queued_snapshot(fallback_file)
 				http.queue_free()
 				return
-			_log("Upload failed, queueing retry | code=%s | result=%s | url=%s | body=%s" % [
+			_warn("Upload failed, queueing retry | code=%s | result=%s | url=%s | body=%s" % [
 				str(code),
 				str(result),
 				url,
@@ -426,7 +431,6 @@ func send_full_report(session_id := ""):
 	send_file("user://rapport_complet.dat", BASE_URL + "full-report/", session_id, get_client_metadata())
 
 func send_doctor_report(session_id := "", seed_value := ""):
-	_log("Queue create_seed action")
 	queue_doctor_report(session_id, seed_value)
 	if not SyncManager.is_running:
 		SyncManager.force_sync()

@@ -104,11 +104,11 @@ func _get_session_owner_id() -> String:
 func _ready() -> void:
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + _get_session_owner_id() + "_" + str(randi())
 	TutorialHighlight.visible = false
-	#Paramètre.definir_tutorial_seen(false)
+	#Settings.set_tutorial_seen(false)
 	Initialisation()
 
 	
-	if not Paramètre.tutorial_seen:
+	if not Settings.tutorial_seen:
 		TutorialController.start_tutorial()
 
 func _physics_process(_delta: float) -> void:
@@ -538,7 +538,7 @@ func _notification(what):
 		write_local_reports(true)
 		queue_reports_for_sync()
 
-		GestionFichier.save_data()
+		FileManager.save_game()
 		get_tree().quit()
 
 
