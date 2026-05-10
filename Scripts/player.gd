@@ -119,10 +119,10 @@ func _physics_process(delta: float) -> void:
 		velocity.y = 0.0
 
 	move_and_slide()
-	_handle_head_bob(delta)
+	handle_head_bob(delta)
 
 
-func _handle_head_bob(delta: float) -> void:
+func handle_head_bob(delta: float) -> void:
 	t_bob += delta * velocity.length() * float(is_on_floor())
 
 	var pos := Vector3.ZERO
@@ -132,8 +132,8 @@ func _handle_head_bob(delta: float) -> void:
 	camera.transform.origin = pos
 
 
-func _start_pulse(button: TouchScreenButton, base_scale: Vector2, tween_name: String) -> void:
-	_stop_pulse_by_name(tween_name)
+func start_pulse(button: TouchScreenButton, base_scale: Vector2, tween_name: String) -> void:
+	stop_pulse_by_name(tween_name)
 
 	button.scale = base_scale
 
@@ -151,7 +151,7 @@ func _start_pulse(button: TouchScreenButton, base_scale: Vector2, tween_name: St
 			forward_tween = tween
 
 
-func _stop_pulse_by_name(tween_name: String) -> void:
+func stop_pulse_by_name(tween_name: String) -> void:
 	match tween_name:
 		"left":
 			if left_tween:
