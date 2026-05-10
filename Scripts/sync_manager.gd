@@ -658,9 +658,7 @@ func move_end(message: String) -> void:
 func user_payload(data: Dictionary) -> Dictionary:
 	var payload := {
 		"token": data.get("token", ""),
-		"birth_year": data.get("birth_year", null),
-		"user_birth_year": data.get("birth_year", null),
-		"patient_birth_year": data.get("birth_year", null)
+		"birth_year": data.get("birth_year", null)
 	}
 
 	if data.has("uuid"):

@@ -3,7 +3,6 @@ extends Node
 const BASE_URL := "https://alzheimer.magellan.fpms.ac.be/api/"
 const DOCTOR_PATH := "doctor/?token="
 const REQUEST_TIMEOUT_SECONDS := 5.0
-const BIRTH_YEAR_KEYS := ["birth_year", "user_birth_year", "patient_birth_year", "patientBirthYear", "userBirthYear"]
 
 
 func request(url: String, headers: PackedStringArray, method: int, body := "") -> Dictionary:
@@ -14,6 +13,7 @@ func request(url: String, headers: PackedStringArray, method: int, body := "") -
 	var error := http.request(url, headers, method, body)
 
 	if error != OK:
+		push_warning("API request failed immediately | url=%s | error=%s" % [url, str(error)])
 		http.queue_free()
 		return {
 			"ok": false,
@@ -31,9 +31,19 @@ func request(url: String, headers: PackedStringArray, method: int, body := "") -
 	var code := int(response[1])
 	var response_body: PackedByteArray = response[3]
 	var body_text := response_body.get_string_from_utf8()
+	var ok := result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		push_warning("API request failed | url=%s | result=%s" % [url, str(result)])
+	elif not ok and code != 404:
+		push_warning("API response not ok | url=%s | code=%s | body=%s" % [
+			url,
+			str(code),
+			body_text.strip_edges()
+		])
 
 	return {
-		"ok": result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300,
+		"ok": ok,
 		"auth": true,
 		"error": OK,
 		"result": result,
@@ -55,6 +65,7 @@ func no_auth() -> Dictionary:
 
 func get_user(token: String) -> Dictionary:
 	if not await GameManager.get_valid_token():
+		push_warning("API auth unavailable for user lookup.")
 		return no_auth()
 
 	return await request(
@@ -66,6 +77,7 @@ func get_user(token: String) -> Dictionary:
 
 func get_doctor(doctor_token: String) -> Dictionary:
 	if not await GameManager.get_valid_token():
+		push_warning("API auth unavailable for doctor lookup.")
 		return no_auth()
 
 	return await request(
@@ -77,6 +89,7 @@ func get_doctor(doctor_token: String) -> Dictionary:
 
 func create_user(data: Dictionary) -> Dictionary:
 	if not await GameManager.get_valid_token():
+		push_warning("API auth unavailable for user creation.")
 		return no_auth()
 
 	return await request(
@@ -90,9 +103,7 @@ func create_user(data: Dictionary) -> Dictionary:
 func user_payload(data: Dictionary) -> Dictionary:
 	var payload := {
 		"token": data.get("token", ""),
-		"birth_year": data.get("birth_year", null),
-		"user_birth_year": data.get("birth_year", null),
-		"patient_birth_year": data.get("birth_year", null)
+		"birth_year": data.get("birth_year", null)
 	}
 
 	if data.has("uuid"):
@@ -158,25 +169,27 @@ func token_available(response: Dictionary, token: String) -> bool:
 
 
 func user_birth_year(data: Dictionary) -> String:
-	for key in BIRTH_YEAR_KEYS:
-		var value = data.get(key, null)
+	var value = data.get("birth_year", null)
 
-		if value == null:
-			continue
+	if value == null:
+		push_warning("User response has no birth_year.")
+		return ""
 
-		if typeof(value) == TYPE_INT:
-			return str(int(value))
+	if typeof(value) == TYPE_INT:
+		return str(int(value))
 
-		if typeof(value) == TYPE_FLOAT:
-			var year := float(value)
-			if is_equal_approx(year, floor(year)):
-				return str(int(year))
-			continue
+	if typeof(value) == TYPE_FLOAT:
+		var year := float(value)
+		if is_equal_approx(year, floor(year)):
+			return str(int(year))
+		push_warning("Invalid float birth_year in user response: %s" % str(value))
+		return ""
 
-		var text := str(value).strip_edges()
-		if text != "" and text != "null" and text.is_valid_int():
-			return str(int(text))
+	var text := str(value).strip_edges()
+	if text != "" and text != "null" and text.is_valid_int():
+		return str(int(text))
 
+	push_warning("Invalid birth_year in user response: %s" % text)
 	return ""
 
 

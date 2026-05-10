@@ -353,13 +353,17 @@ func run_prefill(token: String, request_generation: int) -> void:
 		return
 
 	if int(response.get("result", HTTPRequest.RESULT_SUCCESS)) != HTTPRequest.RESULT_SUCCESS:
+		push_warning("Prefill lookup failed: result=%s" % str(response.get("result", 0)))
 		return
 
 	if not bool(response.get("ok", false)):
+		if int(response.get("code", 0)) != 404:
+			push_warning("Prefill lookup ignored: code=%s" % str(response.get("code", 0)))
 		return
 
 	var user_data := Api.user_from_response(response, token)
 	if user_data.is_empty():
+		push_warning("Prefill response has no matching user for token.")
 		return
 
 	apply_prefill(user_data, token)

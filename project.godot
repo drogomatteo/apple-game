@@ -23,9 +23,9 @@ Transition="*uid://ciiarbj0qn64p"
 ColourBind="*uid://8y5yuplw0kyy"
 FileManager="*uid://dh3mvqhnwvgit"
 GameManager="*uid://crrfanuoph3go"
-Api="*res://Scripts/api.gd"
 PlayerData="*uid://cwrvjrtmo4u62"
 SyncManager="*uid://brt56jflktvu8"
+Api="*res://Scripts/api.gd"
 
 [display]
 
