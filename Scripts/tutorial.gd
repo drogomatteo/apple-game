@@ -1,31 +1,34 @@
 extends Node
 
-enum TutorialStep {
-	NONE,
+enum EtapeTutoriel {
+	AUCUNE,
 	INTRO_1,
 	INTRO_2,
-	WAIT_ROTATE,
-	WAIT_FORWARD,
-	BASKET_INSTRUCTION,
-	WAIT_BASKET,
-	TREE_INSTRUCTION,
-	WAIT_TREE,
-	APPLE_INSTRUCTION,
-	WAIT_APPLE,
-	RETURN_BASKET_INSTRUCTION_1,
-	RETURN_BASKET_INSTRUCTION_2,
-	RETURN_BASKET_INSTRUCTION_3,
-	WAIT_RETURN_BASKET,
-	FINAL_TUTORIAL_MESSAGE,
-	FINISHED
+	ATTENTE_ROTATION,
+	ATTENTE_AVANCER,
+	CONSIGNE_PANIER,
+	ATTENTE_PANIER,
+	CONSIGNE_ARBRE,
+	ATTENTE_ARBRE,
+	CONSIGNE_POMMIER,
+	ATTENTE_POMMIER,
+	CONSIGNE_RETOUR_PANIER_1,
+	CONSIGNE_RETOUR_PANIER_2,
+	CONSIGNE_RETOUR_PANIER_3,
+	ATTENTE_RETOUR_PANIER,
+	MESSAGE_FINAL,
+	TERMINE
 }
 
-var next_default_scale: Vector2 = Vector2.ONE
-var next_tween: Tween
+enum ModeControle {
+	BLOQUE,
+	ROTATION,
+	AVANCER,
+	TOUT
+}
 
-const REQUIRED_ROTATE_TIME: float = 2.0
-const REQUIRED_FORWARD_TIME: float = 2.0
-const HIGHLIGHT_COLOR := Color(1.0, 0.95, 0.55, 1.0)
+const TEMPS_ROTATION_DEMANDE: float = 2.0
+const TEMPS_AVANCER_DEMANDE: float = 2.0
 
 @onready var world = get_parent()
 @onready var player = $"../Player"
@@ -49,8 +52,8 @@ const HIGHLIGHT_COLOR := Color(1.0, 0.95, 0.55, 1.0)
 var messages := [
 	"Bienvenue dans le tutoriel de l'Apple Game.\n\nAppuyez sur le bouton 'SUIVANT' afin de continuer.",
 	"Parfait !\n\nCommençons sans plus tarder.",
-	"Essayons un peu de regarder aux alentours.\n\nLaissez appuyer sur les boutons 'Pivoter'.",
-	"Super !\n\nMaintenant, avançons en appuyant sur le bouton 'Avancer'.",
+	"Essayons un peu de regarder aux alentours.\n\nLaissez appuyer sur les boutons vert et rouge 'Pivoter'.",
+	"Super !\n\nMaintenant, avançons en laissant appuyer sur le bouton jaune 'Avancer'.",
 	"Vous êtes prêt !\n\nSuivez désormais les instructions notées au dessus de votre écran. \n Avancez jusque l'objet recherché",
 	"Continuez comme ça.\n\nCherchons maintenant l'arbre.",
 	"Très bien.\n\nAu tour du pommier.",
@@ -61,345 +64,278 @@ var messages := [
 ]
 
 var tutorial_active: bool = false
-var current_step: TutorialStep = TutorialStep.NONE
-var action_timer: float = 0.0
+var etape_actuelle: EtapeTutoriel = EtapeTutoriel.AUCUNE
+var temps_action: float = 0.0
 var waiting_final_popup: bool = false
+
+var taille_bouton_suivant: Vector2 = Vector2.ONE
+var animation_bouton_suivant: Tween
 
 
 func _ready() -> void:
 	tutorial_ui.hide()
 	boite_message.hide()
-	clear_highlight()
+	highlight.hide()
+
 	if next_button is Control:
-		next_default_scale = next_button.scale
+		taille_bouton_suivant = next_button.scale
 
-	var next_callable := Callable(self, "_on_next_button_pressed")
-	if not next_button.pressed.is_connected(next_callable):
-		next_button.pressed.connect(next_callable)
-
-
-func start_tutorial() -> void:
-	tutorial_active = true
-	current_step = TutorialStep.NONE
-	action_timer = 0.0
-	waiting_final_popup = false
-	ToDo.visible = false
-
-	_disable_all_player_actions()
-	_stop_player_motion()
-	_show_intro_1()
+	var appel_bouton_suivant := Callable(self, "_on_next_button_pressed")
+	if not next_button.pressed.is_connected(appel_bouton_suivant):
+		next_button.pressed.connect(appel_bouton_suivant)
 
 
 func _process(delta: float) -> void:
 	if not tutorial_active:
 		return
 
-	match current_step:
-		TutorialStep.WAIT_ROTATE:
+	match etape_actuelle:
+		EtapeTutoriel.ATTENTE_ROTATION:
 			if player.tourner_gauche or player.tourner_droite:
-				_reset_button_emphasis()
-				action_timer += delta
-				if action_timer >= REQUIRED_ROTATE_TIME:
-					_show_forward_step()
+				player.clear_tutorial_highlights()
+				temps_action += delta
 
-		TutorialStep.WAIT_FORWARD:
+				if temps_action >= TEMPS_ROTATION_DEMANDE:
+					afficher_etape_action(EtapeTutoriel.ATTENTE_AVANCER, ModeControle.AVANCER, 3)
+
+		EtapeTutoriel.ATTENTE_AVANCER:
 			if player.avance:
-				_reset_button_emphasis()
-				action_timer += delta
-				if action_timer >= REQUIRED_FORWARD_TIME:
-					_show_basket_instruction()
+				player.clear_tutorial_highlights()
+				temps_action += delta
 
-		TutorialStep.WAIT_BASKET:
+				if temps_action >= TEMPS_AVANCER_DEMANDE:
+					afficher_consigne(EtapeTutoriel.CONSIGNE_PANIER, 4)
+
+		EtapeTutoriel.ATTENTE_PANIER:
 			if world.phase >= 1:
-				_show_tree_instruction()
+				afficher_consigne(EtapeTutoriel.CONSIGNE_ARBRE, 5)
 
-		TutorialStep.WAIT_TREE:
+		EtapeTutoriel.ATTENTE_ARBRE:
 			if world.phase >= 2:
-				_show_apple_instruction()
+				afficher_consigne(EtapeTutoriel.CONSIGNE_POMMIER, 6)
 
-		TutorialStep.WAIT_APPLE:
+		EtapeTutoriel.ATTENTE_POMMIER:
 			if world.phase >= 3:
-				_show_return_basket_instruction()
+				afficher_consigne(EtapeTutoriel.CONSIGNE_RETOUR_PANIER_1, 7)
 
-		TutorialStep.WAIT_RETURN_BASKET:
+		EtapeTutoriel.ATTENTE_RETOUR_PANIER:
 			pass
 
 
+func start_tutorial() -> void:
+	tutorial_active = true
+	etape_actuelle = EtapeTutoriel.INTRO_1
+	temps_action = 0.0
+	waiting_final_popup = false
+	ToDo.visible = false
+
+	regler_controles(ModeControle.BLOQUE)
+	arreter_joueur()
+	highlight.hide()
+	player.clear_tutorial_highlights()
+
+	afficher_boite_tutoriel(messages[0], true)
+	lancer_animation_next()
+
+
 func _on_next_button_pressed() -> void:
-	_stop_next_pulse()
+	arreter_animation_next()
+
 	if not tutorial_active:
 		return
 
-	match current_step:
-		TutorialStep.INTRO_1:
-			_show_intro_2()
+	match etape_actuelle:
+		EtapeTutoriel.INTRO_1:
+			etape_actuelle = EtapeTutoriel.INTRO_2
+			regler_controles(ModeControle.BLOQUE)
+			arreter_joueur()
+			highlight.hide()
+			player.clear_tutorial_highlights()
+			afficher_boite_tutoriel(messages[1], true)
 
-		TutorialStep.INTRO_2:
-			_show_rotate_step()
+		EtapeTutoriel.INTRO_2:
+			afficher_etape_action(EtapeTutoriel.ATTENTE_ROTATION, ModeControle.ROTATION, 2)
 
-		TutorialStep.BASKET_INSTRUCTION:
-			_start_basket_search()
+		EtapeTutoriel.CONSIGNE_PANIER:
+			lancer_recherche(EtapeTutoriel.ATTENTE_PANIER)
 
-		TutorialStep.TREE_INSTRUCTION:
-			_start_tree_search()
+		EtapeTutoriel.CONSIGNE_ARBRE:
+			lancer_recherche(EtapeTutoriel.ATTENTE_ARBRE)
 
-		TutorialStep.APPLE_INSTRUCTION:
-			_start_apple_search()
+		EtapeTutoriel.CONSIGNE_POMMIER:
+			lancer_recherche(EtapeTutoriel.ATTENTE_POMMIER)
 
-		TutorialStep.RETURN_BASKET_INSTRUCTION_1:
-			current_step = TutorialStep.RETURN_BASKET_INSTRUCTION_2
-			show_tutorial_box(messages[8], true)
+		EtapeTutoriel.CONSIGNE_RETOUR_PANIER_1:
+			afficher_consigne(EtapeTutoriel.CONSIGNE_RETOUR_PANIER_2, 8)
 
-		TutorialStep.RETURN_BASKET_INSTRUCTION_2:
-			current_step = TutorialStep.RETURN_BASKET_INSTRUCTION_3
-			show_tutorial_box(messages[9], true)
+		EtapeTutoriel.CONSIGNE_RETOUR_PANIER_2:
+			afficher_consigne(EtapeTutoriel.CONSIGNE_RETOUR_PANIER_3, 9)
 
-		TutorialStep.RETURN_BASKET_INSTRUCTION_3:
-			_start_return_basket_search()
+		EtapeTutoriel.CONSIGNE_RETOUR_PANIER_3:
+			lancer_recherche(EtapeTutoriel.ATTENTE_RETOUR_PANIER)
 
-		TutorialStep.FINAL_TUTORIAL_MESSAGE:
-			finish_tutorial()
+		EtapeTutoriel.MESSAGE_FINAL:
+				tutorial_active = false
+				etape_actuelle = EtapeTutoriel.TERMINE
+				temps_action = 0.0
+				waiting_final_popup = false
 
+				cacher_boite_tutoriel()
+				highlight.hide()
+				player.clear_tutorial_highlights()
+				regler_controles(ModeControle.TOUT)
 
-func _show_intro_1() -> void:
-	current_step = TutorialStep.INTRO_1
-	_disable_all_player_actions()
-	_stop_player_motion()
-	clear_highlight()
-	_reset_button_emphasis()
-	show_tutorial_box(messages[0], true)
-	_start_next_pulse()
+				Settings.definir_tutorial_seen(true)
 
-
-func _show_intro_2() -> void:
-	current_step = TutorialStep.INTRO_2
-	_disable_all_player_actions()
-	_stop_player_motion()
-	clear_highlight()
-	_reset_button_emphasis()
-	show_tutorial_box(messages[1], true)
+				if world.pending_end_results:
+					world.continuer_fin_apres_tuto()
 
 
-func _show_rotate_step() -> void:
-	current_step = TutorialStep.WAIT_ROTATE
-	action_timer = 0.0
-	_allow_only_rotation()
-	_stop_player_motion()
-	clear_highlight()
-	_highlight_rotation_buttons()
-	show_tutorial_box(messages[2], false)
-	icon_left.visible = true
-	icon_right.visible = true
+func afficher_etape_action(etape: EtapeTutoriel, mode: ModeControle, indice_message: int) -> void:
+	etape_actuelle = etape
+	temps_action = 0.0
+
+	regler_controles(mode)
+	arreter_joueur()
+	highlight.hide()
+	player.clear_tutorial_highlights()
+
+	afficher_boite_tutoriel(messages[indice_message], false)
+
+	if mode == ModeControle.ROTATION:
+		player.highlight_rotation_buttons(true)
+		icon_left.visible = true
+		icon_right.visible = true
+
+	if mode == ModeControle.AVANCER:
+		player.highlight_forward_button(true)
+		icon_forward.visible = true
 
 
-func _show_forward_step() -> void:
-	current_step = TutorialStep.WAIT_FORWARD
-	action_timer = 0.0
-	_allow_only_forward()
-	_stop_player_motion()
-	clear_highlight()
-	_highlight_forward_button()
-	show_tutorial_box(messages[3], false)
-	icon_forward.visible = true
+func afficher_consigne(etape: EtapeTutoriel, indice_message: int) -> void:
+	etape_actuelle = etape
+
+	regler_controles(ModeControle.BLOQUE)
+	arreter_joueur()
+	highlight.hide()
+	player.clear_tutorial_highlights()
+
+	if etape == EtapeTutoriel.CONSIGNE_RETOUR_PANIER_1:
+		world.max_timer.paused = true
+		world.temps_restant.visible = false
+		world.validate_button.visible = false
+
+	afficher_boite_tutoriel(messages[indice_message], true)
 
 
-func _show_basket_instruction() -> void:
-	current_step = TutorialStep.BASKET_INSTRUCTION
-	_disable_all_player_actions()
-	_stop_player_motion()
-	clear_highlight()
-	_reset_button_emphasis()
-	show_tutorial_box(messages[4], true)
+func lancer_recherche(etape: EtapeTutoriel) -> void:
+	etape_actuelle = etape
 
+	cacher_boite_tutoriel()
+	regler_controles(ModeControle.TOUT)
+	highlight.hide()
+	player.clear_tutorial_highlights()
 
-func _start_basket_search() -> void:
-	current_step = TutorialStep.WAIT_BASKET
-	ToDo.visible = true
-	hide_tutorial_box()
-	_allow_all_player_actions()
-	clear_highlight()
-	_reset_button_emphasis()
+	if etape == EtapeTutoriel.ATTENTE_PANIER:
+		ToDo.visible = true
 
+	if etape == EtapeTutoriel.ATTENTE_RETOUR_PANIER:
+		waiting_final_popup = true
 
-func _show_tree_instruction() -> void:
-	current_step = TutorialStep.TREE_INSTRUCTION
-	_disable_all_player_actions()
-	_stop_player_motion()
-	clear_highlight()
-	_reset_button_emphasis()
-	show_tutorial_box(messages[5], true)
-
-
-func _start_tree_search() -> void:
-	current_step = TutorialStep.WAIT_TREE
-	hide_tutorial_box()
-	_allow_all_player_actions()
-	clear_highlight()
-	_reset_button_emphasis()
-
-
-func _show_apple_instruction() -> void:
-	current_step = TutorialStep.APPLE_INSTRUCTION
-	_disable_all_player_actions()
-	_stop_player_motion()
-	clear_highlight()
-	_reset_button_emphasis()
-	show_tutorial_box(messages[6], true)
-
-
-func _start_apple_search() -> void:
-	current_step = TutorialStep.WAIT_APPLE
-	hide_tutorial_box()
-	_allow_all_player_actions()
-	clear_highlight()
-	_reset_button_emphasis()
-
-
-func _show_return_basket_instruction() -> void:
-	current_step = TutorialStep.RETURN_BASKET_INSTRUCTION_1
-	_disable_all_player_actions()
-	_stop_player_motion()
-	clear_highlight()
-	_reset_button_emphasis()
-
-	# Pause du chrono tant que le joueur lit l'explication
-	world.max_timer.paused = true
-	world.temps_restant.visible = false
-	world.validate_button.visible = false
-
-	show_tutorial_box(messages[7], true)
-
-
-func _start_return_basket_search() -> void:
-	current_step = TutorialStep.WAIT_RETURN_BASKET
-	waiting_final_popup = true
-	hide_tutorial_box()
-	_allow_all_player_actions()
-	clear_highlight()
-	_reset_button_emphasis()
-
-	# Reprise du chrono seulement quand le joueur a fini de lire
-	world.validate_button.visible = true
-	world.temps_restant.visible = true
-	world.max_timer.paused = false
+		world.validate_button.visible = true
+		world.temps_restant.visible = true
+		world.max_timer.paused = false
 
 
 func show_final_message_before_score() -> void:
 	if not tutorial_active:
 		return
+
 	if not waiting_final_popup:
 		return
 
-	_disable_all_player_actions()
-	_stop_player_motion()
+	regler_controles(ModeControle.BLOQUE)
+	arreter_joueur()
+	highlight.hide()
+	player.clear_tutorial_highlights()
+
 	waiting_final_popup = false
-	current_step = TutorialStep.FINAL_TUTORIAL_MESSAGE
-	show_tutorial_box(messages[10], true)
+	etape_actuelle = EtapeTutoriel.MESSAGE_FINAL
+
+	afficher_boite_tutoriel(messages[10], true)
 
 
-func show_tutorial_box(text: String, show_next: bool = true) -> void:
+
+func afficher_boite_tutoriel(texte: String, afficher_suivant: bool = true) -> void:
 	tutorial_ui.show()
+	boite_message.show()
+
 	icon_left.visible = false
 	icon_right.visible = false
 	icon_forward.visible = false
-	boite_message.show()
-	message_label.text = text
-	next_button.visible = show_next
+
+	message_label.text = texte
+	next_button.visible = afficher_suivant
 
 
-func hide_tutorial_box() -> void:
-	_stop_next_pulse()
+func cacher_boite_tutoriel() -> void:
+	arreter_animation_next()
 	boite_message.hide()
 	tutorial_ui.hide()
 
 
-func clear_highlight() -> void:
-	highlight.hide()
+func regler_controles(mode: ModeControle) -> void:
+	match mode:
+		ModeControle.BLOQUE:
+			player.controls_locked = true
+			player.allow_forward = false
+			player.allow_left = false
+			player.allow_right = false
+
+		ModeControle.ROTATION:
+			player.controls_locked = false
+			player.allow_forward = false
+			player.allow_left = true
+			player.allow_right = true
+
+		ModeControle.AVANCER:
+			player.controls_locked = false
+			player.allow_forward = true
+			player.allow_left = false
+			player.allow_right = false
+
+		ModeControle.TOUT:
+			player.controls_locked = false
+			player.allow_forward = true
+			player.allow_left = true
+			player.allow_right = true
 
 
-func finish_tutorial() -> void:
-	tutorial_active = false
-	current_step = TutorialStep.FINISHED
-	action_timer = 0.0
-	waiting_final_popup = false
-
-	hide_tutorial_box()
-	clear_highlight()
-	_reset_button_emphasis()
-	_allow_all_player_actions()
-
-	Settings.set_tutorial_seen(true)
-	if world.pending_end_results:
-		world.continuer_fin_apres_tuto()
-
-
-func _disable_all_player_actions() -> void:
-	player.controls_locked = true
-	player.allow_forward = false
-	player.allow_left = false
-	player.allow_right = false
-
-
-func _allow_only_rotation() -> void:
-	player.controls_locked = false
-	player.allow_forward = false
-	player.allow_left = true
-	player.allow_right = true
-
-
-func _allow_only_forward() -> void:
-	player.controls_locked = false
-	player.allow_forward = true
-	player.allow_left = false
-	player.allow_right = false
-
-
-func _allow_all_player_actions() -> void:
-	player.controls_locked = false
-	player.allow_forward = true
-	player.allow_left = true
-	player.allow_right = true
-
-
-func _stop_player_motion() -> void:
+func arreter_joueur() -> void:
 	player.velocity.x = 0.0
 	player.velocity.z = 0.0
 	player.temp_vel = 0.0
 	player.temp_sens = 0.0
 
+#Pour les animations de pop du bouton next
 
-func _highlight_rotation_buttons() -> void:
-	player.clear_tutorial_highlights()
-	player.highlight_rotation_buttons(true)
-
-
-func _highlight_forward_button() -> void:
-	player.clear_tutorial_highlights()
-	player.highlight_forward_button(true)
-
-
-func _reset_button_emphasis() -> void:
-	player.clear_tutorial_highlights()
-
-
-func _start_next_pulse() -> void:
-	_stop_next_pulse()
+func lancer_animation_next() -> void:
+	arreter_animation_next()
 
 	if not next_button is Control:
 		return
 
-	next_button.scale = next_default_scale
+	next_button.scale = taille_bouton_suivant
+	animation_bouton_suivant = create_tween()
+	animation_bouton_suivant.set_loops()
+	animation_bouton_suivant.tween_property(next_button, "scale", taille_bouton_suivant * 1.05, 0.85)
+	animation_bouton_suivant.tween_property(next_button, "scale", taille_bouton_suivant, 0.85)
 
-	next_tween = create_tween()
-	next_tween.set_loops()
-	next_tween.tween_property(next_button, "scale", next_default_scale * 1.05, 0.85)
-	next_tween.tween_property(next_button, "scale", next_default_scale, 0.85)
 
-
-func _stop_next_pulse() -> void:
-	if next_tween:
-		next_tween.kill()
-		next_tween = null
+func arreter_animation_next() -> void:
+	if animation_bouton_suivant:
+		animation_bouton_suivant.kill()
+		animation_bouton_suivant = null
 
 	if next_button is Control:
-		next_button.scale = next_default_scale
+		next_button.scale = taille_bouton_suivant
