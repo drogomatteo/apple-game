@@ -1,7 +1,6 @@
 extends Node
 
 const BASE_URL := "https://alzheimer.magellan.fpms.ac.be/api/"
-const DOCTOR_PATH := "doctor/?token="
 const REQUEST_TIMEOUT_SECONDS := 5.0
 
 
@@ -15,14 +14,7 @@ func request(url: String, headers: PackedStringArray, method: int, body := "") -
 	if error != OK:
 		push_warning("API request failed immediately | url=%s | error=%s" % [url, str(error)])
 		http.queue_free()
-		return {
-			"ok": false,
-			"auth": true,
-			"error": error,
-			"result": HTTPRequest.RESULT_CANT_CONNECT,
-			"code": 0,
-			"body_text": ""
-		}
+		return failed_request(error)
 
 	var response = await http.request_completed
 	http.queue_free()
@@ -52,6 +44,17 @@ func request(url: String, headers: PackedStringArray, method: int, body := "") -
 	}
 
 
+func failed_request(error: int) -> Dictionary:
+	return {
+		"ok": false,
+		"auth": true,
+		"error": error,
+		"result": HTTPRequest.RESULT_CANT_CONNECT,
+		"code": 0,
+		"body_text": ""
+	}
+
+
 func no_auth() -> Dictionary:
 	return {
 		"ok": false,
@@ -63,7 +66,23 @@ func no_auth() -> Dictionary:
 	}
 
 
+func empty_token_response() -> Dictionary:
+	return {
+		"ok": false,
+		"auth": true,
+		"error": OK,
+		"result": HTTPRequest.RESULT_SUCCESS,
+		"code": 0,
+		"body_text": ""
+	}
+
+
 func get_user(token: String) -> Dictionary:
+	token = token.strip_edges()
+
+	if token == "":
+		return empty_token_response()
+
 	if not await GameManager.get_valid_token():
 		push_warning("API auth unavailable for user lookup.")
 		return no_auth()
@@ -76,12 +95,17 @@ func get_user(token: String) -> Dictionary:
 
 
 func get_doctor(doctor_token: String) -> Dictionary:
+	doctor_token = doctor_token.strip_edges()
+
+	if doctor_token == "":
+		return empty_token_response()
+
 	if not await GameManager.get_valid_token():
 		push_warning("API auth unavailable for doctor lookup.")
 		return no_auth()
 
 	return await request(
-		BASE_URL + DOCTOR_PATH + doctor_token,
+		BASE_URL + "doctor/?token=" + doctor_token,
 		GameManager.get_api_headers(),
 		HTTPClient.METHOD_GET
 	)
@@ -110,27 +134,28 @@ func user_payload(data: Dictionary) -> Dictionary:
 		payload["uuid"] = data.get("uuid")
 
 	var doctor_token := str(data.get("doctor_token", "")).strip_edges()
+
 	if doctor_token != "":
 		payload["doctor_token"] = doctor_token
 
 	return payload
 
 
-func parse(body_text: String) -> Variant:
-	return JSON.parse_string(body_text)
+func find_by_token(response: Dictionary, token: String) -> Dictionary:
+	var data: Variant = JSON.parse_string(str(response.get("body_text", "")))
 
-
-func find_user(data: Variant, token: String) -> Dictionary:
 	if typeof(data) == TYPE_DICTIONARY:
 		if str(data.get("token", "")) == token:
 			return data
 
-		if data.has("results") and typeof(data["results"]) == TYPE_ARRAY:
-			for item in data["results"]:
+		var results = data.get("results", [])
+
+		if typeof(results) == TYPE_ARRAY:
+			for item in results:
 				if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token:
 					return item
 
-	if typeof(data) == TYPE_ARRAY:
+	elif typeof(data) == TYPE_ARRAY:
 		for item in data:
 			if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token:
 				return item
@@ -138,11 +163,7 @@ func find_user(data: Variant, token: String) -> Dictionary:
 	return {}
 
 
-func user_from_response(response: Dictionary, token: String) -> Dictionary:
-	return find_user(parse(str(response.get("body_text", ""))), token)
-
-
-func token_found(response: Dictionary, token: String) -> bool:
+func token_exists(response: Dictionary, token: String) -> bool:
 	if int(response.get("code", 0)) == 404:
 		return false
 
@@ -152,10 +173,10 @@ func token_found(response: Dictionary, token: String) -> bool:
 	if str(response.get("body_text", "")).strip_edges() == "":
 		return false
 
-	return not user_from_response(response, token).is_empty()
+	return not find_by_token(response, token).is_empty()
 
 
-func token_available(response: Dictionary, token: String) -> bool:
+func token_is_available(response: Dictionary, token: String) -> bool:
 	if int(response.get("code", 0)) == 404:
 		return true
 
@@ -165,10 +186,9 @@ func token_available(response: Dictionary, token: String) -> bool:
 	if str(response.get("body_text", "")).strip_edges() == "":
 		return true
 
-	return user_from_response(response, token).is_empty()
+	return find_by_token(response, token).is_empty()
 
-
-func user_birth_year(data: Dictionary) -> String:
+func get_birth_year(data: Dictionary) -> String:
 	var value = data.get("birth_year", null)
 
 	if value == null:
@@ -180,56 +200,17 @@ func user_birth_year(data: Dictionary) -> String:
 
 	if typeof(value) == TYPE_FLOAT:
 		var year := float(value)
+
 		if is_equal_approx(year, floor(year)):
 			return str(int(year))
+
 		push_warning("Invalid float birth_year in user response: %s" % str(value))
 		return ""
 
 	var text := str(value).strip_edges()
+
 	if text != "" and text != "null" and text.is_valid_int():
 		return str(int(text))
 
 	push_warning("Invalid birth_year in user response: %s" % text)
 	return ""
-
-
-func user_doctor_token(data: Dictionary) -> String:
-	return str(data.get("doctor_token", "")).strip_edges()
-
-
-func contains_any(text: String, words: Array[String]) -> bool:
-	var lower_text := text.to_lower()
-
-	for word in words:
-		if lower_text.find(word) != -1:
-			return true
-
-	return false
-
-
-func missing_doctor(response: Dictionary, has_doctor_token: bool) -> bool:
-	if not has_doctor_token:
-		return false
-
-	var code := int(response.get("code", 0))
-
-	if code != 400 and code != 404:
-		return false
-
-	var body_text := str(response.get("body_text", ""))
-	var missing_terms: Array[String] = ["not found", "does not exist", "n'existe", "introuvable", "invalid", "invalide"]
-
-	if body_text.to_lower().find("doctor_token") != -1 and contains_any(body_text, missing_terms):
-		return true
-
-	var data = parse(body_text)
-	if typeof(data) == TYPE_DICTIONARY:
-		for key in ["doctor_token", "detail", "message", "error"]:
-			if not data.has(key):
-				continue
-
-			var value_text := str(data[key])
-			if key == "doctor_token" or contains_any(value_text, missing_terms):
-				return true
-
-	return code == 404

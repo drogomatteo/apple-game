@@ -7,7 +7,7 @@
 [ext_resource type="Shader" uid="uid://b10bcf1uedrak" path="res://Assets/Shader/pause.gdshader" id="4_klneb"]
 [ext_resource type="Texture2D" uid="uid://6njqh54442c" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_brun.png" id="4_qkyn1"]
 [ext_resource type="Texture2D" uid="uid://c71rrne3upjp8" path="res://Assets/UI-UX/Images/icons/calendar.png" id="4_ywo72"]
-[ext_resource type="Texture2D" uid="uid://blgvorb3i7drs" path="res://Assets/UI-UX/Images/icons/DoctorTokenBlanc.png" id="5_a328f"]
+[ext_resource type="Texture2D" uid="uid://blgvorb3i7drs" path="res://Assets/UI-UX/Images/icons/MedecinBlanc.png" id="5_a328f"]
 [ext_resource type="Texture2D" uid="uid://k6o1hussf1rl" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="6_wwld1"]
 [ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="7_5owdv"]
 [ext_resource type="Texture2D" uid="uid://18bduef4tmap" path="res://Assets/UI-UX/Images/icons/back.png" id="8_wwld1"]
@@ -276,6 +276,8 @@ texture = ExtResource("8_wwld1")
 expand_mode = 1
 stretch_mode = 4
 
+[connection signal="focus_entered" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput" to="." method="_on_token_input_focus_entered"]
+[connection signal="focus_exited" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput" to="." method="_on_token_input_focus_exited"]
 [connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/TokenInput" to="." method="_on_token_input_text_changed"]
 [connection signal="pressed" from="MarginContainer/fond/MarginContainer/VBoxContainer/CleBox/GenerateTokenButton" to="." method="_on_generate_token_button_pressed"]
 [connection signal="text_changed" from="MarginContainer/fond/MarginContainer/VBoxContainer/BirthYearBox/BirthYearInput" to="." method="_on_birth_year_input_text_changed"]

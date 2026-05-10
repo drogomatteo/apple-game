@@ -4,7 +4,7 @@ extends Control
 @onready var continue_button := $MarginContainer/CenterContainer/MarginContainer/VBoxContainer/HBoxContainer/ContinueButton
 
 var force_show: bool = false
-var first_login_flow: bool = false
+var first_login: bool = false
 var opened_from_menu: bool = false
 var is_refusing: bool = false
 
@@ -68,7 +68,7 @@ func _on_check_box_toggled(pressed: bool) -> void:
 	if is_refusing:
 		return
 
-	if not first_login_flow and not pressed:
+	if not first_login and not pressed:
 		refuse_gdpr()
 
 
@@ -82,7 +82,7 @@ func _on_continue_button_pressed() -> void:
 
 
 func _on_refuse_button_pressed() -> void:
-	if first_login_flow:
+	if first_login:
 		checkbox.button_pressed = false
 		continue_button.disabled = true
 		return
