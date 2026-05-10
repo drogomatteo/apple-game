@@ -31,7 +31,7 @@ func _ready() -> void:
 
 	add_child(http)
 	http.timeout = REQUEST_TIMEOUT_SECONDS
-	http.request_completed.connect(_on_request_completed)
+	http.request_completed.connect(on_request_completed)
 
 	load_queue()
 
@@ -248,7 +248,6 @@ func doctor_checked(action: Dictionary, data: Dictionary, code: int, body_text: 
 
 	if doctor_code != "" and not found:
 		data.erase("doctor_token")
-		data.erase("doctor_id")
 		action["data"] = data
 		save_queue()
 
@@ -259,11 +258,6 @@ func doctor_checked(action: Dictionary, data: Dictionary, code: int, body_text: 
 		push_warning("Doctor token not found. Login will continue without doctor token.")
 		next()
 		return
-
-	var doctor_id := lookup_id(code, body_text, doctor_code)
-
-	if doctor_id >= 0:
-		data["doctor_id"] = doctor_id
 
 	action["data"] = data
 	save_queue()
@@ -533,7 +527,7 @@ func file_body(filepath: String, session_id := "", extra_fields := {}) -> Dictio
 
 
 
-func _on_request_completed(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+func on_request_completed(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	is_running = false
 
 	if queue.is_empty():
@@ -677,10 +671,6 @@ func user_payload(data: Dictionary) -> Dictionary:
 	if doctor_code != "":
 		payload["doctor_token"] = doctor_code
 
-	var doctor_id := int(data.get("doctor_id", -1))
-	if doctor_id >= 0:
-		payload["doctor_id"] = doctor_id
-
 	return payload
 
 
@@ -752,22 +742,6 @@ func token_found(code: int, body_text: String, token: String) -> bool:
 	var data: Variant = JSON.parse_string(body_text)
 
 	return not find_token(data, token).is_empty()
-
-
-func lookup_id(code: int, body_text: String, token: String) -> int:
-	if code == 404 or not success_code(code) or body_text.strip_edges() == "":
-		return -1
-
-	var data: Variant = JSON.parse_string(body_text)
-	var entry := find_token(data, token)
-
-	if entry.has("id"):
-		return int(entry["id"])
-
-	if typeof(data) == TYPE_DICTIONARY and data.has("id") and not data.has("token"):
-		return int(data["id"])
-
-	return -1
 
 
 func is_duplicate(action: Dictionary, code: int, body_text: String) -> bool:

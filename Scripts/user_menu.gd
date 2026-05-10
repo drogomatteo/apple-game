@@ -322,34 +322,11 @@ func _build_user_request_payload(data: Dictionary) -> Dictionary:
 	if doctor_token != "":
 		payload["doctor_token"] = doctor_token
 
-	var doctor_id = int(data.get("doctor_id", -1))
-	if doctor_id >= 0:
-		payload["doctor_id"] = doctor_id
-
 	return payload
 
 func _extract_user_by_token(body_text: String, token_to_find: String) -> Dictionary:
 	var parsed = JSON.parse_string(body_text)
 	return _find_user_by_token_in_parsed_response(parsed, token_to_find)
-
-func _extract_lookup_id(response_code: int, body_text: String, token_to_find: String) -> int:
-	if response_code == 404:
-		return -1
-	if response_code < 200 or response_code >= 300:
-		return -1
-	if body_text.strip_edges() == "":
-		return -1
-
-	var parsed = JSON.parse_string(body_text)
-	var entry = _find_user_by_token_in_parsed_response(parsed, token_to_find)
-
-	if entry.has("id"):
-		return int(entry["id"])
-
-	if typeof(parsed) == TYPE_DICTIONARY and parsed.has("id") and not parsed.has("token"):
-		return int(parsed["id"])
-
-	return -1
 
 func _extract_user_birth_year_from_lookup(user_data: Dictionary) -> String:
 	for key in BIRTH_YEAR_KEYS:
@@ -544,7 +521,6 @@ func _clear_invalid_doctor_token(reason: String) -> void:
 	doctor_token_input.text = ""
 	pending_doctor_token = ""
 	pending_login_data.erase("doctor_token")
-	pending_login_data.erase("doctor_id")
 	if str(PlayerData.doctor_token).strip_edges() != "":
 		PlayerData.doctor_token = ""
 		FileManager.save_game()
@@ -827,10 +803,6 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 			_clear_invalid_doctor_token("lookup no matching token")
 			_reset_doctor_lookup_state()
 			return
-
-		var doctor_id = _extract_lookup_id(response_code, doctor_body_text, doctor_token)
-		if doctor_id >= 0:
-			pending_login_data["doctor_id"] = doctor_id
 
 		_send_login_request(pending_login_data)
 		return
