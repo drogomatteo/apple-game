@@ -104,7 +104,7 @@ func _get_session_owner_id() -> String:
 func _ready() -> void:
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + _get_session_owner_id() + "_" + str(randi())
 	TutorialHighlight.visible = false
-	#Settings.set_tutorial_seen(false)
+	Settings.set_tutorial_seen(false)
 	Initialisation()
 
 	

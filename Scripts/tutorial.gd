@@ -92,7 +92,7 @@ func _process(delta: float) -> void:
 	match etape_actuelle:
 		EtapeTutoriel.ATTENTE_ROTATION:
 			if player.tourner_gauche or player.tourner_droite:
-				player.clear_tutorial_highlights()
+				player.enlever_effets_tutoriel()
 				temps_action += delta
 
 				if temps_action >= TEMPS_ROTATION_DEMANDE:
@@ -100,7 +100,7 @@ func _process(delta: float) -> void:
 
 		EtapeTutoriel.ATTENTE_AVANCER:
 			if player.avance:
-				player.clear_tutorial_highlights()
+				player.enlever_effets_tutoriel()
 				temps_action += delta
 
 				if temps_action >= TEMPS_AVANCER_DEMANDE:
@@ -132,7 +132,7 @@ func start_tutorial() -> void:
 	regler_controles(ModeControle.BLOQUE)
 	arreter_joueur()
 	highlight.hide()
-	player.clear_tutorial_highlights()
+	player.enlever_effets_tutoriel()
 
 	afficher_boite_tutoriel(messages[0], true)
 	lancer_animation_next()
@@ -150,7 +150,7 @@ func _on_next_button_pressed() -> void:
 			regler_controles(ModeControle.BLOQUE)
 			arreter_joueur()
 			highlight.hide()
-			player.clear_tutorial_highlights()
+			player.enlever_effets_tutoriel()
 			afficher_boite_tutoriel(messages[1], true)
 
 		EtapeTutoriel.INTRO_2:
@@ -182,10 +182,10 @@ func _on_next_button_pressed() -> void:
 
 				cacher_boite_tutoriel()
 				highlight.hide()
-				player.clear_tutorial_highlights()
+				player.enlever_effets_tutoriel()
 				regler_controles(ModeControle.TOUT)
 
-				Settings.definir_tutorial_seen(true)
+				Settings.set_tutorial_seen(true)
 
 				if world.pending_end_results:
 					world.continuer_fin_apres_tuto()
@@ -198,17 +198,17 @@ func afficher_etape_action(etape: EtapeTutoriel, mode: ModeControle, indice_mess
 	regler_controles(mode)
 	arreter_joueur()
 	highlight.hide()
-	player.clear_tutorial_highlights()
+	player.enlever_effets_tutoriel()
 
 	afficher_boite_tutoriel(messages[indice_message], false)
 
 	if mode == ModeControle.ROTATION:
-		player.highlight_rotation_buttons(true)
+		player.mettre_en_avant_boutons_rotation(true)
 		icon_left.visible = true
 		icon_right.visible = true
 
 	if mode == ModeControle.AVANCER:
-		player.highlight_forward_button(true)
+		player.mettre_en_avant_bouton_avancer(true)
 		icon_forward.visible = true
 
 
@@ -218,7 +218,7 @@ func afficher_consigne(etape: EtapeTutoriel, indice_message: int) -> void:
 	regler_controles(ModeControle.BLOQUE)
 	arreter_joueur()
 	highlight.hide()
-	player.clear_tutorial_highlights()
+	player.enlever_effets_tutoriel()
 
 	if etape == EtapeTutoriel.CONSIGNE_RETOUR_PANIER_1:
 		world.max_timer.paused = true
@@ -234,7 +234,7 @@ func lancer_recherche(etape: EtapeTutoriel) -> void:
 	cacher_boite_tutoriel()
 	regler_controles(ModeControle.TOUT)
 	highlight.hide()
-	player.clear_tutorial_highlights()
+	player.enlever_effets_tutoriel()
 
 	if etape == EtapeTutoriel.ATTENTE_PANIER:
 		ToDo.visible = true
@@ -257,7 +257,7 @@ func show_final_message_before_score() -> void:
 	regler_controles(ModeControle.BLOQUE)
 	arreter_joueur()
 	highlight.hide()
-	player.clear_tutorial_highlights()
+	player.enlever_effets_tutoriel()
 
 	waiting_final_popup = false
 	etape_actuelle = EtapeTutoriel.MESSAGE_FINAL
