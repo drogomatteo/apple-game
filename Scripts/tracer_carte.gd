@@ -1,6 +1,6 @@
 extends Node3D
 
-# On passe en Vector3. L'axe Y (milieu) est à 0 pour rester au niveau du sol.
+
 var positions_joueur
 
 # Variables d'animation
@@ -14,9 +14,9 @@ var index_objectif_courant: int = 0
 var seuil_distance: float = 0.5
 var animation_terminee: bool = false
 
-# Dictionnaires pour stocker nos objets 3D générés
+# Dictionnaires pour stocker objets 3D
 var mesh_joueur: MeshInstance3D
-var dictionnaire_marqueurs = {} # Pour retrouver quel mesh correspond à quelle position
+var dictionnaire_marqueurs = {}
 var Cercle1 : MeshInstance3D
 var Cercle2 : MeshInstance3D
 
@@ -56,7 +56,7 @@ func _process(delta: float) -> void:
 			Cercle2.queue_free()
 			return
 
-		# 1. Déplacement du joueur en 3D
+		# Déplacement du joueur en 3D
 		if current_path_index < len(positions_joueur) - 1:
 			var debut = positions_joueur[current_path_index]
 			var fin = positions_joueur[current_path_index + 1]
@@ -76,7 +76,6 @@ func _process(delta: float) -> void:
 			else:
 				position_actuelle = debut.lerp(fin, progress_segment)
 				
-			# On applique la position calculée au Mesh du joueur
 			mesh_joueur.position = position_actuelle
 
 
@@ -87,7 +86,6 @@ func creer_marqueur(pos: Vector3, couleur: Color, nom: String):
 	mesh.position = pos
 	mesh.name = nom
 	add_child(mesh)
-	# On stocke le mesh avec sa position comme clé pour le retrouver facilement
 	dictionnaire_marqueurs[pos] = {"mesh": mesh, "couleur_base": couleur}
 
 func creer_sphere(rayon: float, couleur: Color) -> MeshInstance3D:
@@ -107,7 +105,7 @@ func creer_cercle_creux(centre: Vector3, rayon: float, epaisseur: float, couleur
 	var mesh_instance = MeshInstance3D.new()
 	var anneau = TorusMesh.new()
 	
-	# Configuration de l'anneau (Torus)
+	# Configuration de l'anneau
 	anneau.inner_radius = rayon - (epaisseur / 2.0)
 	anneau.outer_radius = rayon + (epaisseur / 2.0)
 	
@@ -123,5 +121,4 @@ func creer_cercle_creux(centre: Vector3, rayon: float, epaisseur: float, couleur
 	mesh_instance.material_override = materiel
 	mesh_instance.position = centre
 	
-	# Godot crée l'anneau couché à plat sur le sol par défaut
 	return mesh_instance
