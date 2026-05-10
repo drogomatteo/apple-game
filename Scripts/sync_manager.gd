@@ -48,7 +48,7 @@ func force_sync() -> void:
 		return
 
 	sync_done = false
-	process_next()
+	next()
 
 
 func save_queue() -> void:
@@ -82,9 +82,9 @@ func load_queue() -> void:
 		queue = []
 
 
-func process_next() -> void:
+func next() -> void:
 	if queue.is_empty():
-		finish_sync()
+		finish()
 		return
 
 	if is_running:
@@ -94,108 +94,108 @@ func process_next() -> void:
 
 	var action: Dictionary = queue[0]
 
-	fix_session_id(action)
+	fix_session(action)
 
-	if migrate_old_doctor_report(action):
+	if migrate_report(action):
 		is_running = false
-		process_next()
+		next()
 		return
 
 	match str(action.get("type", "")):
 		"login":
-			await sync_login(action)
+			await send_login(action)
 
 		"create_seed":
-			await sync_seed(action)
+			await send_seed(action)
 
 		"report":
-			await sync_report(action)
+			await send_report(action)
 
 		"file":
-			await sync_file(action)
+			await send_file(action)
 
 		_:
 			push_error("Unknown action type: %s" % str(action.get("type", "")))
-			drop_action(action)
+			drop(action)
 			is_running = false
-			process_next()
+			next()
 
 
-func finish_sync() -> void:
+func finish() -> void:
 	sync_done = true
 	is_running = false
 
 
-func request_failed() -> void:
+func fail() -> void:
 	is_running = false
 
 	if queue.is_empty():
-		finish_sync()
+		finish()
 		return
 
-	await retry_action(
+	await retry(
 		queue[0],
 		"Immediate request error | type=%s | retries=%s",
 		"Dropping action after max retries | type=%s"
 	)
 
 
-func sync_login(action: Dictionary) :
+func send_login(action: Dictionary) :
 	var data: Dictionary = action.get("data", {})
 
 	if bool(data.get("token_generated_offline", false)):
 		var token := str(data.get("token", "")).strip_edges()
 
 		if token != "":
-			var has_token := await GameManager.ensure_valid_access_token()
+			var has_token := await GameManager.get_valid_token()
 
 			if not has_token:
 				push_warning("Token precheck auth unavailable.")
-				request_failed()
+				fail()
 				return
 
-			start_login_check(BASE_URL + "user/?token=" + token, "token")
+			check_login(BASE_URL + "user/?token=" + token, "token")
 			return
 
 		data["token_generated_offline"] = false
 		action["data"] = data
 		save_queue()
 
-	var doctor_token := get_doctor_token(data)
+	var doctor_code := doctor_token(data)
 
-	if doctor_token != "" and not bool(data.get("doctor_token_prechecked", false)):
-		var has_token := await GameManager.ensure_valid_access_token()
+	if doctor_code != "" and not bool(data.get("doctor_token_prechecked", false)):
+		var has_token := await GameManager.get_valid_token()
 
 		if not has_token:
 			push_warning("Doctor token precheck auth unavailable.")
-			request_failed()
+			fail()
 			return
 
-		start_login_check(BASE_URL + DOCTOR_LOOKUP_PATH + doctor_token, "doctor_token")
+		check_login(BASE_URL + DOCTOR_LOOKUP_PATH + doctor_code, "doctor_token")
 		return
 
 	var payload := data.duplicate(true)
-	erase_keys(payload, ["token_generated_offline", "doctor_token_prechecked"])
+	erase(payload, ["token_generated_offline", "doctor_token_prechecked"])
 
-	var has_login_token := await GameManager.ensure_valid_access_token()
+	var has_login_token := await GameManager.get_valid_token()
 
 	if not has_login_token:
 		push_warning("Login sync auth unavailable.")
-		request_failed()
+		fail()
 		return
 
 	var error := http.request(
 		BASE_URL + "user/",
 		GameManager.get_json_post_headers(),
 		HTTPClient.METHOD_POST,
-		JSON.stringify(build_user_payload(payload))
+		JSON.stringify(user_payload(payload))
 	)
 
 	if error != OK:
 		push_warning("Login request failed immediately.")
-		request_failed()
+		fail()
 
-func clear_login_check() -> String:
+func clear_login() -> String:
 	var mode := login_check_mode
 
 	login_check_running = false
@@ -203,7 +203,7 @@ func clear_login_check() -> String:
 
 	return mode
 
-func start_login_check(url: String, mode: String) :
+func check_login(url: String, mode: String) :
 	login_check_running = true
 	login_check_mode = mode
 
@@ -214,72 +214,72 @@ func start_login_check(url: String, mode: String) :
 	)
 
 	if error != OK:
-		clear_login_check()
-		request_failed()
+		clear_login()
+		fail()
 
 
-func handle_login_check(action: Dictionary, code: int, result: int, body_text: String) :
-	var mode := clear_login_check()
+func login_checked(action: Dictionary, code: int, result: int, body_text: String) :
+	var mode := clear_login()
 
 	if result != HTTPRequest.RESULT_SUCCESS:
 		push_warning("Login precheck network failed.")
-		await retry_action(action, "", "")
+		await retry(action, "", "")
 		return
 
-	if code != 404 and not is_success_code(code):
+	if code != 404 and not success_code(code):
 		push_warning("Login precheck failed with code: %s" % str(code))
-		await retry_action(action, "", "")
+		await retry(action, "", "")
 		return
 
 	var data: Dictionary = action.get("data", {})
 
 	if mode == "doctor_token":
-		handle_doctor_check(action, data, code, body_text)
+		doctor_checked(action, data, code, body_text)
 		return
 
-	handle_token_check(action, data, code, body_text)
+	token_checked(action, data, code, body_text)
 
 
-func handle_doctor_check(action: Dictionary, data: Dictionary, code: int, body_text: String) -> void:
-	var doctor_token := get_doctor_token(data)
-	var found := lookup_token_found(code, body_text, doctor_token)
+func doctor_checked(action: Dictionary, data: Dictionary, code: int, body_text: String) -> void:
+	var doctor_code := doctor_token(data)
+	var found := token_found(code, body_text, doctor_code)
 
 	data["doctor_token_prechecked"] = true
 
-	if doctor_token != "" and not found:
+	if doctor_code != "" and not found:
 		data.erase("doctor_token")
 		data.erase("doctor_id")
 		action["data"] = data
 		save_queue()
 
-		if PlayerData.user_id != -1 and str(PlayerData.doctor_token).strip_edges() == doctor_token:
+		if PlayerData.user_id != -1 and str(PlayerData.doctor_token).strip_edges() == doctor_code:
 			PlayerData.doctor_token = ""
-			save_player_data()
+			save_player()
 
 		push_warning("Doctor token not found. Login will continue without doctor token.")
-		process_next()
+		next()
 		return
 
-	var doctor_id := extract_lookup_id(code, body_text, doctor_token)
+	var doctor_id := lookup_id(code, body_text, doctor_code)
 
 	if doctor_id >= 0:
 		data["doctor_id"] = doctor_id
 
 	action["data"] = data
 	save_queue()
-	process_next()
+	next()
 
 
-func handle_token_check(action: Dictionary, data: Dictionary, code: int, body_text: String) -> void:
+func token_checked(action: Dictionary, data: Dictionary, code: int, body_text: String) -> void:
 	var current_token := str(data.get("token", "")).strip_edges()
-	var available := token_available(code, body_text, current_token)
+	var available := free_token(code, body_text, current_token)
 
 	if available:
 		data["token_generated_offline"] = false
 		action["data"] = data
 		action["token_conflict_regen_attempts"] = 0
 		save_queue()
-		process_next()
+		next()
 		return
 
 	var attempts := int(action.get("token_conflict_regen_attempts", 0)) + 1
@@ -287,7 +287,7 @@ func handle_token_check(action: Dictionary, data: Dictionary, code: int, body_te
 
 	if attempts > MAX_TOKEN_CONFLICT_REGEN_ATTEMPTS:
 		action["token_conflict_regen_attempts"] = 0
-		await retry_action(action, "", "")
+		await retry(action, "", "")
 		return
 
 	var old_token := current_token
@@ -304,12 +304,12 @@ func handle_token_check(action: Dictionary, data: Dictionary, code: int, body_te
 		PlayerData.token_update_pending = true
 		PlayerData.previous_token = old_token
 		PlayerData.updated_token = new_token
-		save_player_data()
+		save_player()
 
-	process_next()
+	next()
 
 
-func save_synced_user(action: Dictionary, body_text: String) -> void:
+func save_user(action: Dictionary, body_text: String) -> void:
 	var response: Variant = JSON.parse_string(body_text)
 
 	if typeof(response) != TYPE_DICTIONARY:
@@ -324,9 +324,9 @@ func save_synced_user(action: Dictionary, body_text: String) -> void:
 	var token := str(data.get("token", PlayerData.token))
 	var uuid := str(response.get("uuid", data.get("uuid", PlayerData.uuid)))
 	var birth_year := str(data.get("birth_year", ""))
-	var doctor_token := get_doctor_token(data)
+	var doctor_code := doctor_token(data)
 
-	PlayerData.set_user(user_id, uuid, token, birth_year, doctor_token)
+	PlayerData.set_user(user_id, uuid, token, birth_year, doctor_code)
 	PlayerData.birth_year = birth_year if birth_year.is_valid_int() else ""
 
 	for queued_action in queue:
@@ -335,19 +335,16 @@ func save_synced_user(action: Dictionary, body_text: String) -> void:
 			queued_action["data"]["birth_year"] = PlayerData.birth_year
 
 	save_queue()
-	save_player_data()
+	save_player()
 
 
-# ======================
-# REPORT
-# ======================
 
-func sync_report(action: Dictionary) -> void:
-	var has_token := await GameManager.ensure_valid_access_token()
+func send_report(action: Dictionary) -> void:
+	var has_token := await GameManager.get_valid_token()
 
 	if not has_token:
 		push_warning("Report sync auth unavailable.")
-		request_failed()
+		fail()
 		return
 
 	var error := http.request(
@@ -359,26 +356,23 @@ func sync_report(action: Dictionary) -> void:
 
 	if error != OK:
 		push_warning("Report request failed immediately.")
-		request_failed()
+		fail()
 
 
-# ======================
-# SEED
-# ======================
 
-func sync_seed(action: Dictionary) -> void:
+func send_seed(action: Dictionary) -> void:
 	var seed_value := str(action.get("seed_value", ""))
-	var payload := build_seed_body(seed_value)
+	var payload := seed_body(seed_value)
 
 	if not bool(payload.get("ok", false)):
-		request_failed()
+		fail()
 		return
 
-	var has_token := await GameManager.ensure_valid_access_token()
+	var has_token := await GameManager.get_valid_token()
 
 	if not has_token:
 		push_warning("Seed upload auth unavailable.")
-		request_failed()
+		fail()
 		return
 
 	var error := http.request_raw(
@@ -390,10 +384,10 @@ func sync_seed(action: Dictionary) -> void:
 
 	if error != OK:
 		push_warning("Seed upload request failed immediately.")
-		request_failed()
+		fail()
 
 
-func build_seed_body(seed_value: String) -> Dictionary:
+func seed_body(seed_value: String) -> Dictionary:
 	var temp_path := "user://temp_seed_%s.dat" % seed_value
 
 	var temp_file := FileAccess.open(temp_path, FileAccess.WRITE)
@@ -406,12 +400,12 @@ func build_seed_body(seed_value: String) -> Dictionary:
 	var seed_file := FileAccess.open(temp_path, FileAccess.READ)
 
 	if seed_file == null:
-		remove_temp_seed(seed_value)
+		remove_seed(seed_value)
 		return {"ok": false}
 
 	var file_bytes := seed_file.get_buffer(seed_file.get_length())
 
-	var body := multipart_field("name", seed_value)
+	var body := field("name", seed_value)
 	body += "--" + MULTIPART_BOUNDARY + "\r\n"
 	body += 'Content-Disposition: form-data; name="file"; filename="seed.dat"\r\n'
 	body += "Content-Type: application/octet-stream\r\n\r\n"
@@ -419,18 +413,18 @@ func build_seed_body(seed_value: String) -> Dictionary:
 	return {
 		"ok": true,
 		"boundary": MULTIPART_BOUNDARY,
-		"body": body.to_utf8_buffer() + file_bytes + multipart_end()
+		"body": body.to_utf8_buffer() + file_bytes + end()
 	}
 
 
-func handle_seed_success(action: Dictionary, body_text: String) -> void:
-	remove_temp_seed(str(action.get("seed_value", "")))
+func seed_done(action: Dictionary, body_text: String) -> void:
+	remove_seed(str(action.get("seed_value", "")))
 
 	var response: Variant = JSON.parse_string(body_text)
 
 	if typeof(response) != TYPE_DICTIONARY or not response.has("id"):
 		push_error("Invalid seed creation response.")
-		remove_snapshot(action, "report_path", "report_snapshot_file")
+		remove_copy(action, "report_path", "report_snapshot_file")
 		return
 
 	var extra_fields = action.get("extra_fields", {})
@@ -455,20 +449,17 @@ func handle_seed_success(action: Dictionary, body_text: String) -> void:
 	save_queue()
 
 
-# ======================
-# FILE
-# ======================
 
-func sync_file(action: Dictionary) -> void:
+func send_file(action: Dictionary) -> void:
 	if PlayerData.user_id < 0:
-		if has_pending_login():
-			move_action_to_end("File upload deferred until login sync provides a valid user_id.")
+		if has_login():
+			move_end("File upload deferred until login sync provides a valid user_id.")
 			is_running = false
-			process_next()
+			next()
 			return
 
 		push_warning("File upload has no valid user_id yet.")
-		await retry_action(
+		await retry(
 			action,
 			"File upload waiting for valid user_id | type=%s | retries=%s",
 			"Dropping action after max retries | type=%s"
@@ -479,11 +470,11 @@ func sync_file(action: Dictionary) -> void:
 
 	if filepath == "" or not FileAccess.file_exists(filepath):
 		push_error("File action dropped. Missing file: %s" % filepath)
-		drop_action(action)
-		process_next()
+		drop(action)
+		next()
 		return
 
-	var payload := build_file_body(
+	var payload := file_body(
 		filepath,
 		str(action.get("session_id", "")),
 		action.get("extra_fields", {})
@@ -491,15 +482,15 @@ func sync_file(action: Dictionary) -> void:
 
 	if not bool(payload.get("ok", false)):
 		push_error("Could not read file: %s" % filepath)
-		drop_action(action)
-		process_next()
+		drop(action)
+		next()
 		return
 
-	var has_token := await GameManager.ensure_valid_access_token()
+	var has_token := await GameManager.get_valid_token()
 
 	if not has_token:
 		push_warning("File upload auth unavailable.")
-		request_failed()
+		fail()
 		return
 
 	var error := http.request_raw(
@@ -511,10 +502,10 @@ func sync_file(action: Dictionary) -> void:
 
 	if error != OK:
 		push_warning("File upload request failed immediately.")
-		request_failed()
+		fail()
 
 
-func build_file_body(filepath: String, session_id := "", extra_fields := {}) -> Dictionary:
+func file_body(filepath: String, session_id := "", extra_fields := {}) -> Dictionary:
 	var file := FileAccess.open(filepath, FileAccess.READ)
 
 	if file == null:
@@ -522,13 +513,13 @@ func build_file_body(filepath: String, session_id := "", extra_fields := {}) -> 
 
 	var file_bytes := file.get_buffer(file.get_length())
 
-	var body := multipart_field("user", PlayerData.user_id)
+	var body := field("user", PlayerData.user_id)
 
 	if session_id != "":
-		body += multipart_field("session_id", session_id)
+		body += field("session_id", session_id)
 
 	for field_name in extra_fields.keys():
-		body += multipart_field(str(field_name), extra_fields[field_name])
+		body += field(str(field_name), extra_fields[field_name])
 
 	body += "--" + MULTIPART_BOUNDARY + "\r\n"
 	body += 'Content-Disposition: form-data; name="file"; filename="report.dat"\r\n'
@@ -537,13 +528,10 @@ func build_file_body(filepath: String, session_id := "", extra_fields := {}) -> 
 	return {
 		"ok": true,
 		"boundary": MULTIPART_BOUNDARY,
-		"body": body.to_utf8_buffer() + file_bytes + multipart_end()
+		"body": body.to_utf8_buffer() + file_bytes + end()
 	}
 
 
-# ======================
-# REQUEST COMPLETED
-# ======================
 
 func _on_request_completed(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	is_running = false
@@ -556,11 +544,11 @@ func _on_request_completed(result: int, code: int, _headers: PackedStringArray, 
 	var body_text := body.get_string_from_utf8().strip_edges()
 
 	if action_type == "login" and login_check_running:
-		await handle_login_check(action, code, result, body_text)
+		await login_checked(action, code, result, body_text)
 		return
 
-	if request_has_failed(result, code):
-		await handle_failed_response(action, action_type, code, result, body_text)
+	if failed(result, code):
+		await fail_response(action, action_type, code, result, body_text)
 		return
 
 	retry_delay = 0.5
@@ -568,38 +556,38 @@ func _on_request_completed(result: int, code: int, _headers: PackedStringArray, 
 	save_queue()
 
 	if action_type == "login":
-		save_synced_user(action, body_text)
+		save_user(action, body_text)
 
 	elif action_type == "create_seed":
-		handle_seed_success(action, body_text)
+		seed_done(action, body_text)
 
 	elif action_type == "file":
-		remove_snapshot(action)
+		remove_copy(action)
 
-	process_next()
+	next()
 
 
-func handle_failed_response(action: Dictionary, action_type: String, code: int, result: int, body_text: String) -> void:
+func fail_response(action: Dictionary, action_type: String, code: int, result: int, body_text: String) -> void:
 	if result == HTTPRequest.RESULT_SUCCESS and action_type == "login":
-		if doctor_not_found(code, body_text, action):
+		if missing_doctor(code, body_text, action):
 			var data: Dictionary = action.get("data", {})
 			data.erase("doctor_token")
 			action["data"] = data
 
 			if PlayerData.user_id != -1:
 				PlayerData.doctor_token = ""
-				save_player_data()
+				save_player()
 
 			save_queue()
 			push_warning("Doctor token not found. Retrying login without doctor token.")
-			process_next()
+			next()
 			return
 
-	if result == HTTPRequest.RESULT_SUCCESS and duplicate_report(action, code, body_text):
+	if result == HTTPRequest.RESULT_SUCCESS and is_duplicate(action, code, body_text):
 		queue.pop_front()
 		save_queue()
 		retry_delay = 0.5
-		process_next()
+		next()
 		return
 
 	push_warning("Request failed | type=%s | code=%s | result=%s | body=%s" % [
@@ -609,18 +597,18 @@ func handle_failed_response(action: Dictionary, action_type: String, code: int, 
 		body_text
 	])
 
-	await retry_action(
+	await retry(
 		action,
 		"",
 		"Dropping action after max retries | type=%s"
 	)
 
 
-func request_has_failed(result: int, code: int) -> bool:
+func failed(result: int, code: int) -> bool:
 	return result != HTTPRequest.RESULT_SUCCESS or (code != 200 and code != 201)
 
 
-func retry_action(action: Dictionary, retry_message: String, drop_message: String) -> void:
+func retry(action: Dictionary, retry_message: String, drop_message: String) -> void:
 	action["retries"] = int(action.get("retries", 0)) + 1
 
 	if retry_message != "":
@@ -633,8 +621,8 @@ func retry_action(action: Dictionary, retry_message: String, drop_message: Strin
 		if drop_message != "":
 			push_error("" + drop_message % str(action.get("type", "unknown")))
 
-		drop_action(action)
-		process_next()
+		drop(action)
+		next()
 		return
 
 	save_queue()
@@ -642,23 +630,23 @@ func retry_action(action: Dictionary, retry_message: String, drop_message: Strin
 	await get_tree().create_timer(retry_delay).timeout
 
 	retry_delay = min(retry_delay * 2.0, MAX_RETRY_DELAY)
-	process_next()
+	next()
 
 
-func drop_action(action: Dictionary) -> void:
+func drop(action: Dictionary) -> void:
 	if action.get("type", "") == "create_seed":
-		remove_temp_seed(str(action.get("seed_value", "")))
-		remove_snapshot(action, "report_path", "report_snapshot_file")
+		remove_seed(str(action.get("seed_value", "")))
+		remove_copy(action, "report_path", "report_snapshot_file")
 
 	elif action.get("type", "") == "file":
-		remove_snapshot(action)
+		remove_copy(action)
 
 	queue.pop_front()
 	save_queue()
 	retry_delay = 0.5
 
 
-func move_action_to_end(message: String) -> void:
+func move_end(message: String) -> void:
 	if queue.is_empty():
 		return
 
@@ -672,11 +660,8 @@ func move_action_to_end(message: String) -> void:
 		push_warning("" + message)
 
 
-# ======================
-# HELPERS
-# ======================
 
-func build_user_payload(data: Dictionary) -> Dictionary:
+func user_payload(data: Dictionary) -> Dictionary:
 	var payload := {
 		"token": data.get("token", ""),
 		"birth_year": data.get("birth_year", null),
@@ -687,10 +672,10 @@ func build_user_payload(data: Dictionary) -> Dictionary:
 	if data.has("uuid"):
 		payload["uuid"] = data.get("uuid")
 
-	var doctor_token := get_doctor_token(data)
+	var doctor_code := doctor_token(data)
 
-	if doctor_token != "":
-		payload["doctor_token"] = doctor_token
+	if doctor_code != "":
+		payload["doctor_token"] = doctor_code
 
 	var doctor_id := int(data.get("doctor_id", -1))
 	if doctor_id >= 0:
@@ -699,16 +684,16 @@ func build_user_payload(data: Dictionary) -> Dictionary:
 	return payload
 
 
-func get_doctor_token(data: Dictionary) -> String:
+func doctor_token(data: Dictionary) -> String:
 	return str(data.get("doctor_token", "")).strip_edges()
 
 
-func erase_keys(data: Dictionary, keys: Array) -> void:
+func erase(data: Dictionary, keys: Array) -> void:
 	for key in keys:
 		data.erase(key)
 
 
-func is_success_code(code: int) -> bool:
+func success_code(code: int) -> bool:
 	return code >= 200 and code < 300
 
 
@@ -721,7 +706,7 @@ func generate_token() -> String:
 	return token
 
 
-func find_token_entry(data: Variant, token: String) -> Dictionary:
+func find_token(data: Variant, token: String) -> Dictionary:
 	if typeof(data) == TYPE_DICTIONARY:
 		if str(data.get("token", "")) == token:
 			return data
@@ -739,11 +724,11 @@ func find_token_entry(data: Variant, token: String) -> Dictionary:
 	return {}
 
 
-func token_available(code: int, body_text: String, token: String) -> bool:
+func free_token(code: int, body_text: String, token: String) -> bool:
 	if code == 404:
 		return true
 
-	if not is_success_code(code):
+	if not success_code(code):
 		return false
 
 	if body_text.strip_edges() == "":
@@ -751,14 +736,14 @@ func token_available(code: int, body_text: String, token: String) -> bool:
 
 	var data: Variant = JSON.parse_string(body_text)
 
-	return find_token_entry(data, token).is_empty()
+	return find_token(data, token).is_empty()
 
 
-func lookup_token_found(code: int, body_text: String, token: String) -> bool:
+func token_found(code: int, body_text: String, token: String) -> bool:
 	if code == 404:
 		return false
 
-	if not is_success_code(code):
+	if not success_code(code):
 		return false
 
 	if body_text.strip_edges() == "":
@@ -766,15 +751,15 @@ func lookup_token_found(code: int, body_text: String, token: String) -> bool:
 
 	var data: Variant = JSON.parse_string(body_text)
 
-	return not find_token_entry(data, token).is_empty()
+	return not find_token(data, token).is_empty()
 
 
-func extract_lookup_id(code: int, body_text: String, token: String) -> int:
-	if code == 404 or not is_success_code(code) or body_text.strip_edges() == "":
+func lookup_id(code: int, body_text: String, token: String) -> int:
+	if code == 404 or not success_code(code) or body_text.strip_edges() == "":
 		return -1
 
 	var data: Variant = JSON.parse_string(body_text)
-	var entry := find_token_entry(data, token)
+	var entry := find_token(data, token)
 
 	if entry.has("id"):
 		return int(entry["id"])
@@ -785,7 +770,7 @@ func extract_lookup_id(code: int, body_text: String, token: String) -> int:
 	return -1
 
 
-func duplicate_report(action: Dictionary, code: int, body_text: String) -> bool:
+func is_duplicate(action: Dictionary, code: int, body_text: String) -> bool:
 	if code != 400:
 		return false
 
@@ -800,13 +785,13 @@ func duplicate_report(action: Dictionary, code: int, body_text: String) -> bool:
 	return body_text.find("must make a unique set") != -1
 
 
-func doctor_not_found(code: int, body_text: String, action: Dictionary) -> bool:
+func missing_doctor(code: int, body_text: String, action: Dictionary) -> bool:
 	if code != 400 and code != 404:
 		return false
 
 	var data = action.get("data", {})
 
-	if typeof(data) != TYPE_DICTIONARY or get_doctor_token(data) == "":
+	if typeof(data) != TYPE_DICTIONARY or doctor_token(data) == "":
 		return false
 
 	if code == 404:
@@ -815,15 +800,15 @@ func doctor_not_found(code: int, body_text: String, action: Dictionary) -> bool:
 	var parsed: Variant = JSON.parse_string(body_text)
 
 	if typeof(parsed) != TYPE_DICTIONARY:
-		return body_text.find("doctor_token") != -1 and is_missing_text(body_text)
+		return body_text.find("doctor_token") != -1 and missing_text(body_text)
 
 	if not parsed.has("doctor_token"):
 		return false
 
-	return is_missing_text(str(parsed["doctor_token"]))
+	return missing_text(str(parsed["doctor_token"]))
 
 
-func is_missing_text(text: String) -> bool:
+func missing_text(text: String) -> bool:
 	var lower_text := text.to_lower()
 	return (
 		lower_text.find("not found") != -1
@@ -835,7 +820,7 @@ func is_missing_text(text: String) -> bool:
 	)
 
 
-func has_pending_login() -> bool:
+func has_login() -> bool:
 	for action in queue:
 		if str(action.get("type", "")) == "login":
 			return true
@@ -843,7 +828,7 @@ func has_pending_login() -> bool:
 	return false
 
 
-func fix_session_id(action: Dictionary) -> void:
+func fix_session(action: Dictionary) -> void:
 	var session_id := str(action.get("session_id", ""))
 
 	if session_id.find("_-2_") == -1:
@@ -858,7 +843,7 @@ func fix_session_id(action: Dictionary) -> void:
 	save_queue()
 
 
-func migrate_old_doctor_report(action: Dictionary) -> bool:
+func migrate_report(action: Dictionary) -> bool:
 	if str(action.get("type", "")) != "file":
 		return false
 
@@ -894,11 +879,11 @@ func migrate_old_doctor_report(action: Dictionary) -> bool:
 	return true
 
 
-func save_player_data() -> void:
+func save_player() -> void:
 	FileManager.save_game()
 
 
-func remove_temp_seed(seed_value: String) -> void:
+func remove_seed(seed_value: String) -> void:
 	if seed_value == "":
 		return
 
@@ -908,7 +893,7 @@ func remove_temp_seed(seed_value: String) -> void:
 		DirAccess.remove_absolute(path)
 
 
-func remove_snapshot(action: Dictionary, path_key := "path", flag_key := "snapshot_file") -> void:
+func remove_copy(action: Dictionary, path_key := "path", flag_key := "snapshot_file") -> void:
 	if not bool(action.get(flag_key, false)):
 		return
 
@@ -918,7 +903,7 @@ func remove_snapshot(action: Dictionary, path_key := "path", flag_key := "snapsh
 		DirAccess.remove_absolute(path)
 
 
-func multipart_field(name: String, value) -> String:
+func field(name: String, value) -> String:
 	return "--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s\r\n" % [
 		MULTIPART_BOUNDARY,
 		name,
@@ -926,5 +911,5 @@ func multipart_field(name: String, value) -> String:
 	]
 
 
-func multipart_end() -> PackedByteArray:
+func end() -> PackedByteArray:
 	return ("\r\n--" + MULTIPART_BOUNDARY + "--\r\n").to_utf8_buffer()

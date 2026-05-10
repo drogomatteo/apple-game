@@ -209,7 +209,7 @@ func _try_generate_token():
 	is_request_running = true
 
 	var url = BASE_URL + "user/?token=" + generated_token
-	var has_token = await GameManager.ensure_valid_access_token()
+	var has_token = await GameManager.get_valid_token()
 	if not has_token:
 		is_generating_token = false
 		is_request_running = false
@@ -458,7 +458,7 @@ func _on_token_input_focus_exited() -> void:
 	_maybe_prefill_user_fields()
 
 func _run_prefill_lookup(token: String, request_generation: int) -> void:
-	var has_token = await GameManager.ensure_valid_access_token()
+	var has_token = await GameManager.get_valid_token()
 	if pending_prefill_token != token:
 		return
 	if request_generation != token_input_generation:
@@ -626,7 +626,7 @@ func _handle_guest_creation_failed(log_message: String, status_message := "Impos
 func _start_user_token_lookup(token: String) -> void:
 	is_user_token_lookup = true
 	status_label.text = "Vérification utilisateur..."
-	var has_token = await GameManager.ensure_valid_access_token()
+	var has_token = await GameManager.get_valid_token()
 	if not has_token:
 		_handle_user_token_lookup_blocked("User token lookup auth unavailable")
 		return
@@ -650,7 +650,7 @@ func _continue_login_after_user_token_verified() -> void:
 		pending_doctor_token = str(pending_login_data.get("doctor_token", "")).strip_edges()
 		is_doctor_token_lookup = true
 		status_label.text = "Vérification médecin..."
-		var has_token = await GameManager.ensure_valid_access_token()
+		var has_token = await GameManager.get_valid_token()
 		if not has_token:
 			_handle_doctor_lookup_blocked(
 				"Impossible de vérifier l'identifiant du médecin",
@@ -732,7 +732,7 @@ func _send_login_request(data: Dictionary) -> void:
 	is_request_running = true
 	status_label.text = "Connexion..."
 	var payload = _build_user_request_payload(data)
-	var has_token = await GameManager.ensure_valid_access_token()
+	var has_token = await GameManager.get_valid_token()
 	if not has_token:
 		if bool(data.get("guest_created", false)):
 			_offline_login(data)

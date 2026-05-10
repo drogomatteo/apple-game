@@ -5,7 +5,7 @@ const SAVE_PATH := "user://save.dat"
 var local_report_count: int = 0
 var player_data: Dictionary = {}
 
-func _ready() -> void:
+func _ready() :
 	load_game()
 
 
@@ -33,7 +33,7 @@ func save_game() -> void:
 	file.store_var(player_data)
 
 
-func load_game() -> void:
+func load_game() :
 	if not FileAccess.file_exists(SAVE_PATH):
 		return
 

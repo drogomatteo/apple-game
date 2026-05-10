@@ -16,5 +16,5 @@ func go_next_screen():
 
 	queue_free()
 
-func _on_texture_button_pressed() -> void:
+func _on_texture_button_pressed() :
 	go_next_screen()

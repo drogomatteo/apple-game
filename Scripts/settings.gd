@@ -60,7 +60,7 @@ func set_tutorial_seen(value: bool) :
 
 func set_colour_bind(value: int) :
 	colour_bind = value
-	ColourBind.update_colour_blind_mode(colour_bind)
+	ColourBind.update_colour_blind(colour_bind)
 	save_settings()
 
 

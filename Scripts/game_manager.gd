@@ -2,73 +2,65 @@ extends Node
 
 signal access_token_check_completed
 
-const LOG_TAG := "[GameManager]"
-
-# -------- CONFIG --------
+const BASE_URL := "https://alzheimer.magellan.fpms.ac.be/api/"
 const GAME_API_KEY := "pL6UIb8R486IeTDv7arnpqm7NuJkQbHGesgpBIzClec"
+
 const AUTH_TOKEN_PATH := "auth/token/"
 const AUTH_REFRESH_PATH := "auth/refresh/"
+
 const ACCESS_TOKEN_DEFAULT_LIFETIME_SECONDS := 900
 const ACCESS_TOKEN_REFRESH_LEEWAY_SECONDS := 60
 const REQUEST_TIMEOUT_SECONDS := 5.0
+
 const LEVEL_GENERATION_VERSION := "levels-v1"
 const QUEUED_UPLOAD_DIR := "user://offline_uploads"
-var BASE_URL = "https://alzheimer.magellan.fpms.ac.be/api/"
+const MULTIPART_BOUNDARY := "----GodotBoundary"
 
-# -------- STATE --------
 var auth_http := HTTPRequest.new()
 var access_token_check_in_progress := false
 
-func _warn(message: String) -> void:
-	push_warning("%s %s" % [LOG_TAG, message])
 
-func _error(message: String) -> void:
-	push_error("%s %s" % [LOG_TAG, message])
-
-func _save_player_data() -> void:
-	var root = get_tree().root
-	if root.has_node("GestionFichier"):
-		root.get_node("GestionFichier").save_data()
-	elif root.has_node("FileManager"):
-		root.get_node("FileManager").save_game()
-
-# -------- LIFECYCLE --------
-func _ready() -> void:
+func _ready() :
 	add_child(auth_http)
 	auth_http.timeout = REQUEST_TIMEOUT_SECONDS
 
-# -------- HEADER HELPERS --------
-func _is_http_success(result: int, code: int) -> bool:
-	return result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
 
-func _is_duplicate_report_response(url: String, code: int, body_text: String) -> bool:
-	if code != 400:
-		return false
-	if url.find("full-report/") == -1 and url.find("doctor-report/") == -1:
-		return false
-	return body_text.find("must make a unique set") != -1
+func save_player_data() :
+	var root := get_tree().root
+
+	if root.has_node("FileManager"):
+		root.get_node("FileManager").save_game()
+	else:
+		push_warning("No save manager found.")
+
 
 func get_api_headers() -> PackedStringArray:
 	var headers := PackedStringArray()
-	var access_token = str(PlayerData.access_token).strip_edges()
+	var access_token := str(PlayerData.access_token).strip_edges()
+
 	if access_token != "":
 		headers.append("Authorization: Bearer " + access_token)
+
 	return headers
+
 
 func get_bootstrap_headers() -> PackedStringArray:
 	return PackedStringArray([
 		"X-Game-Api-Key: " + GAME_API_KEY
 	])
 
+
 func get_json_post_headers() -> PackedStringArray:
-	var headers = get_api_headers()
+	var headers := get_api_headers()
 	headers.insert(0, "Content-Type: application/json")
 	return headers
 
+
 func get_multipart_post_headers(boundary: String) -> PackedStringArray:
-	var headers = get_api_headers()
+	var headers := get_api_headers()
 	headers.insert(0, "Content-Type: multipart/form-data; boundary=" + boundary)
 	return headers
+
 
 func get_client_metadata() -> Dictionary:
 	return {
@@ -78,210 +70,161 @@ func get_client_metadata() -> Dictionary:
 		"client_platform": OS.get_name()
 	}
 
-# -------- QUEUE HELPERS --------
-func _ensure_queued_upload_dir() -> void:
-	if not DirAccess.dir_exists_absolute(QUEUED_UPLOAD_DIR):
-		DirAccess.make_dir_recursive_absolute(QUEUED_UPLOAD_DIR)
 
-func _get_extension_from_path(filepath: String) -> String:
-	var filename = filepath.get_file()
-	var dot_index = filename.rfind(".")
-	if dot_index == -1:
-		return ""
-	return filename.substr(dot_index)
+func http_success(result: int, code: int) -> bool:
+	return result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
 
-func _snapshot_file_for_queue(filepath: String) -> Dictionary:
-	if filepath == "" or not FileAccess.file_exists(filepath):
+
+func request_json(request: HTTPRequest, url: String, headers: PackedStringArray, method: int, body := "") -> Dictionary:
+	var error := request.request(url, headers, method, body)
+
+	if error != OK:
 		return {
-			"path": filepath,
-			"is_snapshot": false
+			"ok": false,
+			"error": error,
+			"result": HTTPRequest.RESULT_CANT_CONNECT,
+			"code": 0,
+			"body_text": ""
 		}
 
-	var source = FileAccess.open(filepath, FileAccess.READ)
-	if source == null:
-		return {
-			"path": filepath,
-			"is_snapshot": false
-		}
+	var response = await request.request_completed
 
-	_ensure_queued_upload_dir()
-	var extension = _get_extension_from_path(filepath)
-	var snapshot_path = "%s/%s_%s_%s%s" % [
-		QUEUED_UPLOAD_DIR,
-		filepath.get_file().replace(".", "_"),
-		str(Time.get_unix_time_from_system()),
-		str(randi()),
-		extension
-	]
+	var result := int(response[0])
+	var code := int(response[1])
+	var response_body: PackedByteArray = response[3]
+	var body_text := response_body.get_string_from_utf8()
 
-	var target = FileAccess.open(snapshot_path, FileAccess.WRITE)
-	if target == null:
-		source.close()
-		return {
-			"path": filepath,
-			"is_snapshot": false
-		}
-
-	target.store_buffer(source.get_buffer(source.get_length()))
-	source.close()
-	target.close()
-	return {
-		"path": snapshot_path,
-		"is_snapshot": true
+	return {"ok": http_success(result, code), "error": OK, "result": result, "code": code, "body_text": body_text
 	}
 
-func _add_file_upload_action(filepath, url, session_id := "", extra_fields := {}, snapshot_file := false) -> void:
-	SyncManager.add_action({
-		"type": "file",
-		"path": filepath,
-		"url": url,
-		"session_id": session_id,
-		"extra_fields": extra_fields,
-		"snapshot_file": snapshot_file
-	})
 
-func _queue_file_upload(filepath, url, session_id := "", extra_fields := {}) -> void:
-	var queued_file = _snapshot_file_for_queue(str(filepath))
-	_add_file_upload_action(
-		queued_file["path"],
-		url,
-		session_id,
-		extra_fields,
-		bool(queued_file["is_snapshot"])
-	)
+func parse_json(body_text: String, context: String) -> Dictionary:
+	var data: Variant = JSON.parse_string(body_text)
 
-func _remove_queued_snapshot(snapshot: Dictionary) -> void:
-	if not bool(snapshot.get("is_snapshot", false)):
-		return
-	var filepath = str(snapshot.get("path", ""))
-	if filepath != "" and FileAccess.file_exists(filepath):
-		DirAccess.remove_absolute(filepath)
+	if typeof(data) == TYPE_DICTIONARY:
+		return data
 
-func queue_full_report(session_id := "") -> void:
-	_queue_file_upload("user://rapport_complet.dat", BASE_URL + "full-report/", session_id, get_client_metadata())
+	push_warning("%s response invalid | body=%s" % [context, body_text.strip_edges()])
+	return {}
 
-func queue_doctor_report(session_id := "", seed_value := "") -> void:
-	var queued_report = _snapshot_file_for_queue("user://doctor_report.dat")
-	SyncManager.add_action({
-		"type": "create_seed",
-		"seed_value": seed_value,
-		"session_id": session_id,
-		"report_path": queued_report["path"],
-		"report_url": BASE_URL + "doctor-report/",
-		"extra_fields": get_client_metadata(),
-		"report_snapshot_file": bool(queued_report["is_snapshot"])
-	})
 
-# -------- TOKEN HELPERS --------
+func duplicate_report_response(url: String, code: int, body_text: String) -> bool:
+	if code != 400:
+		return false
+
+	if url.find("full-report/") == -1 and url.find("doctor-report/") == -1:
+		return false
+
+	return body_text.find("must make a unique set") != -1
+
+
 func clear_api_tokens(save := true) -> void:
 	PlayerData.access_token = ""
 	PlayerData.refresh_token = ""
 	PlayerData.access_token_expires_at = 0
-	if save:
-		_save_player_data()
 
-func _has_usable_access_token() -> bool:
-	var access_token = str(PlayerData.access_token).strip_edges()
+	if save:
+		save_player_data()
+
+
+func valid_access_token() -> bool:
+	var access_token := str(PlayerData.access_token).strip_edges()
+
 	if access_token == "":
 		return false
-	var now = int(Time.get_unix_time_from_system())
+
+	var now := int(Time.get_unix_time_from_system())
+
 	return PlayerData.access_token_expires_at > now + ACCESS_TOKEN_REFRESH_LEEWAY_SECONDS
 
-func _perform_http_request(request: HTTPRequest, url: String, headers: PackedStringArray, method: int, body := "") -> Dictionary:
-	var err = request.request(url, headers, method, body)
-	if err != OK:
-		return {"ok": false, "error": err, "result": HTTPRequest.RESULT_CANT_CONNECT, "code": 0, "body_text": ""}
 
-	var response = await request.request_completed
-	var result = int(response[0])
-	var code = int(response[1])
-	var response_body: PackedByteArray = response[3]
-	return {
-		"ok": _is_http_success(result, code),
-		"error": OK,
-		"result": result,
-		"code": code,
-		"body_text": response_body.get_string_from_utf8()
-	}
-
-func _parse_token_response(body_text: String, context: String) -> Dictionary:
-	var parsed = JSON.parse_string(body_text)
-	if typeof(parsed) == TYPE_DICTIONARY:
-		return parsed
-	_warn("%s response invalid | body=%s" % [context, body_text.strip_edges()])
-	return {}
-
-# -------- TOKEN FLOW --------
-func _extract_expiry_timestamp(response_data: Dictionary) -> int:
-	var candidates = [
-		response_data.get("access_token_expires_at", 0),
-		response_data.get("expires_at", 0),
-		response_data.get("access_expires_at", 0)
+func get_token_expiry(data: Dictionary) -> int:
+	var candidates := [
+		data.get("access_token_expires_at", 0),
+		data.get("expires_at", 0),
+		data.get("access_expires_at", 0)
 	]
 
 	for candidate in candidates:
 		if typeof(candidate) == TYPE_INT or typeof(candidate) == TYPE_FLOAT:
-			var timestamp = int(candidate)
+			var timestamp := int(candidate)
+
 			if timestamp > 0:
 				return timestamp
-		var candidate_text = str(candidate).strip_edges()
+
+		var candidate_text := str(candidate).strip_edges()
+
 		if candidate_text.is_valid_int():
-			var parsed_timestamp = int(candidate_text)
+			var parsed_timestamp := int(candidate_text)
+
 			if parsed_timestamp > 0:
 				return parsed_timestamp
 
-	var expires_in = response_data.get("expires_in", response_data.get("access_token_expires_in", 0))
+	var expires_in = data.get("expires_in", data.get("access_token_expires_in", 0))
+
 	if typeof(expires_in) == TYPE_INT or typeof(expires_in) == TYPE_FLOAT:
-		var duration = int(expires_in)
+		var duration := int(expires_in)
+
 		if duration > 0:
 			return int(Time.get_unix_time_from_system()) + duration
-	var expires_in_text = str(expires_in).strip_edges()
+
+	var expires_in_text := str(expires_in).strip_edges()
+
 	if expires_in_text.is_valid_int():
-		var parsed_duration = int(expires_in_text)
+		var parsed_duration := int(expires_in_text)
+
 		if parsed_duration > 0:
 			return int(Time.get_unix_time_from_system()) + parsed_duration
 
 	return int(Time.get_unix_time_from_system()) + ACCESS_TOKEN_DEFAULT_LIFETIME_SECONDS
 
-func _store_api_tokens(response_data: Dictionary) -> bool:
-	var access_token = str(response_data.get("access_token", "")).strip_edges()
-	var refresh_token = str(response_data.get("refresh_token", "")).strip_edges()
+
+func save_api_tokens(data: Dictionary) -> bool:
+	var access_token := str(data.get("access_token", "")).strip_edges()
+	var refresh_token := str(data.get("refresh_token", "")).strip_edges()
+
 	if access_token == "" or refresh_token == "":
 		return false
 
 	PlayerData.access_token = access_token
 	PlayerData.refresh_token = refresh_token
-	PlayerData.access_token_expires_at = _extract_expiry_timestamp(response_data)
-	_save_player_data()
+	PlayerData.access_token_expires_at = get_token_expiry(data)
+
+	save_player_data()
 	return true
 
+
 func fetch_api_tokens() -> bool:
-	var response = await _perform_http_request(
+	var response := await request_json(
 		auth_http,
 		BASE_URL + AUTH_TOKEN_PATH,
 		get_bootstrap_headers(),
 		HTTPClient.METHOD_POST
 	)
-	if not response.get("ok", false):
-		_warn("Bootstrap token request failed | code=%s result=%s body=%s" % [
+
+	if not bool(response.get("ok", false)):
+		push_warning("Bootstrap token request failed | code=%s result=%s body=%s" % [
 			str(response.get("code", 0)),
 			str(response.get("result", 0)),
 			str(response.get("body_text", "")).strip_edges()
 		])
 		return false
 
-	var parsed = _parse_token_response(str(response.get("body_text", "")), "Bootstrap token")
-	if parsed.is_empty():
+	var data := parse_json(str(response.get("body_text", "")), "Bootstrap token")
+
+	if data.is_empty():
 		return false
 
-	return _store_api_tokens(parsed)
+	return save_api_tokens(data)
+
 
 func refresh_api_tokens() -> bool:
-	var current_refresh_token = str(PlayerData.refresh_token).strip_edges()
-	if current_refresh_token == "":
+	var refresh_token := str(PlayerData.refresh_token).strip_edges()
+
+	if refresh_token == "":
 		return false
 
-	var response = await _perform_http_request(
+	var response := await request_json(
 		auth_http,
 		BASE_URL + AUTH_REFRESH_PATH,
 		PackedStringArray([
@@ -289,11 +232,12 @@ func refresh_api_tokens() -> bool:
 		]),
 		HTTPClient.METHOD_POST,
 		JSON.stringify({
-			"refresh_token": current_refresh_token
+			"refresh_token": refresh_token
 		})
 	)
-	if not response.get("ok", false):
-		_warn("Refresh token request failed | code=%s result=%s body=%s" % [
+
+	if not bool(response.get("ok", false)):
+		push_warning("Refresh token request failed | code=%s result=%s body=%s" % [
 			str(response.get("code", 0)),
 			str(response.get("result", 0)),
 			str(response.get("body_text", "")).strip_edges()
@@ -301,22 +245,25 @@ func refresh_api_tokens() -> bool:
 		clear_api_tokens(false)
 		return false
 
-	var parsed = _parse_token_response(str(response.get("body_text", "")), "Refresh token")
-	if parsed.is_empty():
+	var data := parse_json(str(response.get("body_text", "")), "Refresh token")
+
+	if data.is_empty():
 		clear_api_tokens(false)
 		return false
 
-	return _store_api_tokens(parsed)
+	return save_api_tokens(data)
 
-func ensure_valid_access_token() -> bool:
-	if _has_usable_access_token():
+
+func get_valid_token() -> bool:
+	if valid_access_token():
 		return true
 
 	if access_token_check_in_progress:
 		await access_token_check_completed
-		return _has_usable_access_token()
+		return valid_access_token()
 
 	access_token_check_in_progress = true
+
 	var success := false
 
 	if await refresh_api_tokens():
@@ -326,111 +273,269 @@ func ensure_valid_access_token() -> bool:
 
 	access_token_check_in_progress = false
 	access_token_check_completed.emit()
+
 	return success
 
-# -------- FILE UPLOADS --------
-func send_file(filepath, url, session_id := "", extra_fields := {}):
-	if PlayerData.user_id < 0:
-		_queue_file_upload(filepath, url, session_id, extra_fields)
-		if not SyncManager.is_running:
-			SyncManager.force_sync()
+
+func prepare_upload_dir() :
+	if not DirAccess.dir_exists_absolute(QUEUED_UPLOAD_DIR):
+		DirAccess.make_dir_recursive_absolute(QUEUED_UPLOAD_DIR)
+
+
+func get_file_extension(filepath: String) -> String:
+	var filename := filepath.get_file()
+	var dot_index := filename.rfind(".")
+
+	if dot_index == -1:
+		return ""
+
+	return filename.substr(dot_index)
+
+
+func create_upload_copy(filepath: String) -> Dictionary:
+	if filepath == "" or not FileAccess.file_exists(filepath):
+		return {
+			"path": filepath,
+			"is_copy": false
+		}
+
+	var source := FileAccess.open(filepath, FileAccess.READ)
+
+	if source == null:
+		return {
+			"path": filepath,
+			"is_copy": false
+		}
+
+	prepare_upload_dir()
+
+	var extension := get_file_extension(filepath)
+
+	var copy_path := "%s/%s_%s_%s%s" % [
+		QUEUED_UPLOAD_DIR,
+		filepath.get_file().replace(".", "_"),
+		str(Time.get_unix_time_from_system()),
+		str(randi()),
+		extension
+	]
+
+	var target := FileAccess.open(copy_path, FileAccess.WRITE)
+
+	if target == null:
+		source.close()
+
+		return {
+			"path": filepath,
+			"is_copy": false
+		}
+
+	target.store_buffer(source.get_buffer(source.get_length()))
+
+	source.close()
+	target.close()
+
+	return {
+		"path": copy_path,
+		"is_copy": true
+	}
+
+
+func delete_upload_copy(copy: Dictionary) -> void:
+	if not bool(copy.get("is_copy", false)):
 		return
 
-	var file = FileAccess.open(filepath, FileAccess.READ)
+	var filepath := str(copy.get("path", ""))
+
+	if filepath != "" and FileAccess.file_exists(filepath):
+		DirAccess.remove_absolute(filepath)
+
+
+
+
+func queue_file_upload(
+	filepath: String,
+	url: String,
+	session_id := "",
+	extra_fields := {}
+) -> void:
+	var copy := create_upload_copy(filepath)
+
+	SyncManager.add_action({
+		"type": "file",
+		"path": str(copy["path"]),
+		"url": url,
+		"session_id": session_id,
+		"extra_fields": extra_fields,
+		"snapshot_file": bool(copy["is_copy"])
+	})
+
+
+func multipart_field(field_name: String, value) -> String:
+	return "--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s\r\n" % [
+		MULTIPART_BOUNDARY,
+		field_name,
+		str(value)
+	]
+
+
+func build_file_body( filepath: String, session_id := "", extra_fields := {} ) -> Dictionary:
+	var file := FileAccess.open(filepath, FileAccess.READ)
+
 	if file == null:
-		_error("File open failed -> %s" % filepath)
-		return
+		return {
+			"ok": false
+		}
 
-	var file_bytes = file.get_buffer(file.get_length())
+	var file_bytes := file.get_buffer(file.get_length())
 	file.close()
-	var fallback_file = _snapshot_file_for_queue(str(filepath))
 
-	var boundary = "----GodotBoundary"
-	var body = ""
+	var body := ""
 
-	body += "--" + boundary + "\r\n"
-	body += 'Content-Disposition: form-data; name="user"\r\n\r\n'
-	body += str(PlayerData.user_id) + "\r\n"
+	body += multipart_field("user", PlayerData.user_id)
 
 	if session_id != "":
-		body += "--" + boundary + "\r\n"
-		body += 'Content-Disposition: form-data; name="session_id"\r\n\r\n'
-		body += session_id + "\r\n"
+		body += multipart_field("session_id", session_id)
 
 	for field_name in extra_fields.keys():
-		body += "--" + boundary + "\r\n"
-		body += 'Content-Disposition: form-data; name="' + str(field_name) + '"\r\n\r\n'
-		body += str(extra_fields[field_name]) + "\r\n"
+		body += multipart_field(str(field_name), extra_fields[field_name])
 
-	body += "--" + boundary + "\r\n"
+	body += "--" + MULTIPART_BOUNDARY + "\r\n"
 	body += 'Content-Disposition: form-data; name="file"; filename="report.dat"\r\n'
 	body += "Content-Type: application/octet-stream\r\n\r\n"
 
-	var body_bytes = body.to_utf8_buffer()
-	var end = ("\r\n--" + boundary + "--\r\n").to_utf8_buffer()
-	var final_body = body_bytes + file_bytes + end
+	var end := ("\r\n--" + MULTIPART_BOUNDARY + "--\r\n").to_utf8_buffer()
 
-	var has_token = await ensure_valid_access_token()
-	if not has_token:
-		_warn("No API access token available, queueing upload")
-		_add_file_upload_action(
-			fallback_file["path"],
-			url,
-			session_id,
-			extra_fields,
-			bool(fallback_file["is_snapshot"])
-		)
+	return {
+		"ok": true,
+		"boundary": MULTIPART_BOUNDARY,
+		"body": body.to_utf8_buffer() + file_bytes + end
+	}
+
+
+func send_file(filepath: String, url: String, session_id := "", extra_fields := {}) -> void:
+	if PlayerData.user_id < 0:
+		queue_file_upload(filepath, url, session_id, extra_fields)
+
+		if not SyncManager.is_running:
+			SyncManager.force_sync()
+
 		return
 
-	var headers = get_multipart_post_headers(boundary)
+	var backup_copy := create_upload_copy(filepath)
+	var payload := build_file_body(filepath, session_id, extra_fields)
 
-	var http = HTTPRequest.new()
+	if not bool(payload.get("ok", false)):
+		push_error("File open failed -> %s" % filepath)
+		delete_upload_copy(backup_copy)
+		return
+
+	if not await get_valid_token():
+		push_warning("No API access token available, queueing upload")
+
+		SyncManager.add_action({
+			"type": "file",
+			"path": str(backup_copy["path"]),
+			"url": url,
+			"session_id": session_id,
+			"extra_fields": extra_fields,
+			"snapshot_file": bool(backup_copy["is_copy"])
+		})
+
+		return
+
+	var http := HTTPRequest.new()
 	add_child(http)
 
-	var err = http.request_raw(url, headers, HTTPClient.METHOD_POST, final_body)
+	var error := http.request_raw(
+		url,
+		get_multipart_post_headers(str(payload["boundary"])),
+		HTTPClient.METHOD_POST,
+		payload["body"]
+	)
 
-	if err != OK:
-		_warn("Immediate upload request failed, queueing")
-		_add_file_upload_action(
-			fallback_file["path"],
-			url,
-			session_id,
-			extra_fields,
-			bool(fallback_file["is_snapshot"])
-		)
+	if error != OK:
+		push_warning("Immediate upload request failed, queueing")
+
+		SyncManager.add_action({
+			"type": "file",
+			"path": str(backup_copy["path"]),
+			"url": url,
+			"session_id": session_id,
+			"extra_fields": extra_fields,
+			"snapshot_file": bool(backup_copy["is_copy"])
+		})
+
 		http.queue_free()
 		return
 
-	http.request_completed.connect(func(result, code, _headers, _body):
-		if _is_http_success(result, code):
-			_remove_queued_snapshot(fallback_file)
-		if not _is_http_success(result, code):
-			var body_text: String = _body.get_string_from_utf8().strip_edges()
-			if _is_duplicate_report_response(url, code, body_text):
-				_remove_queued_snapshot(fallback_file)
+	http.request_completed.connect(
+		func(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+			if http_success(result, code):
+				delete_upload_copy(backup_copy)
 				http.queue_free()
 				return
-			_warn("Upload failed, queueing retry | code=%s | result=%s | url=%s | body=%s" % [
+
+			var body_text := body.get_string_from_utf8().strip_edges()
+
+			if duplicate_report_response(url, code, body_text):
+				delete_upload_copy(backup_copy)
+				http.queue_free()
+				return
+
+			push_warning("Upload failed, queueing retry | code=%s | result=%s | url=%s | body=%s" % [
 				str(code),
 				str(result),
 				url,
 				body_text
 			])
-			_add_file_upload_action(
-				fallback_file["path"],
-				url,
-				session_id,
-				extra_fields,
-				bool(fallback_file["is_snapshot"])
-			)
 
-		http.queue_free()
+			SyncManager.add_action({
+				"type": "file",
+				"path": str(backup_copy["path"]),
+				"url": url,
+				"session_id": session_id,
+				"extra_fields": extra_fields,
+				"snapshot_file": bool(backup_copy["is_copy"])
+			})
+
+			http.queue_free()
 	)
 
-func send_full_report(session_id := ""):
-	send_file("user://rapport_complet.dat", BASE_URL + "full-report/", session_id, get_client_metadata())
 
-func send_doctor_report(session_id := "", seed_value := ""):
+func queue_full_report(session_id := "") -> void:
+	queue_file_upload(
+		"user://rapport_complet.dat",
+		BASE_URL + "full-report/",
+		session_id,
+		get_client_metadata()
+	)
+
+
+func queue_doctor_report(session_id := "", seed_value := "") -> void:
+	var copy := create_upload_copy("user://doctor_report.dat")
+
+	SyncManager.add_action({
+		"type": "create_seed",
+		"seed_value": seed_value,
+		"session_id": session_id,
+		"report_path": str(copy["path"]),
+		"report_url": BASE_URL + "doctor-report/",
+		"extra_fields": get_client_metadata(),
+		"report_snapshot_file": bool(copy["is_copy"])
+	})
+
+
+func send_full_report(session_id := "") -> void:
+	send_file(
+		"user://rapport_complet.dat",
+		BASE_URL + "full-report/",
+		session_id,
+		get_client_metadata()
+	)
+
+
+func send_doctor_report(session_id := "", seed_value := "") -> void:
 	queue_doctor_report(session_id, seed_value)
+
 	if not SyncManager.is_running:
 		SyncManager.force_sync()
