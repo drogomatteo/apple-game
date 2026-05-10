@@ -16,11 +16,11 @@ var refresh_token: String = ""
 var access_token_expires_at: int = 0
 
 
-func set_user(id: int, user_uuid: String, user_token: String, year: String, doctor: String = "") :
+func set_user(id: int, user_uuid: String, user_token: String, year: Variant, doctor: String = "") :
 	user_id = id
 	uuid = user_uuid
 	token = user_token
-	birth_year = year
+	birth_year = str(year)
 	doctor_token = doctor
 
 
@@ -39,3 +39,13 @@ func logout_user() :
 	access_token = ""
 	refresh_token = ""
 	access_token_expires_at = 0
+
+
+func print_data() -> void:
+	print({
+		"user_id": user_id,
+		"uuid": uuid,
+		"token": token,
+		"birth_year": birth_year,
+		"doctor_token": doctor_token
+	})

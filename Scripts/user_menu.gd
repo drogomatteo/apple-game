@@ -842,9 +842,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 
 	var resolved_uuid = str(response.get("uuid", pending_login_data.get("uuid", _get_device_uuid())))
 
-	var birth_year = pending_login_data.get("birth_year", "")
-	if str(birth_year).is_valid_int():
-		birth_year = int(birth_year)
+	var birth_year := str(pending_login_data.get("birth_year", ""))
 
 	PlayerData.set_user(
 		user_id,
@@ -861,9 +859,7 @@ func _on_http_request_request_completed(result, response_code, _headers, body):
 # -------- OFFLINE --------
 func _offline_login(data):
 	var local_id = -2
-	var birth_year = data.get("birth_year", "")
-	if str(birth_year).is_valid_int():
-		birth_year = int(birth_year)
+	var birth_year := str(data.get("birth_year", ""))
 
 	PlayerData.set_user(
 		local_id,
@@ -929,7 +925,7 @@ func _on_doctor_token_input_text_changed(new_text: String) -> void:
 
 func _on_logout_button_pressed() -> void:
 	PlayerData.logout_user()
-	SaveRgpd.set_accepted(false, true)
+	Settings.set_rgpd_accepted(false)
 	FileManager.save_game()
 
 	var interface = _get_interface()

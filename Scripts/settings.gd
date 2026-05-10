@@ -10,7 +10,7 @@ var rgpd_accepted: bool = false
 
 func _ready() :
 	load_settings()
-	ColourBind.update_colour_blind_mode(colour_bind)
+	ColourBind.update_colour_blind(colour_bind)
 
 
 func save_settings() :
