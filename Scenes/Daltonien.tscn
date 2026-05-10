@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://8y5yuplw0kyy"]
 
 [ext_resource type="Shader" uid="uid://dxvtbju7ihdgq" path="res://Assets/Shader/Dalt.gdshader" id="1_0ytq5"]
-[ext_resource type="Script" uid="uid://b8c5e3ior52bb" path="res://Scripts/daltonien.gd" id="1_8h8ws"]
+[ext_resource type="Script" uid="uid://b8c5e3ior52bb" path="res://Scripts/colour_bind.gd" id="1_8h8ws"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8h8ws"]
 shader = ExtResource("1_0ytq5")

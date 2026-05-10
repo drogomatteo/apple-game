@@ -104,11 +104,11 @@ func _get_session_owner_id() -> String:
 func _ready() -> void:
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + _get_session_owner_id() + "_" + str(randi())
 	TutorialHighlight.visible = false
-	#Paramètre.definir_tutorial_seen(false)
+	#Settings.set_tutorial_seen(false)
 	Initialisation()
 
 	
-	if not Paramètre.tutorial_seen:
+	if not Settings.tutorial_seen:
 		TutorialController.start_tutorial()
 
 func _physics_process(_delta: float) -> void:
@@ -506,22 +506,8 @@ func save_interrupted_level() -> String:
 	
 #fonction pour mettre les rapports en attente d’envoi	
 func queue_reports_for_sync() -> void:
-	SyncManager.add_action({
-		"type": "file",
-		"path": "user://rapport_complet.dat",
-		"url": GameManager.BASE_URL + "full-report/",
-		"session_id": session_id,
-		"extra_fields": GameManager.get_client_metadata()
-	})
-
-	SyncManager.add_action({
-		"type": "create_seed",
-		"seed_value": str(graine),
-		"session_id": session_id,
-		"report_path": "user://doctor_report.dat",
-		"report_url": GameManager.BASE_URL + "doctor-report/",
-		"extra_fields": GameManager.get_client_metadata()
-	})
+	GameManager.queue_full_report(session_id)
+	GameManager.queue_doctor_report(session_id, str(graine))
 
 
 #fonction pour écrire les rapports localement
@@ -552,7 +538,7 @@ func _notification(what):
 		write_local_reports(true)
 		queue_reports_for_sync()
 
-		GestionFichier.save_data()
+		FileManager.save_game()
 		get_tree().quit()
 
 
