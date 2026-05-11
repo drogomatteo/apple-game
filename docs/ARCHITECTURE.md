@@ -18,20 +18,33 @@ AppleGame suit une architecture modulaire basée sur Godot Engine. Le projet est
 
 ### 1. Couche Présentation (UI)
 
-Répertoire : `Scenes/`
+Répertoire : `Scenes/`. Les scènes sur Godot sont utilisés pour construire le jeu vidéo et pour qu'utilisateur puisse interagir avec l'application (bouton, zone de texte)
 
-- **main_menu.tscn** : Menu principal
-- **option_menu.tscn** : Options de jeu
-- **Interface.tscn** : HUD du jeu (barre de vie, score, etc.)
-- **break_menu.tscn** : Menu de pause
+Dans l'ordre d'apparition :
+
+- **apple_tree.tscn** : le pommier
+- **Barrières.tscn** : les barrières
+- **basket.tscn** : le panier
+- **break_menu.tscn** : Gestion du menu pause
+- **Daltonien.tscn** : Gestion du mode Daltonien
 - **gdpr_menu.tscn** : Conformité GDPR
-- **Daltonien.tscn** : Mode colorblind
-
-Fichiers correspondants : `Scripts/*_menu.gd`, `Scripts/interface.gd`
+- **info_menu.tscn** : Secion à propos
+- **Interface.tscn** : Scène 3D du menu principal
+- **main.tscn** : Le jeu
+- **main_menu.tscn** : Menu principal du jeu
+- **option_menu.tscn** : Options de jeu
+- **ParticulesPannier.tscn** : Particules du panier (PAS UTILISÉ DANS LA VERSION FINALE)
+- **player.tscn** : Le joueur
+- **tavern.tscn** : Le repère visuel
+- **tavernBis.tscn** : Le repère visuel (avec modification des collisions)
+- **tracerCarte.tscn** : Le système d'affichage de résumé de niveau
+- **transition.tscn** : Transition entre scènes main et main_menu
+- **tree.tscn** : L'arbre
+- **user_menu.tscn** : Le menu compte
 
 ### 2. Couche Logique de Jeu
 
-Répertoire : `Scripts/`
+Répertoire : `Scripts/`. Les scripts sont utilisés par Godot pour gérer l'aspect logique du jeu vidéo comme le déplacement du joueur, la création du monde, le tutoriel, etc...
 
 **Gestion du Joueur** :
 - `player.gd` - Contrôle et mouvement du joueur
@@ -82,39 +95,13 @@ Les autoloads sont des scripts chargés automatiquement au démarrage (voir `pro
 | `SyncManager` | `sync_manager.gd` | Synchronisation données |
 | `Api` | `api.gd` | Requêtes API directes |
 
-## Flux de Données
-
-```
-Joueur → player.gd → main.gd → basket.gd
-                        ↓
-                    file_manager.gd ← FileManager (autoload)
-                        ↓
-                    sync_manager.gd ← SyncManager (autoload)
-                        ↓
-                    api.gd (GameManager) → Backend
-```
-
-## Système de Scènes
-
-Godot utilise une hiérarchie de scènes :
-
-```
-main.tscn (Scene racine)
-├── Player (player.tscn)
-│   ├── Camera3D
-│   ├── CanvasLayer
-│   │   └── UI (Contrôles mobiles)
-├── Environnement
-│   ├── Herbe (grass_system.gd)
-│   ├── Arbres dynamiques
-├── UI (Interface.tscn)
-│   ├── HUD
-│   ├── Bouttons
-│   └── Zone de texte
-└── Panier (basket.tscn)
-```
 
 ## Système de Physique
+
+Le Système de physique permet de gérer les collisions entre les objets du type `CollisionObject3D`. Afin de rendre l'ajout d'objet facilement, chaque couche possède un nom. Il faut que les deux objets possèdent au moins une même couche `Layers` et `Mask`.
+
+> [!NOTE]
+> Pour plus d'informations concernant les attributs `Layers` et `Mask`, veuillez vous référer à la documentation Godot de l'objet `CollisionObject3D` : https://docs.godotengine.org/en/4.6/classes/class_collisionobject3d.html
 
 - **Moteur** : Jolt Physics
 - **Layers** :
