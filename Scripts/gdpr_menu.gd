@@ -41,7 +41,7 @@ func refuse_gdpr() -> void:
 	var interface := get_interface()
 
 	if interface != null:
-		interface.first_login_flow = true
+		interface.first_login = true
 		interface.show_gdpr()
 	else:
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")

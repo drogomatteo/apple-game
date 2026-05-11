@@ -6,7 +6,7 @@ extends Control
 
 func _ready() -> void:
 	sound_button.button_pressed = Settings.sound
-	colour_blind_button.select(Settings.colour_blind_mode)
+	colour_blind_button.select(Settings.colour_bind)
 
 
 func _on_back_button_pressed() :
@@ -19,4 +19,4 @@ func _on_sound_toggled(value: bool) :
 
 
 func _on_daltonien_item_selected(index: int) :
-	Settings.set_colour_blind_mode(index)
+	Settings.set_colour_bind(index)
