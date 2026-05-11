@@ -397,7 +397,14 @@ func build_file_body( filepath: String, session_id := "", extra_fields := {} ) -
 		body += multipart_field("session_id", session_id)
 
 	for field_name in extra_fields.keys():
-		body += multipart_field(str(field_name), extra_fields[field_name])
+		var normalized_field_name := "seed_levels" if str(field_name) == "seed" else str(field_name)
+		var value = extra_fields[field_name]
+
+		if typeof(value) == TYPE_ARRAY:
+			for item in value:
+				body += multipart_field(normalized_field_name, item)
+		else:
+			body += multipart_field(normalized_field_name, value)
 
 	body += "--" + MULTIPART_BOUNDARY + "\r\n"
 	body += 'Content-Disposition: form-data; name="file"; filename="report.dat"\r\n'

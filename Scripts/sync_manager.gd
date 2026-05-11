@@ -428,7 +428,7 @@ func seed_done(action: Dictionary, body_text: String) -> void:
 	else:
 		extra_fields = extra_fields.duplicate(true)
 
-	extra_fields["seed"] = int(response["id"])
+	extra_fields["seed_levels"] = [int(response["id"])]
 
 	queue.insert(0, {
 		"type": "file",
@@ -513,7 +513,14 @@ func file_body(filepath: String, session_id := "", extra_fields := {}) -> Dictio
 		body += field("session_id", session_id)
 
 	for field_name in extra_fields.keys():
-		body += field(str(field_name), extra_fields[field_name])
+		var normalized_field_name := "seed_levels" if str(field_name) == "seed" else str(field_name)
+		var value = extra_fields[field_name]
+
+		if typeof(value) == TYPE_ARRAY:
+			for item in value:
+				body += field(normalized_field_name, item)
+		else:
+			body += field(normalized_field_name, value)
 
 	body += "--" + MULTIPART_BOUNDARY + "\r\n"
 	body += 'Content-Disposition: form-data; name="file"; filename="report.dat"\r\n'
