@@ -374,30 +374,45 @@ func Placer_Objet_sur_map(mot : String, indice : String = "0"):
 
 
 func save_level():
-	var level = ""
+	var trees := []
+	var positions := []
 
-	level += str(graine)+"\n"
-	level += str(temps_écoulé)+"\n"
-	
-	level += str(int(Objet["basket0"].x))+" "+str(int(Objet["basket0"].z))+"\n"
-	level += str(int(Objet["apple_tree0"].x))+" "+str(int(Objet["apple_tree0"].z))+"\n"
-	if Difficulté_actuel[0]:
-		level += "1 "
-	else:
-		level += "0 "
-	level += str(int(Objet["visual0"].x))+" "+str(int(Objet["visual0"].z))+"\n"
-
-	level += str(max_tree)+"\n"
 	for j in range(max_tree):
-		level += str(int(Objet["tree"+str(j)].x))+" "+str(int(Objet["tree"+str(j)].z))+"\n"
-	
-	level += str(len(position_joueur))+"\n"
-	for vecteur in position_joueur:
-		level += str(snappedf(vecteur.x, 0.01))+" "+str(snappedf(vecteur.z, 0.01))+"\n"
+		trees.append({
+			"x": int(Objet["tree"+str(j)].x),
+			"z": int(Objet["tree"+str(j)].z)
+		})
 
-	level += str(snappedf(distance,0.01))+"\n"
-	level += str(score)+"\n"
-	return level
+	for vecteur in position_joueur:
+		positions.append({
+			"x": snappedf(vecteur.x, 0.01),
+			"z": snappedf(vecteur.z, 0.01)
+		})
+
+	return {
+		"level_attempt_id": session_id + "_level_" + str(niveau),
+		"level_index": niveau,
+		"seed": graine,
+		"score": score,
+		"duration": snappedf(temps_écoulé, 0.01),
+		"completed": true,
+		"distance": snappedf(distance, 0.01),
+		"basket": {
+			"x": int(Objet["basket0"].x),
+			"z": int(Objet["basket0"].z)
+		},
+		"apple_tree": {
+			"x": int(Objet["apple_tree0"].x),
+			"z": int(Objet["apple_tree0"].z)
+		},
+		"visual": {
+			"x": int(Objet["visual0"].x),
+			"z": int(Objet["visual0"].z),
+			"enabled": Difficulté_actuel[0]
+		},
+		"trees": trees,
+		"positions": positions
+	}
 
 func continuer_fin_apres_tuto() -> void:
 	if not pending_end_results:
@@ -479,43 +494,28 @@ func _on_break_button_pressed() -> void:
 		BreakMenu.open()
 	
 
-func save_interrupted_level() -> String:
-	var level = ""
-	level += str(graine)+"\n"
-	level += str(temps_écoulé)+"\n"
-	
-	level += str(int(Objet["basket0"].x))+" "+str(int(Objet["basket0"].z))+"\n"
-	level += str(int(Objet["apple_tree0"].x))+" "+str(int(Objet["apple_tree0"].z))+"\n"
-	if Difficulté_actuel[0]:
-		level += "1 "
-	else:
-		level += "0 "
-	level += str(int(Objet["visual0"].x))+" "+str(int(Objet["visual0"].z))+"\n"
-
-	level += str(max_tree)+"\n"
-	for j in range(max_tree):
-		level += str(int(Objet["tree"+str(j)].x))+" "+str(int(Objet["tree"+str(j)].z))+"\n"
-	
-	level += str(len(position_joueur))+"\n"
-	for vecteur in position_joueur:
-		level += str(snappedf(vecteur.x, 0.01))+" "+str(snappedf(vecteur.z, 0.01))+"\n"
-
+func save_interrupted_level() -> Dictionary:
+	var level: Dictionary = save_level()
+	level["completed"] = false
+	level["level_attempt_id"] = session_id + "_level_" + str(niveau) + "_interrupted"
 	return level
 	
 #fonction pour mettre les rapports en attente d’envoi	
 func queue_reports_for_sync() -> void:
-	GameManager.queue_full_report(session_id)
+	GameManager.queue_full_report(session_id, str(graine))
 
 
 func write_local_reports(interrompue: bool = false) -> void:
-	var contenu = str(len(list_to_save))+"\n"+"".join(list_to_save)
+	var contenu = {}
 
 	if interrompue:
-		contenu += save_interrupted_level()
+		contenu = save_interrupted_level()
+	elif not list_to_save.is_empty():
+		contenu = list_to_save[-1]
 
 	var file = FileAccess.open("user://rapport_complet.dat", FileAccess.WRITE)
 	if file:
-		file.store_string(contenu)
+		file.store_string(JSON.stringify(contenu))
 		file.close()
 
 
@@ -532,4 +532,4 @@ func _notification(what):
 
 # fonction unique d’envoi qui met à jour à la fin de chaque niveau, elle est appelée à la fin de chaque niveau et on tente d'envoyer dans la DB
 func sync_reports_now() -> void:
-	GameManager.send_full_report(session_id)
+	GameManager.send_full_report(session_id, str(graine))

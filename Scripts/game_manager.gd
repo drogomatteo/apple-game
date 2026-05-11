@@ -400,8 +400,8 @@ func build_file_body( filepath: String, session_id := "", extra_fields := {} ) -
 		body += multipart_field(str(field_name), extra_fields[field_name])
 
 	body += "--" + MULTIPART_BOUNDARY + "\r\n"
-	body += 'Content-Disposition: form-data; name="file"; filename="report.dat"\r\n'
-	body += "Content-Type: application/octet-stream\r\n\r\n"
+	body += 'Content-Disposition: form-data; name="file"; filename="level_report.json"\r\n'
+	body += "Content-Type: application/json\r\n\r\n"
 
 	var end := ("\r\n--" + MULTIPART_BOUNDARY + "--\r\n").to_utf8_buffer()
 
@@ -502,19 +502,39 @@ func send_file(filepath: String, url: String, session_id := "", extra_fields := 
 	)
 
 
-func queue_full_report(session_id := "") -> void:
-	queue_file_upload(
-		"user://rapport_complet.dat",
-		BASE_URL + "full-report/",
-		session_id,
-		get_client_metadata()
-	)
+func queue_full_report(session_id := "", seed_value := "") -> void:
+	if seed_value == "":
+		queue_file_upload(
+			"user://rapport_complet.dat",
+			BASE_URL + "full-report/",
+			session_id,
+			get_client_metadata()
+		)
+		return
+
+	var copy := create_upload_copy("user://rapport_complet.dat")
+
+	SyncManager.add_action({
+		"type": "create_seed",
+		"seed_value": seed_value,
+		"session_id": session_id,
+		"report_path": str(copy["path"]),
+		"extra_fields": get_client_metadata(),
+		"report_snapshot_file": bool(copy["is_copy"])
+	})
 
 
-func send_full_report(session_id := "") -> void:
-	send_file(
-		"user://rapport_complet.dat",
-		BASE_URL + "full-report/",
-		session_id,
-		get_client_metadata()
-	)
+func send_full_report(session_id := "", seed_value := "") -> void:
+	if seed_value == "":
+		send_file(
+			"user://rapport_complet.dat",
+			BASE_URL + "full-report/",
+			session_id,
+			get_client_metadata()
+		)
+		return
+
+	queue_full_report(session_id, seed_value)
+
+	if not SyncManager.is_running:
+		SyncManager.force_sync()
