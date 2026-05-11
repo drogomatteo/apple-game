@@ -40,9 +40,7 @@ const TEMPS_AVANCER_DEMANDE: float = 2.0
 @onready var highlight = $"../UI/TutorialUI/Highlight"
 @onready var ToDo = $"../UI/Zone de texte/VBoxContainer/ToDo"
 
-@onready var icon_left = $"../UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter/Icon left"
-@onready var icon_right = $"../UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter/IconRight"
-@onready var icon_forward = $"../UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter/IconForward"
+
 
 # Boutons de la scène Player
 @onready var Left = $"../Player/CanvasLayer/MarginContainer/HBoxContainer/Control/Left"
@@ -204,12 +202,11 @@ func afficher_etape_action(etape: EtapeTutoriel, mode: ModeControle, indice_mess
 
 	if mode == ModeControle.ROTATION:
 		player.mettre_en_avant_boutons_rotation(true)
-		icon_left.visible = true
-		icon_right.visible = true
+
 
 	if mode == ModeControle.AVANCER:
 		player.mettre_en_avant_bouton_avancer(true)
-		icon_forward.visible = true
+
 
 
 func afficher_consigne(etape: EtapeTutoriel, indice_message: int) -> void:
@@ -270,9 +267,7 @@ func afficher_boite_tutoriel(texte: String, afficher_suivant: bool = true) -> vo
 	tutorial_ui.show()
 	boite_message.show()
 
-	icon_left.visible = false
-	icon_right.visible = false
-	icon_forward.visible = false
+
 
 	message_label.text = texte
 	next_button.visible = afficher_suivant
