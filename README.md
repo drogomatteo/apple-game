@@ -6,37 +6,35 @@ Projet Réalisé par Eva Kabelis, Tom Boreux, Matteo Drogo et Martin Lempite, qu
 
 *AppleGame* est une application mobile développer dans le but d'évaluer l'orientation spatiale lié à la maladie d'Alzheimer.
 
-## Fonctionnalités
-
-- Environnement de jardin 3D avec éléments interactifs
-- Plusieurs niveaux générés aléatoirement
-- Sauvegarde et synchronisation en ligne des progrès
-- Interface conviviale avec options pour le daltonisme
-
-## Structure du Projet
-
-- `Scenes/` : Scènes de jeu et éléments UI
-- `Scripts/` : Fichiers GDScript pour la logique de jeu
-- `Assets/` : Modèles 3D, textures, sons et shaders
-- `addons/` : Addons Godot (plugin Git)
-
-## Intégration API
-
-Le jeu s'intègre avec une API backend pour :
-- Authentification utilisateur
-- Sauvegarde des progrès
-- Synchronisation des données de niveau
-
-Point de terminaison API : https://alzheimer.magellan.fpms.ac.be/api/
-
 ## Documentation
 
-La documentation complète du projet se trouve dans le dossier [`docs/`](docs/) :
+La documentation complète du projet se trouve dans le dossier [`docs/`](docs/).
 
-- [Guide de Démarrage](docs/GETTING_STARTED.md) - Installation et premiers pas
-- [Architecture du Projet](docs/ARCHITECTURE.md) - Structure technique
-- [Mécanique de Jeu](docs/GAMEPLAY.md) - Règles et gameplay
-- [Intégration API](docs/API.md) - Documentation des endpoints
+Les pages principales incluent :
+
+- `docs/index.md` : page d'accueil de la documentation.
+- `docs/GETTING_STARTED.md` : installation et démarrage.
+- `docs/ARCHITECTURE.md` : architecture du projet.
+- `docs/GAMEPLAY.md` : mécaniques du jeu.
+- `docs/CONTRIBUTING.md` : guide de contribution.
+- `docs/project/index.md` : structure du dépôt.
+- `docs/deployment/index.md` : instructions de publication.
+- `docs/scenes/index.md` : vue d'ensemble des scènes.
+- `docs/scripts/index.md` : vue d'ensemble des scripts.
+
+### Documentation interactive
+
+Pour une expérience de lecture améliorée, nous utilisons **MkDocs** pour générer un site web moderne.
+
+```bash
+# Installer les dépendances Python
+pip install -r requirements.txt
+
+# Lancer le serveur de documentation
+mkdocs serve
+
+# Ouvrir http://127.0.0.1:8000
+```
 
 ## Plus d'informations
 

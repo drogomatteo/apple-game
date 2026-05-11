@@ -1,50 +1,31 @@
-# Guide de Démarrage - AppleGame
+# 🚀 Pour commencer
 
-## Installation et Configuration
+Cette page décrit les étapes initiales pour utiliser le projet AppleGame.
 
-### 1. Pré-requis
+## Prérequis
 
-- **Godot Engine 4.6** ou plus récent ([Télécharger](https://godotengine.org/download))
-- **Git** pour le contrôle de version
-- Pour Android : **Android SDK** et **Android NDK**
+- Godot Engine 4.6
+- Python 3 (pour la documentation MkDocs)
+- Un appareil Android ou un émulateur pour tester le build mobile
 
-### 2. Ouvrir le Projet
+## Installation de la documentation
 
-1. Ouvrir Godot Engine
-2. Cliquer sur "Ouvrir un projet"
-3. Sélectionner le dossier `apple-game`
-4. Cliquer sur "Ouvrir et éditer"
-
-### 3. Premier Lancement
-
-Dans l'éditeur Godot, cliquer sur le bouton **Play** en haut à droite ou utiliser le raccourci **F5**. Le jeu démarrera dans la scène principale
-
-## Structure des Fichiers
-
-```
-apple-game/
-├── Scenes/           # Scènes Godot du jeu
-├── Scripts/          # Code GDScript (logique du jeu)
-├── Assets/           # Ressources (modèles, textures, sons)
-├── addons/           # Extensions Godot
-├── docs/             # Documentation
-├── project.godot     # Configuration du projet
-└── README.md         # Page d'accueil
+```bash
+cd apple-game
+pip install -r requirements.txt
+mkdocs serve
 ```
 
-## Contrôles du Jeu
+Ensuite, ouvrez `http://127.0.0.1:8000` dans votre navigateur.
 
-### Mobile (Joystick virtuel)
-- **Zone gauche** : Déplacer la caméra à gauche ou droite
-- **Zone droite** : Avancer et valider sa position
+## Ouvrir le projet Godot
 
-## Scripts Principaux
+1. Lancez Godot.
+2. Sélectionnez le dossier `apple-game`.
+3. Ouvrez `project.godot`.
 
-| Script | Rôle |
-|--------|------|
-| `main.gd` | Gestion de la scène principale et logique de jeu |
-| `player.gd` | Contrôle du joueur |
-| `game_manager.gd` | Gestion des API et authentification |
-| `file_manager.gd` | Sauvegarde/Chargement des données |
-| `basket.gd` | Gestion du panier et collecte |
+## Vérification rapide
 
+- Le jeu se trouve dans `Scenes/`.
+- Le code principal se trouve dans `Scripts/`.
+- Les ressources se trouvent dans `Assets/`.

@@ -1,0 +1,123 @@
+site_name: AppleGame Documentation
+site_description: Documentation complète du projet AppleGame - Jeu thérapeutique pour Alzheimer
+site_author: Équipe AppleGame (Eva Kabelis, Tom Boreux, Matteo Drogo, Martin Lempite)
+site_url: https://apple-game-docs.example.com
+
+# Repository
+repo_name: apple-game
+repo_url: https://github.com/username/apple-game
+edit_uri: edit/main/docs/
+
+# Configuration
+theme:
+  name: material
+  language: fr
+  palette:
+    - scheme: default
+      primary: green
+      accent: green
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: green
+      accent: green
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+    - content.code.select
+    - content.footnote.tooltips
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+    previous: fontawesome/solid/angle-left
+    next: fontawesome/solid/angle-right
+
+# Extensions Markdown
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+  - attr_list
+  - md_in_html
+  - footnotes
+  - toc:
+      permalink: true
+      permalink_title: Anchor link to this section for reference
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
+  # - git-revision-date-localized:
+  #     enable_creation_date: true
+  #     type: timeago
+  # - git-committers:
+  #     repository: username/apple-game
+  #     branch: main
+
+nav:
+  - Accueil: index.md
+  - Pour Commencer:
+      - Installation: GETTING_STARTED.md
+      - Premier Lancement: PREMIER_LANCEMENT.md
+  - Architecture:
+      - Vue d'ensemble: ARCHITECTURE.md
+      - Scripts: scripts/index.md
+      - Scènes: scenes/index.md
+      - Assets: assets/index.md
+      - Projet: project/index.md
+  - Gameplay:
+      - Mécaniques: GAMEPLAY.md
+      - Niveaux: levels/level_generation.md
+  - Développement:
+      - API Backend: API.md
+      - Déploiement: deployment/index.md
+      - Contribution: CONTRIBUTING.md
+  - Feuille de route:
+      - Roadmap: roadmap/future_features.md
+  - À propos:
+      - MkDocs: README_MKDOCS.md
+
+# Exclude files
+exclude_docs: |
+  **/.*
