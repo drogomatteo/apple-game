@@ -432,8 +432,8 @@ func seed_done(action: Dictionary, body_text: String) -> void:
 
 	queue.insert(0, {
 		"type": "file",
-		"path": str(action.get("report_path", "user://doctor_report.dat")),
-		"url": str(action.get("report_url", BASE_URL + "doctor-report/")),
+		"path": str(action.get("report_path", "user://rapport_complet.dat")),
+		"url": BASE_URL + "full-report/",
 		"session_id": str(action.get("session_id", "")),
 		"retries": 0,
 		"extra_fields": extra_fields,
@@ -751,7 +751,7 @@ func is_duplicate(action: Dictionary, code: int, body_text: String) -> bool:
 
 	var url := str(action.get("url", ""))
 
-	if url.find("full-report/") == -1 and url.find("doctor-report/") == -1:
+	if url.find("full-report/") == -1:
 		return false
 
 	return body_text.find("must make a unique set") != -1
@@ -821,32 +821,10 @@ func migrate_report(action: Dictionary) -> bool:
 
 	var url := str(action.get("url", ""))
 
-	if url.find("doctor-report/") == -1:
+	if url.find("full-report/") != -1:
 		return false
 
-	var extra_fields = action.get("extra_fields", {})
-
-	if typeof(extra_fields) != TYPE_DICTIONARY:
-		return false
-
-	var seed_value := str(extra_fields.get("seed", "")).strip_edges()
-
-	if seed_value == "" or not seed_value.is_valid_int():
-		return false
-
-	queue.pop_front()
-
-	queue.insert(0, {
-		"type": "create_seed",
-		"seed_value": seed_value,
-		"session_id": str(action.get("session_id", "")),
-		"report_path": str(action.get("path", "user://doctor_report.dat")),
-		"report_url": url,
-		"extra_fields": extra_fields,
-		"retries": int(action.get("retries", 0))
-	})
-
-	save_queue()
+	drop(action)
 
 	return true
 

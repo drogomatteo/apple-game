@@ -505,7 +505,6 @@ func save_interrupted_level() -> String:
 #fonction pour mettre les rapports en attente d’envoi	
 func queue_reports_for_sync() -> void:
 	GameManager.queue_full_report(session_id)
-	GameManager.queue_doctor_report(session_id, str(graine))
 
 
 func write_local_reports(interrompue: bool = false) -> void:
@@ -519,16 +518,8 @@ func write_local_reports(interrompue: bool = false) -> void:
 		file.store_string(contenu)
 		file.close()
 
-	var file2 = FileAccess.open("user://doctor_report.dat", FileAccess.WRITE)
-	if file2:
-		var doctor_report_content = ""
-		doctor_report_content += "Score: " + str(score) + "\n"
-		doctor_report_content += "Niveau atteint: " + str(niveau) + "\n"
-		doctor_report_content += "Statut: " + ("interrompue" if interrompue else "terminee") + "\n"
-		file2.store_string(doctor_report_content)
-		file2.close()
-			
-			
+
+
 # si le joueur ferme la fenêtre en plein jeu
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -542,5 +533,3 @@ func _notification(what):
 # fonction unique d’envoi qui met à jour à la fin de chaque niveau, elle est appelée à la fin de chaque niveau et on tente d'envoyer dans la DB
 func sync_reports_now() -> void:
 	GameManager.send_full_report(session_id)
-	
-	GameManager.send_doctor_report(session_id, str(graine))

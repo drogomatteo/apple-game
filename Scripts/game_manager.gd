@@ -112,7 +112,7 @@ func duplicate_report_response(url: String, code: int, body_text: String) -> boo
 	if code != 400:
 		return false
 
-	if url.find("full-report/") == -1 and url.find("doctor-report/") == -1:
+	if url.find("full-report/") == -1:
 		return false
 
 	return body_text.find("must make a unique set") != -1
@@ -511,20 +511,6 @@ func queue_full_report(session_id := "") -> void:
 	)
 
 
-func queue_doctor_report(session_id := "", seed_value := "") -> void:
-	var copy := create_upload_copy("user://doctor_report.dat")
-
-	SyncManager.add_action({
-		"type": "create_seed",
-		"seed_value": seed_value,
-		"session_id": session_id,
-		"report_path": str(copy["path"]),
-		"report_url": BASE_URL + "doctor-report/",
-		"extra_fields": get_client_metadata(),
-		"report_snapshot_file": bool(copy["is_copy"])
-	})
-
-
 func send_full_report(session_id := "") -> void:
 	send_file(
 		"user://rapport_complet.dat",
@@ -532,10 +518,3 @@ func send_full_report(session_id := "") -> void:
 		session_id,
 		get_client_metadata()
 	)
-
-
-func send_doctor_report(session_id := "", seed_value := "") -> void:
-	queue_doctor_report(session_id, seed_value)
-
-	if not SyncManager.is_running:
-		SyncManager.force_sync()
