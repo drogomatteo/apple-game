@@ -516,8 +516,8 @@ func file_body(filepath: String, session_id := "", extra_fields := {}) -> Dictio
 		body += field(str(field_name), extra_fields[field_name])
 
 	body += "--" + MULTIPART_BOUNDARY + "\r\n"
-	body += 'Content-Disposition: form-data; name="file"; filename="level_report.json"\r\n'
-	body += "Content-Type: application/json\r\n\r\n"
+	body += 'Content-Disposition: form-data; name="file"; filename="report.dat"\r\n'
+	body += "Content-Type: application/octet-stream\r\n\r\n"
 
 	return {
 		"ok": true,
