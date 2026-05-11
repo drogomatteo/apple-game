@@ -23,12 +23,12 @@ extends Node3D
 @onready var player_right = $Player/CanvasLayer/MarginContainer/HBoxContainer/Control3/Right
 @onready var player_forward = $Player/CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward
 @onready var player_node_3d = $Player/Node3D
-
 var Basket : Node
 var Apple_tree : Node
 var Visual : Node
 
-#Gravité
+#Hauteur d'apparition
+@export_group("Hauteur d'apparition")
 @export var spawn_height := 3.0
 
 #Gestion des arbres
@@ -100,7 +100,6 @@ func _get_session_owner_id() -> String:
 
 	return str(PlayerData.user_id)
 
-#Tuto désactivé de base:
 func _ready() -> void:
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + _get_session_owner_id() + "_" + str(randi())
 	TutorialHighlight.visible = false
@@ -479,8 +478,7 @@ func _on_break_button_pressed() -> void:
 		BreakButton.visible = false
 		BreakMenu.open()
 	
-	
-#fonction pour le niveau interrompu
+
 func save_interrupted_level() -> String:
 	var level = ""
 	level += str(graine)+"\n"
@@ -510,7 +508,6 @@ func queue_reports_for_sync() -> void:
 	GameManager.queue_doctor_report(session_id, str(graine))
 
 
-#fonction pour écrire les rapports localement
 func write_local_reports(interrompue: bool = false) -> void:
 	var contenu = str(len(list_to_save))+"\n"+"".join(list_to_save)
 

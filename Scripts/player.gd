@@ -119,10 +119,10 @@ func _physics_process(delta: float) -> void:
 		velocity.y = 0.0
 
 	move_and_slide()
-	_handle_head_bob(delta)
+	handle_head_bob(delta)
 
 
-func _handle_head_bob(delta: float) -> void:
+func handle_head_bob(delta: float) -> void:
 	t_bob += delta * velocity.length() * float(is_on_floor())
 
 	var pos := Vector3.ZERO
