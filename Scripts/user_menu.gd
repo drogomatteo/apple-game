@@ -36,10 +36,6 @@ var generated_patient_token_value := ""
 var offline_generated_token_value := ""
 
 
-func get_interface():
-	return get_tree().get_meta("interface")
-
-
 func _ready() :
 	randomize()
 
@@ -55,29 +51,6 @@ func _ready() :
 		birth_year_input.text = str(PlayerData.birth_year)
 		doctor_token_input.text = PlayerData.doctor_token
 
-	update_form()
-
-
-func _on_token_input_text_changed(_text := "") :
-	token_input_generation += 1
-
-	var token: String = token_input.text.strip_edges()
-
-	if offline_generated_token_value != "" and token != offline_generated_token_value:
-		offline_generated_token_value = ""
-
-	if generated_patient_token_value != "" and token != generated_patient_token_value:
-		generated_patient_token_value = ""
-
-	clear_lookup()
-	clear_autofill()
-	update_form()
-
-
-
-func _on_token_input_focus_entered() :
-	clear_lookup()
-	clear_autofill()
 	update_form()
 
 
@@ -107,7 +80,7 @@ func valid_year(birth_year_text: String) -> bool:
 
 
 
-func lock(locked: bool) -> void:
+func lock(locked: bool) :
 	save_button.disabled = locked
 	guest_button.disabled = locked
 	generate_button.disabled = locked
@@ -131,6 +104,40 @@ func generating_token() -> String:
 	return token
 
 
+func clear_autofill() :
+	if last_autofill_birth_year != "" and birth_year_input.text.strip_edges() == last_autofill_birth_year:
+		birth_year_input.text = ""
+
+	if last_autofill_doctor_token != "" and doctor_token_input.text.strip_edges() == last_autofill_doctor_token:
+		doctor_token_input.text = ""
+
+	last_autofill_token = ""
+	last_autofill_birth_year = ""
+	last_autofill_doctor_token = ""
+
+
+func clear_lookup() :
+	pending_prefill_token = ""
+	pending_prefill_generation = 0
+
+
+func clear_generated_token(offline := false) :
+	generated_patient_token_value = ""
+
+	if offline:
+		offline_generated_token_value = ""
+
+
+func clear_doctor(reason: String) :
+	push_warning("Doctor token cleared: %s" % reason)
+
+	doctor_token_input.text = ""
+	pending_login_data.erase("doctor_token")
+
+	if str(PlayerData.doctor_token).strip_edges() != "":
+		PlayerData.doctor_token = ""
+		FileManager.save_game()
+
 func clear_generated() -> void:
 	birth_year_input.text = ""
 	doctor_token_input.text = ""
@@ -141,13 +148,27 @@ func clear_generated() -> void:
 	update_form()
 
 
-func _on_generate_token_button_pressed() -> void:
-	token_generation_attempts = 0
-	clear_generated()
-	status_label.text = "Génération..."
-	lock(true)
-	generate_token()
+func offline_token() :
+	var reserved_keys := local_tokens()
 
+	for _i in range(MAX_TOKEN_GENERATION_ATTEMPTS):
+		var candidate := generating_token()
+
+		if reserved_keys.has(candidate):
+			continue
+
+		token_input.text = candidate
+		clear_generated()
+
+		generated_patient_token_value = candidate
+		offline_generated_token_value = candidate
+
+		status_label.text = "Identifiant généré hors ligne (vérification à la prochaine connexion)"
+		lock(false)
+		return
+
+	show_error("Impossible de générer une clé patient")
+	lock(false)
 
 func generate_token() -> void:
 	token_generation_attempts += 1
@@ -165,7 +186,7 @@ func generate_token() -> void:
 
 	var response: Dictionary = await Api.get_user(generated_token)
 
-	if not valid_api_lookup(response, "Token generation"):
+	if not Api.is_request_successful(response, "Token generation", true):
 		is_generating_token = false
 		is_request_running = false
 		offline_token()
@@ -186,35 +207,6 @@ func generate_token() -> void:
 	else:
 		is_request_running = false
 		generate_token()
-
-
-func valid_api_lookup(response: Dictionary, context: String) -> bool:
-	if not bool(response.get("auth", true)):
-		push_warning("%s auth unavailable." % context)
-		return false
-
-	if int(response.get("error", OK)) != OK:
-		push_warning("%s request failed immediately: %s" % [
-			context,
-			str(response.get("error", OK))
-		])
-		return false
-
-	if int(response.get("result", HTTPRequest.RESULT_SUCCESS)) != HTTPRequest.RESULT_SUCCESS:
-		push_warning("%s request failed: result=%s" % [
-			context,
-			str(response.get("result", 0))
-		])
-		return false
-
-	if int(response.get("code", 0)) != 404 and not bool(response.get("ok", false)):
-		push_warning("%s response failed: code=%s" % [
-			context,
-			str(response.get("code", 0))
-		])
-		return false
-
-	return true
 
 
 func local_tokens() -> Dictionary:
@@ -245,54 +237,7 @@ func local_tokens() -> Dictionary:
 	return reserved_keys
 
 
-func offline_token() :
-	var reserved_keys := local_tokens()
-
-	for _i in range(MAX_TOKEN_GENERATION_ATTEMPTS):
-		var candidate := generating_token()
-
-		if reserved_keys.has(candidate):
-			continue
-
-		token_input.text = candidate
-		clear_generated()
-
-		generated_patient_token_value = candidate
-		offline_generated_token_value = candidate
-
-		status_label.text = "Identifiant généré hors ligne (vérification à la prochaine connexion)"
-		lock(false)
-		return
-
-	show_error("Impossible de générer une clé patient")
-	lock(false)
-
-
-func clear_autofill() -> void:
-	if last_autofill_birth_year != "" and birth_year_input.text.strip_edges() == last_autofill_birth_year:
-		birth_year_input.text = ""
-
-	if last_autofill_doctor_token != "" and doctor_token_input.text.strip_edges() == last_autofill_doctor_token:
-		doctor_token_input.text = ""
-
-	last_autofill_token = ""
-	last_autofill_birth_year = ""
-	last_autofill_doctor_token = ""
-
-
-func clear_lookup() -> void:
-	pending_prefill_token = ""
-	pending_prefill_generation = 0
-
-
-func clear_generated_token(offline := false) -> void:
-	generated_patient_token_value = ""
-
-	if offline:
-		offline_generated_token_value = ""
-
-
-func show_error(message: String) -> void:
+func show_error(message: String) :
 	pending_login_data.clear()
 	clear_generated_token(true)
 	clear_lookup()
@@ -301,7 +246,7 @@ func show_error(message: String) -> void:
 	status_label.text = message
 
 
-func prefill() -> void:
+func prefill() :
 	var token : String = token_input.text.strip_edges()
 
 	if token == "" or RESERVED_PATIENT_TOKENS.has(token.to_lower()):
@@ -345,21 +290,10 @@ func prefill() -> void:
 
 	clear_lookup()
 
-	if not bool(response.get("auth", true)):
-		push_warning("Prefill auth unavailable.")
+	if not Api.is_request_successful(response, "Prefill lookup", true):
 		return
 
-	if int(response.get("error", OK)) != OK:
-		push_warning("Prefill request failed immediately: %s" % str(response.get("error", OK)))
-		return
-
-	if int(response.get("result", HTTPRequest.RESULT_SUCCESS)) != HTTPRequest.RESULT_SUCCESS:
-		push_warning("Prefill lookup failed: result=%s" % str(response.get("result", 0)))
-		return
-
-	if not bool(response.get("ok", false)):
-		if int(response.get("code", 0)) != 404:
-			push_warning("Prefill lookup ignored: code=%s" % str(response.get("code", 0)))
+	if Api.is_not_found(response):
 		return
 
 	var user_data := Api.find_by_token(response, token)
@@ -383,35 +317,6 @@ func prefill() -> void:
 
 	update_form()
 
-
-func _on_token_input_focus_exited() -> void:
-	prefill()
-
-
-func clear_doctor(reason: String) -> void:
-	push_warning("Doctor token cleared: %s" % reason)
-
-	doctor_token_input.text = ""
-	pending_login_data.erase("doctor_token")
-
-	if str(PlayerData.doctor_token).strip_edges() != "":
-		PlayerData.doctor_token = ""
-		FileManager.save_game()
-
-
-func reset_login_request() :
-	is_request_running = false
-	pending_login_data.clear()
-
-
-
-func offline_doctor(log_message: String) -> void:
-	push_warning(log_message)
-	status_label.text = "Mode hors ligne"
-	is_request_running = false
-	offline_login(pending_login_data)
-
-
 func finish() -> void:
 	PlayerData.print_data()
 	FileManager.save_game()
@@ -422,105 +327,34 @@ func finish() -> void:
 	call_deferred("go_menu")
 
 
-func can_create() -> bool:
-	return bool(pending_login_data.get("guest_created", false))
+func offline_login(data: Dictionary) :
+	var birth_year := str(data.get("birth_year", ""))
+
+	PlayerData.set_user(
+		-2,
+		str(data.get("uuid", uuid())),
+		str(data.get("token", "")),
+		birth_year,
+		str(data.get("doctor_token", ""))
+	)
+
+	PlayerData.birth_year = birth_year
+
+	SyncManager.add_action({
+		"type": "login",
+		"data": data
+	})
+
+	status_label.text = "Mode hors ligne"
+
+	finish()
 
 
-func no_user() -> void:
-	if can_create():
-		send_login(pending_login_data)
-		return
+func go_menu() :
+	var interface = get_tree().get_meta("interface")
 
-	is_request_running = false
-	pending_login_data.clear()
-	show_error("L'utilisateur n'existe pas")
-
-
-func block_user(log_message: String) -> void:
-	push_warning(log_message)
-
-	is_request_running = false
-
-	if not pending_login_data.is_empty():
-		offline_login(pending_login_data)
-		return
-
-	pending_login_data.clear()
-	show_error("Impossible de vérifier l'utilisateur")
-
-
-func guest_exists() -> void:
-	is_request_running = false
-	pending_login_data.clear()
-	offline_generated_token_value = ""
-
-	show_error("Cet identifiant existe déjà, choisissez-en un autre")
-
-
-func guest_failed(log_message: String, status_message := "Impossible de créer l'utilisateur") -> void:
-	push_error(log_message)
-
-	is_request_running = false
-	pending_login_data.clear()
-
-	show_error(status_message)
-
-
-func check_user(token: String) -> void:
-	status_label.text = "Vérification utilisateur..."
-
-	var response: Dictionary = await Api.get_user(token)
-
-	if not valid_api_lookup(response, "User token lookup"):
-		block_user("User token lookup failed")
-		return
-
-	if not Api.token_exists(response, token):
-		no_user()
-		return
-
-	continue_login()
-
-
-func continue_login() -> void:
-	is_request_running = true
-
-	if bool(pending_login_data.get("guest_created", false)):
-		guest_exists()
-		return
-
-	if not pending_login_data.has("doctor_token"):
-		send_login(pending_login_data)
-		return
-
-	var doctor_token := str(pending_login_data.get("doctor_token", "")).strip_edges()
-
-	status_label.text = "Vérification médecin..."
-
-	var response: Dictionary = await Api.get_doctor(doctor_token)
-
-
-	if int(response.get("result", HTTPRequest.RESULT_SUCCESS)) != HTTPRequest.RESULT_SUCCESS:
-		offline_doctor("Doctor token lookup network failure, fallback to offline login")
-		return
-
-	if int(response.get("code", 0)) == 404:
-		status_label.text = "Le médecin n'existe pas"
-		clear_doctor("lookup 404")
-		reset_login_request()
-		return
-
-	if not bool(response.get("ok", false)):
-		offline_doctor("Doctor token lookup failed with code=%s, fallback to offline login" % str(response.get("code", 0)))
-		return
-
-	if not Api.token_exists(response, doctor_token):
-		status_label.text = "Le médecin n'existe pas"
-		clear_doctor("lookup no matching token")
-		reset_login_request()
-		return
-
-	send_login(pending_login_data)
+	if interface:
+		interface.show_menu()
 
 
 func get_data(is_guest: bool) -> Dictionary:
@@ -565,51 +399,19 @@ func get_data(is_guest: bool) -> Dictionary:
 
 	return data
 
-
-func start_login(data: Dictionary, status_message: String) -> void:
-	pending_login_data = data.duplicate(true)
-	is_request_running = true
-	status_label.text = status_message
-
-	check_user(str(data.get("token", "")).strip_edges())
-
-
-func _on_save_button_pressed() -> void:
-	if is_request_running:
-		return
-
-	var data := get_data(false)
-
-	if data.is_empty():
-		return
-
-	start_login(data, "Connexion...")
-
-
-func send_login(data: Dictionary) -> void:
+func send_login(data: Dictionary) :
 	is_request_running = true
 	status_label.text = "Connexion..."
 
 	var response: Dictionary = await Api.create_user(data)
 
-	if not bool(response.get("auth", true)):
-		push_warning("Login auth unavailable, switching offline.")
-		offline_login(data)
-		return
-
-	if int(response.get("error", OK)) != OK:
-		push_warning("Login request failed immediately: %s" % str(response.get("error", OK)))
-		offline_login(data)
-		return
-
 	is_request_running = false
 
-	if int(response.get("result", HTTPRequest.RESULT_SUCCESS)) != HTTPRequest.RESULT_SUCCESS:
-		push_warning("Login response failed: result=%s" % str(response.get("result", 0)))
+	if not Api.is_request_successful(response, "Login", true):
 		offline_login(data)
 		return
 
-	if int(response.get("code", 0)) == 404 and str(data.get("doctor_token", "")).strip_edges() != "":
+	if Api.is_not_found(response) and str(data.get("doctor_token", "")).strip_edges() != "":
 		status_label.text = "Le médecin n'existe pas"
 		clear_doctor("backend rejected token")
 		pending_login_data.clear()
@@ -617,17 +419,23 @@ func send_login(data: Dictionary) -> void:
 
 	if not bool(response.get("ok", false)):
 		if bool(data.get("guest_created", false)):
-			guest_failed("Guest creation rejected | code=%s" % str(response.get("code", 0)))
+			push_error("Guest creation rejected | code=%s" % str(response.get("code", 0)))
+			is_request_running = false
+			pending_login_data.clear()
+			show_error("Impossible de créer l'utilisateur")
 		else:
 			push_warning("Login rejected, switching offline: code=%s" % str(response.get("code", 0)))
 			offline_login(data)
 		return
 
-	var body_data = JSON.parse_string(str(response.get("body_text", "")))
+	var body_data = Api.parse_response(response)
 
 	if typeof(body_data) != TYPE_DICTIONARY or not body_data.has("id"):
 		if bool(data.get("guest_created", false)):
-			guest_failed("Invalid guest creation response payload")
+			push_error("Invalid guest creation response payload")
+			is_request_running = false
+			pending_login_data.clear()
+			show_error("Impossible de créer l'utilisateur")
 		else:
 			push_error("Invalid login response payload.")
 			offline_login(data)
@@ -650,47 +458,103 @@ func send_login(data: Dictionary) -> void:
 	finish()
 
 
-func offline_login(data: Dictionary) -> void:
-	var birth_year := str(data.get("birth_year", ""))
+func login(data: Dictionary, status_message: String) -> void:
+	pending_login_data = data.duplicate(true)
+	is_request_running = true
+	status_label.text = status_message
 
-	PlayerData.set_user(
-		-2,
-		str(data.get("uuid", uuid())),
-		str(data.get("token", "")),
-		birth_year,
-		str(data.get("doctor_token", ""))
-	)
+	var token := str(data.get("token", "")).strip_edges()
 
-	PlayerData.birth_year = birth_year
+	status_label.text = "Vérification utilisateur..."
 
-	SyncManager.add_action({
-		"type": "login",
-		"data": data
-	})
+	var user_response: Dictionary = await Api.get_user(token)
 
-	status_label.text = "Mode hors ligne"
+	if not Api.is_request_successful(user_response, "User token lookup", true):
+		push_warning("User token lookup failed")
+		is_request_running = false
 
-	finish()
+		if not pending_login_data.is_empty():
+			offline_login(pending_login_data)
+			return
+
+		pending_login_data.clear()
+		show_error("Impossible de vérifier l'utilisateur")
+		return
+
+	if not Api.token_exists(user_response, token):
+		if bool(data.get("guest_created", false)):
+			send_login(data)
+			return
+
+		is_request_running = false
+		pending_login_data.clear()
+		show_error("L'utilisateur n'existe pas")
+		return
+
+	if bool(data.get("guest_created", false)):
+		is_request_running = false
+		pending_login_data.clear()
+		offline_generated_token_value = ""
+		show_error("Cet identifiant existe déjà, choisissez-en un autre")
+		return
+
+	if not data.has("doctor_token"):
+		send_login(data)
+		return
+
+	var doctor_token := str(data.get("doctor_token", "")).strip_edges()
+
+	status_label.text = "Vérification médecin..."
+
+	var doctor_response: Dictionary = await Api.get_doctor(doctor_token)
+
+	if not Api.is_request_successful(doctor_response, "Doctor token lookup", true):
+		
+		push_warning("Doctor token lookup failed, fallback to offline login")
+		status_label.text = "Mode hors ligne"
+		is_request_running = false
+
+		return
+
+	if Api.is_not_found(doctor_response):
+		status_label.text = "Le médecin n'existe pas"
+		clear_doctor("lookup 404")
+		is_request_running = false
+		pending_login_data.clear()
+		return
+
+	if not Api.token_exists(doctor_response, doctor_token):
+		status_label.text = "Le médecin n'existe pas"
+		clear_doctor("lookup no matching token")
+		is_request_running = false
+		pending_login_data.clear()
+		return
+
+	send_login(data)
 
 
-func go_menu() -> void:
-	var interface = get_interface()
+func _on_save_button_pressed() :
+	if is_request_running:
+		return
 
-	if interface:
-		interface.show_menu()
+	var data := get_data(false)
 
+	if data.is_empty():
+		return
 
-func _on_back_button_pressed() -> void:
+	login(data, "Connexion...")
+
+func _on_back_button_pressed() :
 	if first_login:
 		return
 
-	var interface = get_interface()
+	var interface = get_tree().get_meta("interface")
 
 	if interface:
 		interface.show_menu()
 
 
-func _on_guest_button_pressed() -> void:
+func _on_guest_button_pressed() :
 	if is_request_running:
 		return
 
@@ -699,10 +563,10 @@ func _on_guest_button_pressed() -> void:
 	if data.is_empty():
 		return
 
-	start_login(data, "Création du compte...")
+	login(data, "Création du compte...")
 
 
-func _on_birth_year_input_text_changed(new_text: String) -> void:
+func _on_birth_year_input_text_changed(new_text: String) :
 	var filtered := ""
 
 	for c in new_text:
@@ -715,7 +579,7 @@ func _on_birth_year_input_text_changed(new_text: String) -> void:
 	update_form()
 
 
-func _on_doctor_token_input_text_changed(new_text: String) -> void:
+func _on_doctor_token_input_text_changed(new_text: String) :
 	var sanitized := new_text.strip_edges()
 
 	if sanitized != new_text:
@@ -725,15 +589,49 @@ func _on_doctor_token_input_text_changed(new_text: String) -> void:
 	update_form()
 
 
-func _on_logout_button_pressed() -> void:
+func _on_logout_button_pressed() :
 	PlayerData.logout_user()
 	Settings.set_rgpd_accepted(false)
 	FileManager.save_game()
 
-	var interface = get_interface()
+	var interface = get_tree().get_meta("interface")
 
 	if interface:
 		interface.first_login = true
 		interface.show_gdpr()
 	else:
 		get_tree().call_deferred("change_scene_to_file", "res://Scenes/Interface.tscn")
+
+
+func _on_token_input_focus_exited() :
+	prefill()
+
+
+func _on_generate_token_button_pressed() :
+	token_generation_attempts = 0
+	clear_generated()
+	status_label.text = "Génération..."
+	lock(true)
+	generate_token()
+
+
+func _on_token_input_text_changed(_text := "") :
+	token_input_generation += 1
+
+	var token: String = token_input.text.strip_edges()
+
+	if offline_generated_token_value != "" and token != offline_generated_token_value:
+		offline_generated_token_value = ""
+
+	if generated_patient_token_value != "" and token != generated_patient_token_value:
+		generated_patient_token_value = ""
+
+	clear_lookup()
+	clear_autofill()
+	update_form()
+
+
+func _on_token_input_focus_entered() :
+	clear_lookup()
+	clear_autofill()
+	update_form()

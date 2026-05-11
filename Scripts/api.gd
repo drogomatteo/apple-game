@@ -14,7 +14,14 @@ func request(url: String, headers: PackedStringArray, method: int, body := "") -
 	if error != OK:
 		push_warning("API request failed immediately | url=%s | error=%s" % [url, str(error)])
 		http.queue_free()
-		return failed_request(error)
+		return {
+			"ok": false,
+			"auth": true,
+			"error": error,
+			"result": HTTPRequest.RESULT_CANT_CONNECT,
+			"code": 0,
+			"body_text": ""
+		}
 
 	var response = await http.request_completed
 	http.queue_free()
@@ -41,17 +48,6 @@ func request(url: String, headers: PackedStringArray, method: int, body := "") -
 		"result": result,
 		"code": code,
 		"body_text": body_text
-	}
-
-
-func failed_request(error: int) -> Dictionary:
-	return {
-		"ok": false,
-		"auth": true,
-		"error": error,
-		"result": HTTPRequest.RESULT_CANT_CONNECT,
-		"code": 0,
-		"body_text": ""
 	}
 
 
@@ -116,15 +112,6 @@ func create_user(data: Dictionary) -> Dictionary:
 		push_warning("API auth unavailable for user creation.")
 		return no_auth()
 
-	return await request(
-		BASE_URL + "user/",
-		GameManager.get_json_post_headers(),
-		HTTPClient.METHOD_POST,
-		JSON.stringify(user_payload(data))
-	)
-
-
-func user_payload(data: Dictionary) -> Dictionary:
 	var payload := {
 		"token": data.get("token", ""),
 		"birth_year": data.get("birth_year", null)
@@ -138,11 +125,56 @@ func user_payload(data: Dictionary) -> Dictionary:
 	if doctor_token != "":
 		payload["doctor_token"] = doctor_token
 
-	return payload
+	return await request(
+		BASE_URL + "user/",
+		GameManager.get_json_post_headers(),
+		HTTPClient.METHOD_POST,
+		JSON.stringify(payload)
+	)
+
+
+func is_request_successful(response: Dictionary, context: String, allow_not_found := false) -> bool:
+	if not bool(response.get("auth", true)):
+		push_warning("%s auth unavailable." % context)
+		return false
+
+	if int(response.get("error", OK)) != OK:
+		push_warning("%s request failed immediately: %s" % [
+			context,
+			str(response.get("error", OK))
+		])
+		return false
+
+	if int(response.get("result", HTTPRequest.RESULT_SUCCESS)) != HTTPRequest.RESULT_SUCCESS:
+		push_warning("%s request failed: result=%s" % [
+			context,
+			str(response.get("result", 0))
+		])
+		return false
+
+	if allow_not_found and int(response.get("code", 0)) == 404:
+		return true
+
+	if not bool(response.get("ok", false)):
+		push_warning("%s response failed: code=%s" % [
+			context,
+			str(response.get("code", 0))
+		])
+		return false
+
+	return true
+
+
+func is_not_found(response: Dictionary) -> bool:
+	return int(response.get("code", 0)) == 404
+
+
+func parse_response(response: Dictionary) -> Variant:
+	return JSON.parse_string(str(response.get("body_text", "")))
 
 
 func find_by_token(response: Dictionary, token: String) -> Dictionary:
-	var data: Variant = JSON.parse_string(str(response.get("body_text", "")))
+	var data: Variant = parse_response(response)
 
 	if typeof(data) == TYPE_DICTIONARY:
 		if str(data.get("token", "")) == token:
@@ -164,7 +196,7 @@ func find_by_token(response: Dictionary, token: String) -> Dictionary:
 
 
 func token_exists(response: Dictionary, token: String) -> bool:
-	if int(response.get("code", 0)) == 404:
+	if is_not_found(response):
 		return false
 
 	if not bool(response.get("ok", false)):
@@ -177,7 +209,7 @@ func token_exists(response: Dictionary, token: String) -> bool:
 
 
 func token_is_available(response: Dictionary, token: String) -> bool:
-	if int(response.get("code", 0)) == 404:
+	if is_not_found(response):
 		return true
 
 	if not bool(response.get("ok", false)):
@@ -187,6 +219,7 @@ func token_is_available(response: Dictionary, token: String) -> bool:
 		return true
 
 	return find_by_token(response, token).is_empty()
+
 
 func get_birth_year(data: Dictionary) -> String:
 	var value = data.get("birth_year", null)
