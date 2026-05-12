@@ -75,6 +75,8 @@ var Difficulté_actuel : Array
 @export var use_generated_spawn := true
 @onready var Fences = $Monde/Fences
 var session_id : String 
+const FULL_REPORT_PATH := "user://rapport_complet.dat"
+const LATEST_LEVEL_REPORT_PATH := "user://rapport_niveau.dat"
 
 #Pause
 @onready var BreakButton = $UI/Bouttons/BreakButtonCanvas/BreakButton
@@ -504,19 +506,32 @@ func save_interrupted_level() -> String:
 	
 #fonction pour mettre les rapports en attente d’envoi	
 func queue_reports_for_sync() -> void:
-	GameManager.queue_full_report(session_id, str(graine))
+	GameManager.queue_full_report(session_id, str(graine), LATEST_LEVEL_REPORT_PATH)
 
 
 func write_local_reports(interrompue: bool = false) -> void:
-	var contenu = str(len(list_to_save))+"\n"+"".join(list_to_save)
+	var niveaux_a_sauver := list_to_save.duplicate()
 
 	if interrompue:
-		contenu += save_interrupted_level()
+		niveaux_a_sauver.append(save_interrupted_level())
 
-	var file = FileAccess.open("user://rapport_complet.dat", FileAccess.WRITE)
+	var contenu = str(len(niveaux_a_sauver))+"\n"+"".join(niveaux_a_sauver)
+
+	var file = FileAccess.open(FULL_REPORT_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(contenu)
 		file.close()
+
+	var niveaux_delta := []
+	if interrompue:
+		niveaux_delta.append(niveaux_a_sauver[-1])
+	elif not list_to_save.is_empty():
+		niveaux_delta.append(list_to_save[-1])
+
+	var delta_file = FileAccess.open(LATEST_LEVEL_REPORT_PATH, FileAccess.WRITE)
+	if delta_file:
+		delta_file.store_string(str(len(niveaux_a_sauver)) + "\n" + "".join(niveaux_delta))
+		delta_file.close()
 
 
 
@@ -532,4 +547,4 @@ func _notification(what):
 
 # fonction unique d’envoi qui met à jour à la fin de chaque niveau, elle est appelée à la fin de chaque niveau et on tente d'envoyer dans la DB
 func sync_reports_now() -> void:
-	GameManager.send_full_report(session_id, str(graine))
+	GameManager.send_full_report(session_id, str(graine), LATEST_LEVEL_REPORT_PATH)

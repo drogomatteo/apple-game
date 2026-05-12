@@ -509,17 +509,17 @@ func send_file(filepath: String, url: String, session_id := "", extra_fields := 
 	)
 
 
-func queue_full_report(session_id := "", seed_value := "") -> void:
+func queue_full_report(session_id := "", seed_value := "", report_path := "user://rapport_complet.dat") -> void:
 	if seed_value == "":
 		queue_file_upload(
-			"user://rapport_complet.dat",
+			report_path,
 			BASE_URL + "full-report/",
 			session_id,
 			get_client_metadata()
 		)
 		return
 
-	var copy := create_upload_copy("user://rapport_complet.dat")
+	var copy := create_upload_copy(report_path)
 
 	SyncManager.add_action({
 		"type": "create_seed",
@@ -531,17 +531,17 @@ func queue_full_report(session_id := "", seed_value := "") -> void:
 	})
 
 
-func send_full_report(session_id := "", seed_value := "") -> void:
+func send_full_report(session_id := "", seed_value := "", report_path := "user://rapport_complet.dat") -> void:
 	if seed_value == "":
 		send_file(
-			"user://rapport_complet.dat",
+			report_path,
 			BASE_URL + "full-report/",
 			session_id,
 			get_client_metadata()
 		)
 		return
 
-	queue_full_report(session_id, seed_value)
+	queue_full_report(session_id, seed_value, report_path)
 
 	if not SyncManager.is_running:
 		SyncManager.force_sync()
