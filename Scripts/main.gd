@@ -23,12 +23,12 @@ extends Node3D
 @onready var player_right = $Player/CanvasLayer/MarginContainer/HBoxContainer/Control3/Right
 @onready var player_forward = $Player/CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward
 @onready var player_node_3d = $Player/Node3D
-
 var Basket : Node
 var Apple_tree : Node
 var Visual : Node
 
-#Gravité
+#Hauteur d'apparition
+@export_group("Hauteur d'apparition")
 @export var spawn_height := 3.0
 
 #Gestion des arbres
@@ -100,15 +100,14 @@ func _get_session_owner_id() -> String:
 
 	return str(PlayerData.user_id)
 
-#Tuto désactivé de base:
 func _ready() -> void:
 	session_id = str(int(Time.get_unix_time_from_system())) + "_" + _get_session_owner_id() + "_" + str(randi())
 	TutorialHighlight.visible = false
-	#Paramètre.definir_tutorial_seen(false)
+	Settings.set_tutorial_seen(false)
 	Initialisation()
 
 	
-	if not Paramètre.tutorial_seen:
+	if not Settings.tutorial_seen:
 		TutorialController.start_tutorial()
 
 func _physics_process(_delta: float) -> void:
@@ -479,8 +478,7 @@ func _on_break_button_pressed() -> void:
 		BreakButton.visible = false
 		BreakMenu.open()
 	
-	
-#fonction pour le niveau interrompu
+
 func save_interrupted_level() -> String:
 	var level = ""
 	level += str(graine)+"\n"
@@ -506,25 +504,9 @@ func save_interrupted_level() -> String:
 	
 #fonction pour mettre les rapports en attente d’envoi	
 func queue_reports_for_sync() -> void:
-	SyncManager.add_action({
-		"type": "file",
-		"path": "user://rapport_complet.dat",
-		"url": GameManager.BASE_URL + "full-report/",
-		"session_id": session_id,
-		"extra_fields": GameManager.get_client_metadata()
-	})
-
-	SyncManager.add_action({
-		"type": "create_seed",
-		"seed_value": str(graine),
-		"session_id": session_id,
-		"report_path": "user://doctor_report.dat",
-		"report_url": GameManager.BASE_URL + "doctor-report/",
-		"extra_fields": GameManager.get_client_metadata()
-	})
+	GameManager.queue_full_report(session_id, str(graine))
 
 
-#fonction pour écrire les rapports localement
 func write_local_reports(interrompue: bool = false) -> void:
 	var contenu = str(len(list_to_save))+"\n"+"".join(list_to_save)
 
@@ -536,28 +518,18 @@ func write_local_reports(interrompue: bool = false) -> void:
 		file.store_string(contenu)
 		file.close()
 
-	var file2 = FileAccess.open("user://doctor_report.dat", FileAccess.WRITE)
-	if file2:
-		var doctor_report_content = ""
-		doctor_report_content += "Score: " + str(score) + "\n"
-		doctor_report_content += "Niveau atteint: " + str(niveau) + "\n"
-		doctor_report_content += "Statut: " + ("interrompue" if interrompue else "terminee") + "\n"
-		file2.store_string(doctor_report_content)
-		file2.close()
-			
-			
+
+
 # si le joueur ferme la fenêtre en plein jeu
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		write_local_reports(true)
 		queue_reports_for_sync()
 
-		GestionFichier.save_data()
+		FileManager.save_game()
 		get_tree().quit()
 
 
 # fonction unique d’envoi qui met à jour à la fin de chaque niveau, elle est appelée à la fin de chaque niveau et on tente d'envoyer dans la DB
 func sync_reports_now() -> void:
-	GameManager.send_full_report(session_id)
-	
-	GameManager.send_doctor_report(session_id, str(graine))
+	GameManager.send_full_report(session_id, str(graine))

@@ -2,9 +2,9 @@ extends CharacterBody3D
 
 # Déplacement du joueur
 const SPEED := 2.0
-const ACCELERATION := 8.0
-const DECELERATION := 10.0
-const SENSITIVITY := PI / 2.0
+const ACCELERATION := 4.0
+const DECELERATION := 5.0
+const SENSITIVITY := PI / 3.0
 const GRAVITY := 9.8
 
 # Tutoriel
@@ -24,9 +24,9 @@ var allow_right: bool = true
 @export var bruit_pas: AudioStreamRandomizer
 
 # Nœuds
-@onready var left_button = $CanvasLayer/MarginContainer/HBoxContainer/Control/Left
-@onready var forward_button = $CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward
-@onready var right_button = $CanvasLayer/MarginContainer/HBoxContainer/Control3/Right
+@onready var bouton_gauche = $CanvasLayer/MarginContainer/HBoxContainer/Control/Left
+@onready var bouton_avancer = $CanvasLayer/MarginContainer/HBoxContainer2/Control2/Forward
+@onready var bouton_droite = $CanvasLayer/MarginContainer/HBoxContainer/Control3/Right
 @onready var camera = $Camera3D
 @onready var footstep_player = $AudioStreamPlayer2D
 
@@ -41,19 +41,19 @@ var tourner_gauche: bool = false
 var tourner_droite: bool = false
 
 # Animation tuto
-var left_default_scale: Vector2 = Vector2.ONE
-var right_default_scale: Vector2 = Vector2.ONE
-var forward_default_scale: Vector2 = Vector2.ONE
+var taille_base_gauche: Vector2 = Vector2.ONE
+var taille_base_droite: Vector2 = Vector2.ONE
+var taille_base_avancer: Vector2 = Vector2.ONE
 
-var left_tween: Tween
-var right_tween: Tween
-var forward_tween: Tween
+var animation_gauche: Tween
+var animation_droite: Tween
+var animation_avancer: Tween
 
 
 func _ready() -> void:
-	left_default_scale = left_button.scale
-	right_default_scale = right_button.scale
-	forward_default_scale = forward_button.scale
+	taille_base_gauche = bouton_gauche.scale
+	taille_base_droite = bouton_droite.scale
+	taille_base_avancer = bouton_avancer.scale
 
 
 func _physics_process(delta: float) -> void:
@@ -66,7 +66,7 @@ func _physics_process(delta: float) -> void:
 	if avance:
 		direction.z -= 1.0
 
-		if not footstep_player.is_playing() and Paramètre.sound:
+		if not footstep_player.is_playing() and Settings.sound:
 			footstep_player.stream = bruit_pas
 			footstep_player.play()
 	else:
@@ -81,13 +81,13 @@ func _physics_process(delta: float) -> void:
 
 	# Déplacement
 	if temp_vel < SPEED and avance:
-		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * ACCELERATION * delta
+		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * ACCELERATION * delta * 2
 		velocity.x += horizontal_velocity.x
 		velocity.z += horizontal_velocity.z
 		temp_vel = min(temp_vel + sqrt(horizontal_velocity.dot(horizontal_velocity)), SPEED)
 
 	elif temp_vel > 0.0 and not avance:
-		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * DECELERATION * delta
+		horizontal_velocity = (transform.basis * Vector3(0, 0, direction.z)).normalized() * DECELERATION * delta * 3
 		velocity.x += horizontal_velocity.x
 		velocity.z += horizontal_velocity.z
 		temp_vel = max(temp_vel - sqrt(horizontal_velocity.dot(horizontal_velocity)), 0.0)
@@ -106,7 +106,7 @@ func _physics_process(delta: float) -> void:
 		rotate_y(direction_rot * temp_sens * delta)
 
 	elif temp_sens > 0.0 and not (tourner_droite or tourner_gauche):
-		temp_sens = max(temp_sens - delta * DECELERATION, 0.0)
+		temp_sens = max(temp_sens - delta * DECELERATION * 1.5, 0.0)
 		rotate_y(direction_rot * temp_sens * delta)
 
 	elif temp_sens == SENSITIVITY and (tourner_droite or tourner_gauche):
@@ -119,10 +119,10 @@ func _physics_process(delta: float) -> void:
 		velocity.y = 0.0
 
 	move_and_slide()
-	_handle_head_bob(delta)
+	handle_head_bob(delta)
 
 
-func _handle_head_bob(delta: float) -> void:
+func handle_head_bob(delta: float) -> void:
 	t_bob += delta * velocity.length() * float(is_on_floor())
 
 	var pos := Vector3.ZERO
@@ -132,61 +132,61 @@ func _handle_head_bob(delta: float) -> void:
 	camera.transform.origin = pos
 
 
-func _start_pulse(button: TouchScreenButton, base_scale: Vector2, tween_name: String) -> void:
-	_stop_pulse_by_name(tween_name)
+func lancer_pulsation(bouton: TouchScreenButton, taille_base: Vector2, nom_animation: String) -> void:
+	arreter_pulsation(nom_animation)
 
-	button.scale = base_scale
+	bouton.scale = taille_base
 
-	var tween := create_tween()
-	tween.set_loops()
-	tween.tween_property(button, "scale", base_scale * 1.10, 0.45)
-	tween.tween_property(button, "scale", base_scale, 0.45)
+	var animation := create_tween()
+	animation.set_loops()
+	animation.tween_property(bouton, "scale", taille_base * 1.10, 0.45)
+	animation.tween_property(bouton, "scale", taille_base, 0.45)
 
-	match tween_name:
-		"left":
-			left_tween = tween
-		"right":
-			right_tween = tween
-		"forward":
-			forward_tween = tween
-
-
-func _stop_pulse_by_name(tween_name: String) -> void:
-	match tween_name:
-		"left":
-			if left_tween:
-				left_tween.kill()
-				left_tween = null
-		"right":
-			if right_tween:
-				right_tween.kill()
-				right_tween = null
-		"forward":
-			if forward_tween:
-				forward_tween.kill()
-				forward_tween = null
+	match nom_animation:
+		"gauche":
+			animation_gauche = animation
+		"droite":
+			animation_droite = animation
+		"avancer":
+			animation_avancer = animation
 
 
-func highlight_rotation_buttons(active: bool) -> void:
-	if active:
-		_start_pulse(left_button, left_default_scale, "left")
-		_start_pulse(right_button, right_default_scale, "right")
+func arreter_pulsation(nom_animation: String) -> void:
+	match nom_animation:
+		"gauche":
+			if animation_gauche:
+				animation_gauche.kill()
+				animation_gauche = null
+		"droite":
+			if animation_droite:
+				animation_droite.kill()
+				animation_droite = null
+		"avancer":
+			if animation_avancer:
+				animation_avancer.kill()
+				animation_avancer = null
+
+
+func mettre_en_avant_boutons_rotation(actif: bool) -> void:
+	if actif:
+		lancer_pulsation(bouton_gauche, taille_base_gauche, "gauche")
+		lancer_pulsation(bouton_droite, taille_base_droite, "droite")
 	else:
-		clear_tutorial_highlights()
+		enlever_effets_tutoriel()
 
 
-func highlight_forward_button(active: bool) -> void:
-	if active:
-		_start_pulse(forward_button, forward_default_scale, "forward")
+func mettre_en_avant_bouton_avancer(actif: bool) -> void:
+	if actif:
+		lancer_pulsation(bouton_avancer, taille_base_avancer, "avancer")
 	else:
-		clear_tutorial_highlights()
+		enlever_effets_tutoriel()
 
 
-func clear_tutorial_highlights() -> void:
-	_stop_pulse_by_name("left")
-	_stop_pulse_by_name("right")
-	_stop_pulse_by_name("forward")
+func enlever_effets_tutoriel() -> void:
+	arreter_pulsation("gauche")
+	arreter_pulsation("droite")
+	arreter_pulsation("avancer")
 
-	left_button.scale = left_default_scale
-	right_button.scale = right_default_scale
-	forward_button.scale = forward_default_scale
+	bouton_gauche.scale = taille_base_gauche
+	bouton_droite.scale = taille_base_droite
+	bouton_avancer.scale = taille_base_avancer

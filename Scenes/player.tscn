@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" uid="uid://cl31bj3wv04u4" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="PackedScene" uid="uid://dm2uy2i1aeulw" path="res://Scenes/basket.tscn" id="2_cvnsp"]
-[ext_resource type="AudioStream" uid="uid://q7aoprqau4ud" path="res://Assets/Sound/walkGrass1.mp3" id="2_f1ek2"]
+[ext_resource type="AudioStream" uid="uid://pjy2tl3brr18" path="res://Assets/Sound/walkGrass1.mp3" id="2_f1ek2"]
 [ext_resource type="AudioStream" uid="uid://bacx0ootfjat1" path="res://Assets/Sound/walkGrass2.mp3" id="3_tx1dd"]
 [ext_resource type="AudioStream" uid="uid://ocwfwq4sekqy" path="res://Assets/Sound/walkGrass3.mp3" id="4_gymyn"]
-[ext_resource type="Texture2D" uid="uid://mmv20cbl3vn7" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="5_tx1dd"]
+[ext_resource type="Texture2D" uid="uid://k6o1hussf1rl" path="res://Assets/UI-UX/Images/Buttons Texture/My_button_direction.png" id="5_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://k4nvkrpu0bh0" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-5_My_pressed_buttons.png" id="6_gymyn"]
-[ext_resource type="Texture2D" uid="uid://cvnsiov81jtuu" path="res://Assets/UI-UX/Images/icons/LeftFInal.png" id="7_pu2lt"]
-[ext_resource type="Texture2D" uid="uid://duy2lveo3acjx" path="res://Assets/UI-UX/Images/icons/RightFinal.png" id="8_ukyrk"]
-[ext_resource type="Texture2D" uid="uid://bu414ernqro6j" path="res://Assets/UI-UX/Images/icons/UpFinal.png" id="9_7dp3o"]
+[ext_resource type="Texture2D" uid="uid://cgh5lx7e0davq" path="res://Assets/UI-UX/Images/icons/LeftFInal.png" id="7_pu2lt"]
+[ext_resource type="Texture2D" uid="uid://tq33662byb82" path="res://Assets/UI-UX/Images/icons/RightFinal.png" id="8_ukyrk"]
+[ext_resource type="Texture2D" uid="uid://b6p464jdtm738" path="res://Assets/UI-UX/Images/icons/UpFinal.png" id="9_7dp3o"]
 [ext_resource type="Script" uid="uid://bbcdtfa638wx" path="res://Scripts/basket.gd" id="9_tx1dd"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_x3wgy"]
@@ -25,6 +25,7 @@ height = 1.8
 [node name="Player" type="CharacterBody3D" unique_id=506067122]
 collision_mask = 6
 script = ExtResource("1_v0iea")
+bob_amp = 0.016
 bruit_pas = SubResource("AudioStreamRandomizer_x3wgy")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1677382866]
@@ -32,6 +33,7 @@ shape = SubResource("CapsuleShape3D_v0iea")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=861068424]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36437988, 0)
+fov = 55.0
 far = 100.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=222044724]
@@ -40,6 +42,7 @@ far = 100.0
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = -28.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 40
@@ -50,13 +53,13 @@ theme_override_constants/margin_bottom = 40
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=921903911]
 layout_mode = 2
 size_flags_horizontal = 8
+size_flags_vertical = 8
 
 [node name="Control" type="Control" parent="CanvasLayer/MarginContainer/HBoxContainer" unique_id=571888486]
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
 
 [node name="Left" type="TouchScreenButton" parent="CanvasLayer/MarginContainer/HBoxContainer/Control" unique_id=756964413]
-position = Vector2(17, 434.00003)
 scale = Vector2(0.3, 0.3)
 texture_normal = ExtResource("5_tx1dd")
 texture_pressed = ExtResource("6_gymyn")
@@ -76,11 +79,10 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Control3" type="Control" parent="CanvasLayer/MarginContainer/HBoxContainer" unique_id=2133924880]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(150, 100)
 layout_mode = 2
 
 [node name="Right" type="TouchScreenButton" parent="CanvasLayer/MarginContainer/HBoxContainer/Control3" unique_id=919508615]
-position = Vector2(-4, 434.00003)
 scale = Vector2(0.3, 0.3)
 texture_normal = ExtResource("5_tx1dd")
 texture_pressed = ExtResource("6_gymyn")
@@ -102,13 +104,13 @@ stretch_mode = 5
 [node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/MarginContainer" unique_id=1454826637]
 layout_mode = 2
 size_flags_horizontal = 0
+size_flags_vertical = 8
 
 [node name="Control2" type="Control" parent="CanvasLayer/MarginContainer/HBoxContainer2" unique_id=269790900]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
 
 [node name="Forward" type="TouchScreenButton" parent="CanvasLayer/MarginContainer/HBoxContainer2/Control2" unique_id=2126934024]
-position = Vector2(27, 434)
 scale = Vector2(0.322, 0.322)
 texture_normal = ExtResource("5_tx1dd")
 texture_pressed = ExtResource("6_gymyn")
@@ -128,12 +130,11 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Node3D" type="Node3D" parent="." unique_id=20595595]
-visible = false
 script = ExtResource("9_tx1dd")
 max_rotation = 2.0
 
 [node name="Basket" parent="Node3D" unique_id=1088006378 instance=ExtResource("2_cvnsp")]
-transform = Transform3D(0.07268713, -0.0018370437, -0.34236407, 0.10231077, 0.33411857, 0.019928744, 0.32672456, -0.10421742, 0.06992594, 0.5146241, -0.19758195, -0.43680832)
+transform = Transform3D(0.070439026, -0.024388833, -0.18558967, 0.03688913, 0.196215, -0.011784173, 0.1835144, -0.030080875, 0.073604375, 0.2899385, 0.05319619, -0.41614127)
 collision_layer = 0
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=686640594]

@@ -1,63 +1,249 @@
 extends Node
 
-var base_url = "http://100.111.28.32:8000/api/user/"
-var http: HTTPRequest
+const BASE_URL := "https://alzheimer.magellan.fpms.ac.be/api/"
+const REQUEST_TIMEOUT_SECONDS := 5.0
 
-func _ready():
-	print("API ready")
 
-	http = HTTPRequest.new()
+func request(url: String, headers: PackedStringArray, method: int, body := "") -> Dictionary:
+	var http := HTTPRequest.new()
 	add_child(http)
+	http.timeout = REQUEST_TIMEOUT_SECONDS
 
-	http.request_completed.connect(_on_request_completed)
+	var error := http.request(url, headers, method, body)
 
+	if error != OK:
+		push_warning("API request failed immediately | url=%s | error=%s" % [url, str(error)])
+		http.queue_free()
+		return {
+			"ok": false,
+			"auth": true,
+			"error": error,
+			"result": HTTPRequest.RESULT_CANT_CONNECT,
+			"code": 0,
+			"body_text": ""
+		}
 
-# CREATE USER (POST)
-func create_user(nom, prenom, email, annee):
-	var data = {
-		"nom": nom,
-		"prenom": prenom,
-		"email": email,
-		"annee_naissance": annee
+	var response = await http.request_completed
+	http.queue_free()
+
+	var result := int(response[0])
+	var code := int(response[1])
+	var response_body: PackedByteArray = response[3]
+	var body_text := response_body.get_string_from_utf8()
+	var ok := result == HTTPRequest.RESULT_SUCCESS and code >= 200 and code < 300
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		push_warning("API request failed | url=%s | result=%s" % [url, str(result)])
+	elif not ok and code != 404:
+		push_warning("API response not ok | url=%s | code=%s | body=%s" % [
+			url,
+			str(code),
+			body_text.strip_edges()
+		])
+
+	return {
+		"ok": ok,
+		"auth": true,
+		"error": OK,
+		"result": result,
+		"code": code,
+		"body_text": body_text
 	}
 
-	var json = JSON.stringify(data)
 
-	return http.request(
-		base_url,
-		["Content-Type: application/json"],
+func no_auth() -> Dictionary:
+	return {
+		"ok": false,
+		"auth": false,
+		"error": OK,
+		"result": HTTPRequest.RESULT_CANT_CONNECT,
+		"code": 0,
+		"body_text": ""
+	}
+
+
+func empty_token_response() -> Dictionary:
+	return {
+		"ok": false,
+		"auth": true,
+		"error": OK,
+		"result": HTTPRequest.RESULT_SUCCESS,
+		"code": 0,
+		"body_text": ""
+	}
+
+
+func get_user(token: String) -> Dictionary:
+	token = token.strip_edges()
+
+	if token == "":
+		return empty_token_response()
+
+	if not await GameManager.get_valid_token():
+		push_warning("API auth unavailable for user lookup.")
+		return no_auth()
+
+	return await request(
+		BASE_URL + "user/?token=" + token,
+		GameManager.get_api_headers(),
+		HTTPClient.METHOD_GET
+	)
+
+
+func get_doctor(doctor_token: String) -> Dictionary:
+	doctor_token = doctor_token.strip_edges()
+
+	if doctor_token == "":
+		return empty_token_response()
+
+	if not await GameManager.get_valid_token():
+		push_warning("API auth unavailable for doctor lookup.")
+		return no_auth()
+
+	return await request(
+		BASE_URL + "doctor/?token=" + doctor_token,
+		GameManager.get_api_headers(),
+		HTTPClient.METHOD_GET
+	)
+
+
+func create_user(data: Dictionary) -> Dictionary:
+	if not await GameManager.get_valid_token():
+		push_warning("API auth unavailable for user creation.")
+		return no_auth()
+
+	var payload := {
+		"token": data.get("token", ""),
+		"birth_year": data.get("birth_year", null)
+	}
+
+	if data.has("uuid"):
+		payload["uuid"] = data.get("uuid")
+
+	var doctor_token := str(data.get("doctor_token", "")).strip_edges()
+
+	if doctor_token != "":
+		payload["doctor_token"] = doctor_token
+
+	return await request(
+		BASE_URL + "user/",
+		GameManager.get_json_post_headers(),
 		HTTPClient.METHOD_POST,
-		json
+		JSON.stringify(payload)
 	)
 
 
-# UPDATE USER (PUT)
-func update_user(id, nom, prenom, email, annee):
-	var data = {
-		"nom": nom,
-		"prenom": prenom,
-		"email": email,
-		"annee_naissance": annee
-	}
+func is_request_successful(response: Dictionary, context: String, allow_not_found := false) -> bool:
+	if not bool(response.get("auth", true)):
+		push_warning("%s auth unavailable." % context)
+		return false
 
-	var json = JSON.stringify(data)
+	if int(response.get("error", OK)) != OK:
+		push_warning("%s request failed immediately: %s" % [
+			context,
+			str(response.get("error", OK))
+		])
+		return false
 
-	return http.request(
-		base_url + str(id) + "/",
-		["Content-Type: application/json"],
-		HTTPClient.METHOD_PUT,
-		json
-	)
+	if int(response.get("result", HTTPRequest.RESULT_SUCCESS)) != HTTPRequest.RESULT_SUCCESS:
+		push_warning("%s request failed: result=%s" % [
+			context,
+			str(response.get("result", 0))
+		])
+		return false
+
+	if allow_not_found and int(response.get("code", 0)) == 404:
+		return true
+
+	if not bool(response.get("ok", false)):
+		push_warning("%s response failed: code=%s" % [
+			context,
+			str(response.get("code", 0))
+		])
+		return false
+
+	return true
 
 
+func is_not_found(response: Dictionary) -> bool:
+	return int(response.get("code", 0)) == 404
 
-# CALLBACK
-func _on_request_completed(result, response_code, headers, body):
-	print("RESULT:", result)
-	print("Code:", response_code)
-	var response = body.get_string_from_utf8()
-	print("Réponse:", response)
 
-	# ⚠️ éviter crash si UI n'existe pas
-	if has_node("../UI/ResultLabel"):
-		get_node("../UI/ResultLabel").text = response
+func parse_response(response: Dictionary) -> Variant:
+	return JSON.parse_string(str(response.get("body_text", "")))
+
+
+func find_by_token(response: Dictionary, token: String) -> Dictionary:
+	var data: Variant = parse_response(response)
+
+	if typeof(data) == TYPE_DICTIONARY:
+		if str(data.get("token", "")) == token:
+			return data
+
+		var results = data.get("results", [])
+
+		if typeof(results) == TYPE_ARRAY:
+			for item in results:
+				if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token:
+					return item
+
+	elif typeof(data) == TYPE_ARRAY:
+		for item in data:
+			if typeof(item) == TYPE_DICTIONARY and str(item.get("token", "")) == token:
+				return item
+
+	return {}
+
+
+func token_exists(response: Dictionary, token: String) -> bool:
+	if is_not_found(response):
+		return false
+
+	if not bool(response.get("ok", false)):
+		return false
+
+	if str(response.get("body_text", "")).strip_edges() == "":
+		return false
+
+	return not find_by_token(response, token).is_empty()
+
+
+func token_is_available(response: Dictionary, token: String) -> bool:
+	if is_not_found(response):
+		return true
+
+	if not bool(response.get("ok", false)):
+		return false
+
+	if str(response.get("body_text", "")).strip_edges() == "":
+		return true
+
+	return find_by_token(response, token).is_empty()
+
+
+func get_birth_year(data: Dictionary) -> String:
+	var value = data.get("birth_year", null)
+
+	if value == null:
+		push_warning("User response has no birth_year.")
+		return ""
+
+	if typeof(value) == TYPE_INT:
+		return str(int(value))
+
+	if typeof(value) == TYPE_FLOAT:
+		var year := float(value)
+
+		if is_equal_approx(year, floor(year)):
+			return str(int(year))
+
+		push_warning("Invalid float birth_year in user response: %s" % str(value))
+		return ""
+
+	var text := str(value).strip_edges()
+
+	if text != "" and text != "null" and text.is_valid_int():
+		return str(int(text))
+
+	push_warning("Invalid birth_year in user response: %s" % text)
+	return ""

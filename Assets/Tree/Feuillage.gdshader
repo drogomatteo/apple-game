@@ -1,17 +1,13 @@
 shader_type spatial;
 render_mode blend_mix, depth_prepass_alpha,  diffuse_burley, specular_schlick_ggx, shadows_disabled;
 
-// =====================
 // TEXTURES
-// =====================
 uniform sampler2D ground_noise;
 uniform float ground_noise_scale = 0.2;
 uniform sampler2D foliage_tex : source_color;
 uniform bool use_red_as_alpha = true;
 
-// =====================
 // COLORS
-// =====================
 uniform vec3 top_color : source_color = vec3(0.82, 0.76, 0.42);
 uniform vec3 bottom_color : source_color = vec3(0.42, 0.34, 0.16);
 uniform vec3 tint_color : source_color = vec3(1.0, 1.0, 1.0);
@@ -19,15 +15,11 @@ uniform float color_variation_strength : hint_range(0.0, 1.0) = 0.10;
 uniform float noise_brightness_min : hint_range(0.0, 2.0) = 0.92;
 uniform float noise_brightness_max : hint_range(0.0, 2.0) = 1.08;
 
-// =====================
 // SHAPE / CUTOUT
-// =====================
 uniform float alpha_scissor_threshold : hint_range(0.0, 1.0) = 0.2;
 uniform float edge_softness : hint_range(0.0, 1.0) = 0.03;
 
-// =====================
 // CARD SHAPE / VOLUME
-// =====================
 uniform float quad_width = 1.0;
 uniform float quad_height = 1.0;
 uniform float size_variation_min : hint_range(0.1, 2.0) = 0.85;
@@ -35,23 +27,17 @@ uniform float size_variation_max : hint_range(0.1, 2.0) = 1.15;
 uniform float puff_strength : hint_range(0.0, 0.3) = 0.08;
 uniform float puff_upward_bias : hint_range(0.0, 1.0) = 0.15;
 
-// =====================
 // BILLBOARDING
-// =====================
 uniform bool billboard_to_camera = false;
 
-// =====================
 // LIGHTING STYLE
-// =====================
 uniform bool normals_up = false;
 uniform float fake_wrap : hint_range(0.0, 1.0) = 0.20;
 uniform float roughness : hint_range(0.0, 1.0) = 0.90;
 uniform float specular : hint_range(0.0, 1.0) = 0.03;
 uniform float translucency_strength : hint_range(0.0, 2.0) = 0.18;
 
-// =====================
 // WIND
-// =====================
 uniform bool use_wind = true;
 uniform float wind_speed = 1.1;
 uniform float wind_strength = 0.045;
@@ -59,9 +45,7 @@ uniform float flutter_strength = 0.015;
 uniform float noise_scale = 2.0;
 uniform vec2 wind_dir = vec2(1.0, 0.2);
 
-// =====================
 // VARYINGS
-// =====================
 varying float v_height;
 varying float v_random;
 varying vec3 v_world_pos;

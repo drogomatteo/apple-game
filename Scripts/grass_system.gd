@@ -89,11 +89,7 @@ func remap_distribution_value(value: float) -> float:
 	if distribution_input_max <= distribution_input_min:
 		return clampf(value, 0.0, 1.0)
 
-	return clampf(
-		inverse_lerp(distribution_input_min, distribution_input_max, value),
-		0.0,
-		1.0
-	)
+	return clampf(inverse_lerp(distribution_input_min, distribution_input_max, value), 0.0, 1.0)
 
 
 func sample_distribution_texture(world_x: float, world_z: float) -> float:
@@ -157,14 +153,7 @@ func setup_all_chunks() -> void:
 			chunks.append(grass_near)
 
 			if rebuild_on_ready:
-				populate_chunk_with_density(
-					grass_near,
-					density_per_m2 * near_density_multiplier,
-					near_scale_multiplier,
-					near_min_random_scale,
-					near_max_random_scale,
-					base_seed + 1
-				)
+				populate_chunk_with_density(grass_near, density_per_m2 * near_density_multiplier, near_scale_multiplier, near_min_random_scale, near_max_random_scale, base_seed + 1)
 
 		if grass_far != null:
 			setup_grass_node(grass_far)
@@ -172,14 +161,7 @@ func setup_all_chunks() -> void:
 			chunks.append(grass_far)
 
 			if rebuild_on_ready:
-				populate_chunk_with_density(
-					grass_far,
-					density_per_m2 * far_density_multiplier,
-					far_scale_multiplier,
-					far_min_random_scale,
-					far_max_random_scale,
-					base_seed + 2
-				)
+				populate_chunk_with_density(grass_far, density_per_m2 * far_density_multiplier, far_scale_multiplier, far_min_random_scale, far_max_random_scale, base_seed + 2)
 
 
 func setup_grass_node(node: MultiMeshInstance3D) -> void:
@@ -193,20 +175,10 @@ func setup_grass_node(node: MultiMeshInstance3D) -> void:
 		node.material_override = grass_material
 
 	var half: float = chunk_size * 0.5
-	node.multimesh.custom_aabb = AABB(
-		Vector3(-half, -1.0, -half),
-		Vector3(chunk_size, 3.0, chunk_size)
-	)
+	node.multimesh.custom_aabb = AABB(Vector3(-half, -1.0, -half), Vector3(chunk_size, 3.0, chunk_size))
 
 
-func populate_chunk_with_density(
-	node: MultiMeshInstance3D,
-	density: float,
-	grass_scale_multiplier: float,
-	min_random_scale: float,
-	max_random_scale: float,
-	chunk_seed: int
-) -> void:
+func populate_chunk_with_density(node: MultiMeshInstance3D, density: float, grass_scale_multiplier: float, min_random_scale: float, max_random_scale: float, chunk_seed: int) -> void:
 	var mm := node.multimesh
 	if mm == null:
 		return
@@ -270,11 +242,7 @@ func populate_chunk_with_density(
 
 			# Zone de transition -> possible rejet + réduction de taille
 			elif distribution_value > distribution_threshold:
-				var t: float = inverse_lerp(
-					distribution_threshold,
-					distribution_threshold + distribution_softness,
-					distribution_value
-				)
+				var t: float = inverse_lerp(distribution_threshold, distribution_threshold + distribution_softness, distribution_value)
 
 				if rng.randf() < t:
 					continue
@@ -322,21 +290,3 @@ func configure_far_visibility(node: MultiMeshInstance3D) -> void:
 	node.visibility_range_begin_margin = far_visibility_begin_margin
 	node.visibility_range_end = far_visibility_end
 	node.visibility_range_end_margin = far_visibility_end_margin
-
-
-func set_mobile_mode(enabled: bool) -> void:
-	for node in chunks:
-		var mm := node.multimesh
-		if mm == null:
-			continue
-
-		if enabled:
-			mm.visible_instance_count = int(mm.instance_count * 0.5)
-		else:
-			mm.visible_instance_count = mm.instance_count
-
-
-func rebuild_all_chunks() -> void:
-	randomize()
-	setup_distribution_texture()
-	setup_all_chunks()

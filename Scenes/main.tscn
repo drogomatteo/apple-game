@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
-[ext_resource type="FontFile" uid="uid://ddqmf6srjxjyh" path="res://Assets/UI-UX/Images/Font/Fredoka_SemiCondensed-SemiBold.ttf" id="14_u50mg"]
+[ext_resource type="FontFile" uid="uid://dd8eexcadnoj1" path="res://Assets/UI-UX/Images/Font/Fredoka_SemiCondensed-SemiBold.ttf" id="14_u50mg"]
 [ext_resource type="Texture2D" uid="uid://cg6xhyklt5q5j" path="res://Assets/UI-UX/Images/Buttons Texture/My_Panel.png" id="15_u50mg"]
 [ext_resource type="Texture2D" uid="uid://6njqh54442c" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_brun.png" id="16_1w6v2"]
 [ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="16_3pmx8"]
@@ -24,7 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://byyli8q20ju1x" path="res://Assets/UI-UX/Images/LeftRIght-3.png" id="18_7k868"]
 [ext_resource type="Script" uid="uid://blqaj5vsw5nrj" path="res://Scripts/tracer_carte.gd" id="18_b3802"]
 [ext_resource type="Texture2D" uid="uid://cywtkl0v480kh" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_vert_Image.png" id="18_cbgmd"]
-[ext_resource type="Texture2D" uid="uid://b63doem2idk77" path="res://Assets/UI-UX/Images/Buttons Texture/My_button.png" id="19_1w6v2"]
+[ext_resource type="Texture2D" uid="uid://csw3shv868ah8" path="res://Assets/UI-UX/Images/Buttons Texture/My_button.png" id="19_1w6v2"]
 [ext_resource type="Texture2D" uid="uid://bpk6scambf2u" path="res://Assets/UI-UX/Images/LeftRIght-2.png" id="19_hpc6h"]
 [ext_resource type="Texture2D" uid="uid://cx2fhq1gwhoxa" path="res://Assets/UI-UX/Images/LeftRIght-1.png" id="20_kltya"]
 [ext_resource type="Texture2D" uid="uid://ctjl301ecdrtp" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-9_My_pressed_buttons.png" id="20_ueoa1"]
@@ -669,6 +669,7 @@ theme_override_constants/separation = 15
 theme_override_styles/separator = SubResource("StyleBoxEmpty_7k868")
 
 [node name="Icon left" type="TextureRect" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter" unique_id=339638879]
+visible = false
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -678,6 +679,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="IconForward" type="TextureRect" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter" unique_id=1500889506]
+visible = false
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -687,6 +689,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="IconRight" type="TextureRect" parent="UI/TutorialUI/MarginContainer/BoiteMessage/MarginContainer/Pivoter" unique_id=528805971]
+visible = false
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 0

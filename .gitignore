@@ -18,6 +18,22 @@ Assets/ParticlePNG/
 .mono/
 data_*/
 
+# =========================
+# MKDOCS
+# =========================
+
+# Site généré
+site/
+
+# Cache MkDocs
+.cache/
+.mypy_cache/
+
+# Environnements virtuels Python
+venv/
+env/
+ENV/
+
 # Temporary editor files
 *.tmp
 *.temp
