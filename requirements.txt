@@ -2,14 +2,5 @@
 mkdocs>=1.5.0
 mkdocs-material>=9.0.0
 
-# Extensions Markdown supplémentaires
-mkdocs-git-revision-date-localized-plugin>=1.2.0
-mkdocs-git-committers-plugin-2>=2.2.0
-mkdocs-minify-plugin>=0.8.0
-
 # Thèmes et extensions
 pymdown-extensions>=10.0.0
-
-# Pour le déploiement (optionnel)
-mkdocs-redirects>=1.2.0
-mkdocs-git-authors-plugin>=0.8.0
