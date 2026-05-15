@@ -38,7 +38,3 @@ nav:
   - Développement:
       - API Backend: API.md
       - Déploiement: deployment/index.md
-  - Feuille de route:
-      - Roadmap: roadmap/future_features.md
-  - À propos:
-      - MkDocs: README_MKDOCS.md
