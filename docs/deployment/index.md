@@ -12,7 +12,7 @@ Actuellement, le projet a été conçu pour être publié sur Android. Il existe
 Tous les paramètres d'export sont définis dans `export_presets.cfg`. Les paramètres d'exportation sont normalement pas nécessaire à changer. Cependant, si vous remarquez que le jeu présente des bugs sur Android et pas sur votre ordinateur, il est recommandé de regarder les paramètres d'exportation.
 
 > [!NOTE]
-> Pour pouvoir exporter le projet, il est nécessaire d'installer au préalable Android SDK et Android NDK ([Télécharger](https://developer.android.com/studio/index.html)).
+> Pour exporter le projet, il est nécessaire d'installer au préalable Android SDK et Android NDK ([Télécharger](https://developer.android.com/studio/index.html)).
 
 ## Besoin d'informations
 
