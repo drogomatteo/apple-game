@@ -16,15 +16,10 @@ Les pages principales incluent :
 - `docs/GETTING_STARTED.md` : installation et démarrage.
 - `docs/ARCHITECTURE.md` : architecture du projet.
 - `docs/GAMEPLAY.md` : mécaniques du jeu.
-- `docs/CONTRIBUTING.md` : guide de contribution.
-- `docs/project/index.md` : structure du dépôt.
-- `docs/deployment/index.md` : instructions de publication.
-- `docs/scenes/index.md` : vue d'ensemble des scènes.
-- `docs/scripts/index.md` : vue d'ensemble des scripts.
 
 ### Documentation interactive
 
-Pour une expérience de lecture améliorée, nous utilisons **MkDocs** pour générer un site web moderne.
+Pour une expérience de lecture améliorée, nous utilisons **MkDocs** pour générer un site web.
 
 ```bash
 # Installer les dépendances Python
