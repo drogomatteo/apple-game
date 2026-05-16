@@ -1,7 +1,7 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://c6we64s4fjxp4"]
 
 [ext_resource type="Shader" uid="uid://dblx2iuituycp" path="res://Assets/Tree/Feuillage.gdshader" id="1_acuai"]
-[ext_resource type="Texture2D" uid="uid://v5q4yruxyho2" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/glTF/Leaves_TwistedTree.png" id="2_acuai"]
+[ext_resource type="Texture2D" uid="uid://u3bxeh6cn234" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/glTF/Leaves_TwistedTree.png" id="2_acuai"]
 
 [resource]
 render_priority = 0

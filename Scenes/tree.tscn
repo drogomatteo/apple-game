@@ -9,7 +9,7 @@
 [ext_resource type="ArrayMesh" uid="uid://bgfvq36fj3pru" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/Pebble_Square_3.obj" id="7_slv16"]
 [ext_resource type="ArrayMesh" uid="uid://d1ylv4adwtowi" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/Pebble_Square_2.obj" id="8_iq41b"]
 [ext_resource type="ArrayMesh" uid="uid://b8bacfx3act52" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/OBJ/Mushroom_Common.obj" id="9_xpjr8"]
-[ext_resource type="Texture2D" uid="uid://dlq4efld2x78v" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/glTF/Mushrooms.png" id="10_hspbw"]
+[ext_resource type="Texture2D" uid="uid://dawg14eb51hi4" path="res://Assets/Ressource/Stylized Nature MegaKit[Standard]/glTF/Mushrooms.png" id="10_hspbw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rsuno"]
 size = Vector3(1.7551575, 6.4902954, 1.4898529)

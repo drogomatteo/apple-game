@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://d113n3gul2i43"]
 
 [ext_resource type="PackedScene" uid="uid://bbr03gwgoau2" path="res://Assets/Fences/Utilisés/EA03_Fence_Cobble_End_01c.fbx" id="1_65tya"]
+[ext_resource type="Script" uid="uid://gvtkfhykxg84" path="res://Scripts/fence_optimizer.gd" id="1_script_opt"]
 [ext_resource type="Material" uid="uid://cxwc824vhgspx" path="res://Assets/Fences/EmaceMaterial.tres" id="1_vtu51"]
 [ext_resource type="PackedScene" uid="uid://busrnjdksdojs" path="res://Assets/Fences/Utilisés/EA03_Fence_Cobble_Seam_01b.fbx" id="2_vtu51"]
 
@@ -116,6 +117,7 @@ shadow_mesh = SubResource("ArrayMesh_2l7qt")
 size = Vector3(7.792221, 1, 0.5698242)
 
 [node name="Fences" type="Node3D" unique_id=123485950]
+script = ExtResource("1_script_opt")
 
 [node name="EA03_Fence_Cobble_Seam_01a" type="Node3D" parent="." unique_id=1179242276]
 transform = Transform3D(0.9679552, 0, -0.25112343, 0, 1, 0, 0.25112343, 0, 0.9679552, -2.3602085, 0, -0.4700557)
@@ -138,52 +140,52 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.20286775, 0, 0)
 [node name="EA03_Fence_Cobble_End_01c" parent="Node3D" unique_id=1812276293 instance=ExtResource("1_65tya")]
 transform = Transform3D(0.99887836, 0, -0.047350556, 0, 1, 0, 0.047350556, 0, 0.99887836, -0.51473117, -0.08046651, -0.0564003)
 
-[node name="EA03_Fence_Cobble_End_01c_LOD0" parent="Node3D/EA03_Fence_Cobble_End_01c" index="0" unique_id=1884581385]
+[node name="EA03_Fence_Cobble_End_01c_LOD0" parent="Node3D/EA03_Fence_Cobble_End_01c" index="0" unique_id=1644479168]
 skin = SubResource("Skin_eb6dy")
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_End_01c_LOD1" parent="Node3D/EA03_Fence_Cobble_End_01c" index="1" unique_id=117575849]
+[node name="EA03_Fence_Cobble_End_01c_LOD1" parent="Node3D/EA03_Fence_Cobble_End_01c" index="1" unique_id=2088074161]
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_End_01c_LOD2" parent="Node3D/EA03_Fence_Cobble_End_01c" index="2" unique_id=2011891051]
+[node name="EA03_Fence_Cobble_End_01c_LOD2" parent="Node3D/EA03_Fence_Cobble_End_01c" index="2" unique_id=245659949]
 surface_material_override/0 = ExtResource("1_vtu51")
 
 [node name="EA03_Fence_Cobble_End_01c2" parent="Node3D" unique_id=760942163 instance=ExtResource("1_65tya")]
 transform = Transform3D(0.9986945, 0, 0.051080976, 0, 1, 0, -0.051080976, 0, 0.9986945, 0.20221114, -0.08046651, -0.0564003)
 
-[node name="EA03_Fence_Cobble_End_01c_LOD0" parent="Node3D/EA03_Fence_Cobble_End_01c2" index="0" unique_id=1884581385]
+[node name="EA03_Fence_Cobble_End_01c_LOD0" parent="Node3D/EA03_Fence_Cobble_End_01c2" index="0" unique_id=1644479168]
 skin = SubResource("Skin_eb6dy")
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_End_01c_LOD1" parent="Node3D/EA03_Fence_Cobble_End_01c2" index="1" unique_id=117575849]
+[node name="EA03_Fence_Cobble_End_01c_LOD1" parent="Node3D/EA03_Fence_Cobble_End_01c2" index="1" unique_id=2088074161]
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_End_01c_LOD2" parent="Node3D/EA03_Fence_Cobble_End_01c2" index="2" unique_id=2011891051]
+[node name="EA03_Fence_Cobble_End_01c_LOD2" parent="Node3D/EA03_Fence_Cobble_End_01c2" index="2" unique_id=245659949]
 surface_material_override/0 = ExtResource("1_vtu51")
 
 [node name="EA03_Fence_Cobble_End_01c3" parent="Node3D" unique_id=200383790 instance=ExtResource("1_65tya")]
 transform = Transform3D(-0.99999994, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -0.99999994, 0.5972948, -0.08046651, -0.0564003)
 
-[node name="EA03_Fence_Cobble_End_01c_LOD0" parent="Node3D/EA03_Fence_Cobble_End_01c3" index="0" unique_id=1884581385]
+[node name="EA03_Fence_Cobble_End_01c_LOD0" parent="Node3D/EA03_Fence_Cobble_End_01c3" index="0" unique_id=1644479168]
 skin = SubResource("Skin_eb6dy")
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_End_01c_LOD1" parent="Node3D/EA03_Fence_Cobble_End_01c3" index="1" unique_id=117575849]
+[node name="EA03_Fence_Cobble_End_01c_LOD1" parent="Node3D/EA03_Fence_Cobble_End_01c3" index="1" unique_id=2088074161]
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_End_01c_LOD2" parent="Node3D/EA03_Fence_Cobble_End_01c3" index="2" unique_id=2011891051]
+[node name="EA03_Fence_Cobble_End_01c_LOD2" parent="Node3D/EA03_Fence_Cobble_End_01c3" index="2" unique_id=245659949]
 surface_material_override/0 = ExtResource("1_vtu51")
 
 [node name="EA03_Fence_Cobble_Seam_01b" parent="." unique_id=1968690976 instance=ExtResource("2_vtu51")]
 transform = Transform3D(0.99130297, 0, 0.13159898, 0, 1, 0, -0.13159898, 0, 0.99130297, 2.2947245, -0.09634739, -0.27273735)
 
-[node name="EA03_Fence_Cobble_Seam_01b_LOD0" parent="EA03_Fence_Cobble_Seam_01b" index="0" unique_id=1199234950]
+[node name="EA03_Fence_Cobble_Seam_01b_LOD0" parent="EA03_Fence_Cobble_Seam_01b" index="0" unique_id=1359655598]
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_Seam_01b_LOD1" parent="EA03_Fence_Cobble_Seam_01b" index="1" unique_id=350603040]
+[node name="EA03_Fence_Cobble_Seam_01b_LOD1" parent="EA03_Fence_Cobble_Seam_01b" index="1" unique_id=217283884]
 surface_material_override/0 = ExtResource("1_vtu51")
 
-[node name="EA03_Fence_Cobble_Seam_01b_LOD2" parent="EA03_Fence_Cobble_Seam_01b" index="2" unique_id=1110969511]
+[node name="EA03_Fence_Cobble_Seam_01b_LOD2" parent="EA03_Fence_Cobble_Seam_01b" index="2" unique_id=255398816]
 surface_material_override/0 = ExtResource("1_vtu51")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=48745797]

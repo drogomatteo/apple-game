@@ -1,5 +1,6 @@
 [gd_scene format=4 uid="uid://c6l5lj6s2mx2m"]
 
+[ext_resource type="Script" uid="uid://p62ng1kvfu5m" path="res://Scripts/apple_tree.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://bpk303voaqeb0" path="res://Scenes/tree.tscn" id="2_ld5qe"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gy1o7"]
@@ -80,6 +81,7 @@ size = Vector3(2.202179, 7.415161, 2.3556213)
 transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
 collision_layer = 16
 collision_mask = 0
+script = ExtResource("1_script")
 
 [node name="Apple2" type="Node3D" parent="." unique_id=393320851]
 transform = Transform3D(0.0029999996, 0, 0, 0, 0.0029999996, 0, 0, 0, 0.0029999996, 0, 0.10114937, 0.884)
@@ -94,22 +96,10 @@ transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.00299165
 [node name="Apple_1" type="MeshInstance3D" parent="Apple3" unique_id=652197787]
 mesh = SubResource("ArrayMesh_fd05u")
 
-[node name="Apple3" type="Node3D" parent="Apple3" unique_id=557472798]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple3/Apple3" unique_id=294178247]
-mesh = SubResource("ArrayMesh_fd05u")
-
 [node name="Apple4" type="Node3D" parent="." unique_id=2007160757]
 transform = Transform3D(0.0029916526, 0.00022363084, 5.551114e-19, -0.00020614038, 0.002757672, 0.0011630777, 8.669999e-05, -0.0011598414, 0.0027653659, 0.37469876, 3.4116528, 2.0414586)
 
 [node name="Apple_1" type="MeshInstance3D" parent="Apple4" unique_id=1800154638]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple4" unique_id=2120950822]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple4/Apple3" unique_id=19497530]
 mesh = SubResource("ArrayMesh_fd05u")
 
 [node name="Apple8" type="Node3D" parent="." unique_id=1787756720]
@@ -118,46 +108,10 @@ transform = Transform3D(0.0019944357, 0.00014908724, 7.777877e-12, -0.0001374269
 [node name="Apple_1" type="MeshInstance3D" parent="Apple8" unique_id=350312120]
 mesh = SubResource("ArrayMesh_fd05u")
 
-[node name="Apple3" type="Node3D" parent="Apple8" unique_id=9305143]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple8/Apple3" unique_id=208194363]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple8" type="Node3D" parent="Apple8" unique_id=109378916]
-transform = Transform3D(0.0019944357, 0.00014908724, 7.777878e-12, -0.00013742695, 0.0018384482, 0.0007753851, 5.78e-05, -0.0007732278, 0.0018435775, -0.06401819, 5.780008, 1.5553949)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple8/Apple8" unique_id=354212839]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple8/Apple8" unique_id=711183692]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple8/Apple8/Apple3" unique_id=278967737]
-mesh = SubResource("ArrayMesh_fd05u")
-
 [node name="Apple11" type="Node3D" parent="." unique_id=1778008981]
 transform = Transform3D(0.0019944357, 0.00014908724, 7.777877e-12, -0.00013742693, 0.0018384479, 0.0007753851, 5.7799996e-05, -0.00077322766, 0.0018435771, -0.5468614, 5.860967, 1.0442393)
 
 [node name="Apple_1" type="MeshInstance3D" parent="Apple11" unique_id=1039831340]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple11" unique_id=976255623]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple11/Apple3" unique_id=1593779877]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple8" type="Node3D" parent="Apple11" unique_id=985747179]
-transform = Transform3D(0.0019944357, 0.00014908724, 7.777878e-12, -0.00013742695, 0.0018384482, 0.0007753851, 5.78e-05, -0.0007732278, 0.0018435775, -0.06401819, 5.780008, 1.5553949)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple11/Apple8" unique_id=1932291370]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple11/Apple8" unique_id=1741474786]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple11/Apple8/Apple3" unique_id=1524168383]
 mesh = SubResource("ArrayMesh_fd05u")
 
 [node name="Apple12" type="Node3D" parent="." unique_id=779584615]
@@ -166,58 +120,16 @@ transform = Transform3D(0.0019944357, 0.00014908724, 7.777877e-12, -0.0001374269
 [node name="Apple_1" type="MeshInstance3D" parent="Apple12" unique_id=1978664929]
 mesh = SubResource("ArrayMesh_fd05u")
 
-[node name="Apple3" type="Node3D" parent="Apple12" unique_id=2014551485]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple12/Apple3" unique_id=2068450709]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple8" type="Node3D" parent="Apple12" unique_id=545318346]
-transform = Transform3D(0.0019944357, 0.00014908724, 7.777878e-12, -0.00013742695, 0.0018384482, 0.0007753851, 5.78e-05, -0.0007732278, 0.0018435775, -0.06401819, 5.780008, 1.5553949)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple12/Apple8" unique_id=179309489]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple12/Apple8" unique_id=161240285]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple12/Apple8/Apple3" unique_id=1006460984]
-mesh = SubResource("ArrayMesh_fd05u")
-
 [node name="Apple13" type="Node3D" parent="." unique_id=358429330]
 transform = Transform3D(0.0011324297, 0.0007117808, -0.0014869327, -0.00013742693, 0.0018384479, 0.0007753851, 0.0016427772, -0.00033686217, 0.0010898653, 0.571502, 3.1060026, -1.0780016)
 
 [node name="Apple_1" type="MeshInstance3D" parent="Apple13" unique_id=1760158412]
 mesh = SubResource("ArrayMesh_fd05u")
 
-[node name="Apple3" type="Node3D" parent="Apple13" unique_id=114181247]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple13/Apple3" unique_id=25745597]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple8" type="Node3D" parent="Apple13" unique_id=964086307]
-transform = Transform3D(0.0019944357, 0.00014908724, 7.777878e-12, -0.00013742695, 0.0018384482, 0.0007753851, 5.78e-05, -0.0007732278, 0.0018435775, -0.06401819, 5.780008, 1.5553949)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple13/Apple8" unique_id=324994092]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple13/Apple8" unique_id=1149274207]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple13/Apple8/Apple3" unique_id=689981462]
-mesh = SubResource("ArrayMesh_fd05u")
-
 [node name="Apple9" type="Node3D" parent="." unique_id=1529950817]
 transform = Transform3D(0.0019944357, 0.00014908722, 5.018313e-12, -0.00013641405, 0.001824898, -0.00080693053, -6.015155e-05, 0.0008046857, 0.0018299894, -0.6257949, 5.780008, -0.61233354)
 
 [node name="Apple_1" type="MeshInstance3D" parent="Apple9" unique_id=1494493027]
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple9" unique_id=1553155731]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple9/Apple3" unique_id=1692351502]
 mesh = SubResource("ArrayMesh_fd05u")
 
 [node name="Apple10" type="Node3D" parent="." unique_id=286506557]
@@ -227,23 +139,11 @@ transform = Transform3D(-0.0015358224, -0.0004378423, -0.0012039694, 0.000106339
 transform = Transform3D(1, 1.4901161e-08, 0, 0, 1, -1.4901161e-08, 0, 1.4901161e-08, 1, 78.0746, -32.363525, 148.31897)
 mesh = SubResource("ArrayMesh_fd05u")
 
-[node name="Apple3" type="Node3D" parent="Apple10" unique_id=1632999893]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple10/Apple3" unique_id=921222166]
-mesh = SubResource("ArrayMesh_fd05u")
-
 [node name="Apple5" type="Node3D" parent="." unique_id=1861216132]
 transform = Transform3D(0.0029916526, 0.00022363084, 5.551114e-19, -0.00020614038, 0.002757672, 0.0011630777, 8.669999e-05, -0.0011598414, 0.0027653659, -1.8056834, 3.4116528, 0.15243846)
 
 [node name="Apple_1" type="MeshInstance3D" parent="Apple5" unique_id=1468011853]
 transform = Transform3D(0.50665706, 0.3034709, -0.8069722, -0.36608872, 0.9231557, 0.11731447, 0.7805624, 0.23598519, 0.5788206, 0, 0, 0)
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple5" unique_id=1967963303]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple5/Apple3" unique_id=1022477068]
 mesh = SubResource("ArrayMesh_fd05u")
 
 [node name="Apple6" type="Node3D" parent="." unique_id=328915615]
@@ -253,23 +153,11 @@ transform = Transform3D(0.0029916526, 0.00022363084, 1.1102228e-18, -0.000201815
 transform = Transform3D(0.50665706, 0.3034709, -0.8069722, -0.36608872, 0.9231557, 0.11731447, 0.7805624, 0.23598519, 0.5788206, 0, 0, 0)
 mesh = SubResource("ArrayMesh_fd05u")
 
-[node name="Apple3" type="Node3D" parent="Apple6" unique_id=1179823234]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple6/Apple3" unique_id=1606915173]
-mesh = SubResource("ArrayMesh_fd05u")
-
 [node name="Apple7" type="Node3D" parent="." unique_id=831053675]
 transform = Transform3D(0.002420986, -0.0017709538, -5.042678e-05, 0.0017716624, 0.0024202713, 5.9104812e-05, 5.7915076e-06, -7.747699e-05, 0.0029989919, 1.5477878, 4.7708035, -0.21171625)
 
 [node name="Apple_1" type="MeshInstance3D" parent="Apple7" unique_id=1309767421]
 transform = Transform3D(0.50665706, 0.3034709, -0.8069722, -0.36608872, 0.9231557, 0.11731447, 0.7805624, 0.23598519, 0.5788206, 0, 0, 0)
-mesh = SubResource("ArrayMesh_fd05u")
-
-[node name="Apple3" type="Node3D" parent="Apple7" unique_id=1986913170]
-transform = Transform3D(0.0029916526, 0.0002236308, 0, -0.0002236308, 0.0029916526, 0, 0, 0, 0.0029999996, 0.41757783, -0.02344057, 0.84566766)
-
-[node name="Apple_1" type="MeshInstance3D" parent="Apple7/Apple3" unique_id=1514649665]
 mesh = SubResource("ArrayMesh_fd05u")
 
 [node name="Apple" type="Node3D" parent="." unique_id=158596137]

@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://bc3i5rsr473pg" path="res://Assets/Ressource/sky_118_2kUPSCALED.png" id="8_wsu2k"]
 [ext_resource type="Material" uid="uid://bra6ug2wjmj0j" path="res://Assets/Herbe/src/materials/grass_01/grass_ground_01.tres" id="9_h1bgf"]
 [ext_resource type="PackedScene" uid="uid://d113n3gul2i43" path="res://Scenes/Barrières.tscn" id="13_fdnlq"]
-[ext_resource type="FontFile" uid="uid://dd8eexcadnoj1" path="res://Assets/UI-UX/Images/Font/Fredoka_SemiCondensed-SemiBold.ttf" id="14_u50mg"]
+[ext_resource type="FontFile" uid="uid://ddqmf6srjxjyh" path="res://Assets/UI-UX/Images/Font/Fredoka_SemiCondensed-SemiBold.ttf" id="14_u50mg"]
 [ext_resource type="Texture2D" uid="uid://cg6xhyklt5q5j" path="res://Assets/UI-UX/Images/Buttons Texture/My_Panel.png" id="15_u50mg"]
 [ext_resource type="Texture2D" uid="uid://6njqh54442c" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_brun.png" id="16_1w6v2"]
 [ext_resource type="Theme" uid="uid://cvcc2hrac8ktk" path="res://Assets/UI-UX/Theme général.tres" id="16_3pmx8"]
@@ -24,22 +24,12 @@
 [ext_resource type="Texture2D" uid="uid://byyli8q20ju1x" path="res://Assets/UI-UX/Images/LeftRIght-3.png" id="18_7k868"]
 [ext_resource type="Script" uid="uid://blqaj5vsw5nrj" path="res://Scripts/tracer_carte.gd" id="18_b3802"]
 [ext_resource type="Texture2D" uid="uid://cywtkl0v480kh" path="res://Assets/UI-UX/Images/Buttons Texture/Boutton_vert_Image.png" id="18_cbgmd"]
-[ext_resource type="Texture2D" uid="uid://csw3shv868ah8" path="res://Assets/UI-UX/Images/Buttons Texture/My_button.png" id="19_1w6v2"]
+[ext_resource type="Texture2D" uid="uid://b63doem2idk77" path="res://Assets/UI-UX/Images/Buttons Texture/My_button.png" id="19_1w6v2"]
 [ext_resource type="Texture2D" uid="uid://bpk6scambf2u" path="res://Assets/UI-UX/Images/LeftRIght-2.png" id="19_hpc6h"]
 [ext_resource type="Texture2D" uid="uid://cx2fhq1gwhoxa" path="res://Assets/UI-UX/Images/LeftRIght-1.png" id="20_kltya"]
 [ext_resource type="Texture2D" uid="uid://ctjl301ecdrtp" path="res://Assets/UI-UX/Images/Buttons Texture/user_image1-9_My_pressed_buttons.png" id="20_ueoa1"]
 [ext_resource type="Texture2D" uid="uid://dgr2nov4qgfa4" path="res://Assets/UI-UX/Images/Buttons Texture/My_Boutton_CLASSIQUELong.png" id="21_6vcvc"]
 [ext_resource type="Texture2D" uid="uid://be7760xem1hfp" path="res://Assets/UI-UX/Images/Buttons Texture/My_Boutton_CLASSIQUE_pressed.png" id="22_7k868"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
-size = Vector3(35.937653, 1, 35.554764)
-
-[sub_resource type="QuadMesh" id="QuadMesh_b3802"]
-size = Vector2(0.7, 0.7)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_b3802"]
-size = Vector2(60, 60)
-center_offset = Vector3(4.2, 0, 4)
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_k12tt"]
 panorama = ExtResource("8_wsu2k")
@@ -53,6 +43,16 @@ sky = SubResource("Sky_hptm8")
 ambient_light_source = 2
 ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
 ambient_light_energy = 0.3
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
+size = Vector3(35.937653, 1, 35.554764)
+
+[sub_resource type="QuadMesh" id="QuadMesh_b3802"]
+size = Vector2(0.7, 0.7)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_b3802"]
+size = Vector2(60, 60)
+center_offset = Vector3(4.2, 0, 4)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cbgmd"]
 texture = ExtResource("15_u50mg")
@@ -93,127 +93,6 @@ visual = ExtResource("5_hptm8")
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -4.78409, 1.88428, 11.871809)
 collision_mask = 7
-
-[node name="Floor" type="Node3D" parent="." unique_id=1406393240]
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=1466840344]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, -1, -8)
-collision_mask = 0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=2104309237]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.219234, 0, 12.445835)
-shape = SubResource("BoxShape3D_6bp64")
-debug_color = Color(0.95490104, 4.813075e-07, 0.54855204, 0.41960785)
-
-[node name="Ensemble Sol" type="Node3D" parent="Floor" unique_id=426609364]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.717599, 0, -5.021124)
-script = ExtResource("7_k12tt")
-distribution_texture = ExtResource("8_b3802")
-distribution_threshold = 0.3
-distribution_softness = 0.1
-invert_distribution_mask = true
-remap_distribution_values = false
-density_per_m2 = 10.0
-grass_mesh = SubResource("QuadMesh_b3802")
-grass_material = ExtResource("8_h1bgf")
-near_density_multiplier = 1.2
-near_visibility_end_margin = 0.1
-far_scale_multiplier = 1.2
-far_visibility_begin = 7.0
-print_distribution_debug = true
-
-[node name="Node3D" parent="Floor/Ensemble Sol" unique_id=4845252 instance=ExtResource("7_ynf5e")]
-
-[node name="Node3D2" parent="Floor/Ensemble Sol" unique_id=908579956 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
-
-[node name="Node3D3" parent="Floor/Ensemble Sol" unique_id=1094165544 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
-
-[node name="Node3D10" parent="Floor/Ensemble Sol" unique_id=1130719551 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 18)
-
-[node name="Node3D11" parent="Floor/Ensemble Sol" unique_id=1484061169 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 0)
-
-[node name="Node3D13" parent="Floor/Ensemble Sol" unique_id=2069788634 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 6)
-
-[node name="Node3D15" parent="Floor/Ensemble Sol" unique_id=836267138 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 12)
-
-[node name="Node3D20" parent="Floor/Ensemble Sol" unique_id=1929113582 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 18)
-
-[node name="Node3D21" parent="Floor/Ensemble Sol" unique_id=929470858 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 0)
-
-[node name="Node3D22" parent="Floor/Ensemble Sol" unique_id=588857297 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 6)
-
-[node name="Node3D23" parent="Floor/Ensemble Sol" unique_id=1191143649 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 12)
-
-[node name="Node3D24" parent="Floor/Ensemble Sol" unique_id=190929698 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 18)
-
-[node name="Node3D4" parent="Floor/Ensemble Sol" unique_id=179543784 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
-
-[node name="Node3D5" parent="Floor/Ensemble Sol" unique_id=1359805284 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 6)
-
-[node name="Node3D6" parent="Floor/Ensemble Sol" unique_id=620084641 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 12)
-
-[node name="Node3D12" parent="Floor/Ensemble Sol" unique_id=176907512 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 18)
-
-[node name="Node3D7" parent="Floor/Ensemble Sol" unique_id=1394284664 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0)
-
-[node name="Node3D8" parent="Floor/Ensemble Sol" unique_id=1810276722 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 6)
-
-[node name="Node3D9" parent="Floor/Ensemble Sol" unique_id=912886912 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12)
-
-[node name="Node3D14" parent="Floor/Ensemble Sol" unique_id=697644848 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 18)
-
-[node name="Node3D25" parent="Floor/Ensemble Sol" unique_id=199844807 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
-
-[node name="Node3D26" parent="Floor/Ensemble Sol" unique_id=1546112433 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 24)
-
-[node name="Node3D27" parent="Floor/Ensemble Sol" unique_id=1599129324 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 24)
-
-[node name="Node3D28" parent="Floor/Ensemble Sol" unique_id=1328437259 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
-
-[node name="Node3D29" parent="Floor/Ensemble Sol" unique_id=384494397 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -6)
-
-[node name="Node3D30" parent="Floor/Ensemble Sol" unique_id=1986178866 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -6)
-
-[node name="Node3D16" parent="Floor/Ensemble Sol" unique_id=446660227 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 0)
-
-[node name="Node3D17" parent="Floor/Ensemble Sol" unique_id=900406900 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 6)
-
-[node name="Node3D18" parent="Floor/Ensemble Sol" unique_id=1784722520 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 12)
-
-[node name="Node3D19" parent="Floor/Ensemble Sol" unique_id=1276527557 instance=ExtResource("7_ynf5e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 18)
-
-[node name="Ground" type="MeshInstance3D" parent="Floor" unique_id=133471086]
-material_override = ExtResource("9_h1bgf")
-mesh = SubResource("PlaneMesh_b3802")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1906453172]
 environment = SubResource("Environment_d1ilt")
