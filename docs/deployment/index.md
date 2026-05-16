@@ -1,22 +1,19 @@
-# 🚀 Déploiement AppleGame
+# Déploiement AppleGame
 
 Cette page donne un aperçu des options de déploiement pour le projet AppleGame.
 
 ## Déploiement Android
 
-- Le projet cible principalement Android.
-- Les paramètres d'export sont définis dans `export_presets.cfg`.
-- Le dossier `android/` contient la configuration et les fichiers nécessaires à l'export.
-- Utiliser Godot pour générer un APK ou AAB compatible avec Android 12+.
+Actuellement, le projet a été conçu pour être publié sur Android. Il existe deux paramètres de déploiement :
 
-## Déploiement web (optionnel)
+- **Android** : Lorsque vous selectionnez cette option, vous obtiendrez un fichier APK. Ce fichier permet d'installer l'AppleGame sur mobile.
+- **Android Store** : Cette option est une version APK addapté pour le déploiement sur le play sote
 
-- Godot peut exporter une version HTML5 si le projet est adapté.
-- La version web est une option secondaire et demande des tests supplémentaires.
-- Il faut vérifier les performances dans le navigateur et l'utilisation mémoire.
+Tous les paramètres d'export sont définis dans `export_presets.cfg`. Les paramètres d'exportation sont normalement pas nécessaire à changer. Cependant, si vous remarquez que le jeu présente des bugs sur Android et pas sur votre ordinateur, il est recommandé de regarder les paramètres d'exportation.
 
-## Bonnes pratiques
+> [!NOTE]
+> Pour exporter le projet, il est nécessaire d'installer au préalable Android SDK et Android NDK ([Télécharger](https://developer.android.com/studio/index.html)).
 
-- Tester le build sur un appareil réel.
-- Vérifier les permissions Android avant publication.
-- Minimiser la taille des assets pour réduire le temps de chargement et l'espace occupé.
+## Besoin d'informations
+
+Plus d'information concernant l'export des projet sur Android est disponible sur ce [lien](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_android.html)
