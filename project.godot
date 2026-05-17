@@ -26,6 +26,7 @@ GameManager="*uid://crrfanuoph3go"
 PlayerData="*uid://cwrvjrtmo4u62"
 SyncManager="*uid://brt56jflktvu8"
 Api="*res://Scripts/api.gd"
+UIButtonSound="*res://Scripts/ui_button_sound.gd"
 
 [display]
 
