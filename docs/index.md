@@ -24,3 +24,7 @@ Enfin, il est possible de changer le mode sombre pour le transformer en mode cla
 ## Contact
 
 Pour toute question concernant le projet AppleGame, vous pouvez contacter aux adresses suivantes : eva.kabelis@gmail.com, martinlempire@gmail.com, matteo.drogo2005@gmail.com et tom.boreux@gmail.com. 
+
+## Disclaimer
+
+Cette documentation a été réalisé à l'aide d'une intelligence artificielle. Le texte été relu et validé par des humains.

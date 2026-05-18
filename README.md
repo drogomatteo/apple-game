@@ -26,7 +26,7 @@ Pour une expérience de lecture améliorée, nous utilisons **MkDocs** pour gén
 pip install -r requirements.txt
 
 # Lancer le serveur de documentation
-mkdocs serve
+python -m mkdocs serve
 
 # Ouvrir http://127.0.0.1:8000
 ```

@@ -26,6 +26,7 @@ GameManager="*uid://crrfanuoph3go"
 PlayerData="*uid://cwrvjrtmo4u62"
 SyncManager="*uid://brt56jflktvu8"
 Api="*res://Scripts/api.gd"
+UIButtonSound="*res://Scripts/ui_button_sound.gd"
 
 [display]
 
@@ -77,5 +78,5 @@ textures/vram_compression/import_etc2_astc=true
 lights_and_shadows/directional_shadow/size=1024
 lights_and_shadows/directional_shadow/size.mobile=1024
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality.mobile=2
-scaling_3d/scale=0.8
+scaling_3d/scale=0.6
 occlusion_culling/use_occlusion_culling=true

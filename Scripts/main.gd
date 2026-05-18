@@ -55,6 +55,7 @@ var seuil1 = PI/9
 var seuil2 = 2*seuil1
 var Rayon1
 var Rayon2
+var Rayon3
 
 #Niveaux
 var niveau : int = 1
@@ -145,7 +146,7 @@ func _physics_process(_delta: float) -> void:
 		voir_recap.visible = false
 		next_level.visible = false
 		message_label.visible = false
-		$Parcours3D.launch(position_joueur, Objet["basket0"], Rayon1, Rayon2)
+		$Parcours3D.launch(position_joueur, Objet["basket0"], Rayon1, Rayon2, Rayon3)
 	
 	if ((validate_pressed and not validate_was_pressed) or timeout) and phase == 3:
 		phase += 1
@@ -187,15 +188,19 @@ func _physics_process(_delta: float) -> void:
 
 		Rayon1 = distanceAParcourir*sin(seuil1)
 		Rayon2 = distanceAParcourir*sin(seuil2)
+		Rayon3 = distanceAParcourir
 
 		if distance <= Rayon1:
 			message_label.text = "Vous avez 3 étoiles"
 			score += 1
 		elif distance <= Rayon2:
 			message_label.text = "Vous avez 2 étoiles"
-		else:
+		elif distance <= Rayon3:
 			message_label.text = "Vous avez 1 étoile"
 			score = max(score - 1, 0)
+		else:
+			message_label.text = "Vous avez 0 étoile"
+			score = max(score - 2, 0)
 
 		message_label.visible = true
 		
