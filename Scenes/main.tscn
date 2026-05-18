@@ -31,6 +31,16 @@
 [ext_resource type="Texture2D" uid="uid://dgr2nov4qgfa4" path="res://Assets/UI-UX/Images/Buttons Texture/My_Boutton_CLASSIQUELong.png" id="21_6vcvc"]
 [ext_resource type="Texture2D" uid="uid://be7760xem1hfp" path="res://Assets/UI-UX/Images/Buttons Texture/My_Boutton_CLASSIQUE_pressed.png" id="22_7k868"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
+size = Vector3(35.937653, 1, 35.554764)
+
+[sub_resource type="QuadMesh" id="QuadMesh_b3802"]
+size = Vector2(0.7, 0.7)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_b3802"]
+size = Vector2(60, 60)
+center_offset = Vector3(4.2, 0, 4)
+
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_k12tt"]
 panorama = ExtResource("8_wsu2k")
 
@@ -43,16 +53,6 @@ sky = SubResource("Sky_hptm8")
 ambient_light_source = 2
 ambient_light_color = Color(0.9975192, 0.9252882, 0.78429043, 1)
 ambient_light_energy = 0.3
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_6bp64"]
-size = Vector3(35.937653, 1, 35.554764)
-
-[sub_resource type="QuadMesh" id="QuadMesh_b3802"]
-size = Vector2(0.7, 0.7)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_b3802"]
-size = Vector2(60, 60)
-center_offset = Vector3(4.2, 0, 4)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cbgmd"]
 texture = ExtResource("15_u50mg")
@@ -93,9 +93,6 @@ visual = ExtResource("5_hptm8")
 [node name="Player" parent="." unique_id=506067122 instance=ExtResource("2_bo1nx")]
 transform = Transform3D(-0.7071068, 0, -0.7071067, 0, 1, 0, 0.7071067, 0, -0.7071068, -4.78409, 1.88428, 11.871809)
 collision_mask = 7
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1906453172]
-environment = SubResource("Environment_d1ilt")
 
 [node name="Temps" type="Node" parent="." unique_id=765541918]
 
