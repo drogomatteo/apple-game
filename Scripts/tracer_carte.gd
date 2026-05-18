@@ -19,11 +19,12 @@ var mesh_joueur: MeshInstance3D
 var dictionnaire_marqueurs = {}
 var Cercle1 : MeshInstance3D
 var Cercle2 : MeshInstance3D
+var Cercle3 : MeshInstance3D
 
 
 var lancer = false
 
-func launch(PositionJoueur, PositionPanier, Rayon1, Rayon2) -> void:
+func launch(PositionJoueur, PositionPanier, Rayon1, Rayon2, Rayon3) -> void:
 	positions_joueur = PositionJoueur
 	
 	position_actuelle = positions_joueur[0]
@@ -36,6 +37,8 @@ func launch(PositionJoueur, PositionPanier, Rayon1, Rayon2) -> void:
 	add_child(Cercle1)
 	Cercle2 = creer_cercle_creux(PositionPanier, Rayon2, 0.05, Color.DARK_RED)
 	add_child(Cercle2)
+	Cercle3 = creer_cercle_creux(PositionPanier, Rayon3, 0.05, Color.BLACK)
+	add_child(Cercle3)
 	
 	# Création du joueur
 	mesh_joueur = creer_sphere(0.3, Color.CYAN)
@@ -54,6 +57,7 @@ func _process(delta: float) -> void:
 			mesh_joueur.queue_free()
 			Cercle1.queue_free()
 			Cercle2.queue_free()
+			Cercle3.queue_free()
 			return
 
 		# Déplacement du joueur en 3D
