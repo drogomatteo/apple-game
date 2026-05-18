@@ -9,8 +9,8 @@ L'objectif est de guider le joueur à travers un environnement sûr et stimulant
 
 ## Mécaniques principales
 
-- **Collecte** : l'utilisateur doit avancer jusqu'à l'objet pour le récupérer.
-- **Navigation** : se déplacer dans une scène 3D avec des contrôles simples (bouton de déplacement, ).
+- **Collecte** : l'utilisateur récupère des pommes et des objets dans l'environnement.
+- **Navigation** : se déplacer dans une scène 3D avec des contrôles simples.
 - **Menus** : accès aux options, au tutoriel et à l'état du jeu.
 - **Tutoriel** : un système qui guide les premiers pas du joueur.
 

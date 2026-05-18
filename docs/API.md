@@ -280,3 +280,10 @@ gdscript/warnings/return_value_discarded=false
 - Valider TOUTES les données du serveur
 - Implémenter rate limiting côté client
 
+## Endpoints Futures
+
+Plans pour v2.0 :
+- Leaderboard global
+- Achievements/Badges
+- Replay system
+- Social features
