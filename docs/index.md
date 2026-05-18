@@ -7,7 +7,7 @@ AppleGame est un projet réalisé par quatre étudiants de la Faculté Polytechn
 - **Eva Kabelis**
 - **Tom Boreux**
 - **Matteo Drogo**
-- **Martin Lempite**
+- **Martin Lempire**
 
 **Supervisé par** : Mohammed Benjelloun et Quentin De Coninck
 

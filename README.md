@@ -1,6 +1,6 @@
 # AppleGame
 
-Projet Réalisé par Eva Kabelis, Tom Boreux, Matteo Drogo et Martin Lempite, quatre étudiants de la faculté polytechnique de Mons en troième bachelier, supervisé par le professeur Mohammed Benjelloun et le promoteur Quentin De Coninck.
+Projet Réalisé par Eva Kabelis, Tom Boreux, Matteo Drogo et Martin Lempire, quatre étudiants de la faculté polytechnique de Mons en troième bachelier, supervisé par le professeur Mohammed Benjelloun et le promoteur Quentin De Coninck.
 
 ## Description
 
