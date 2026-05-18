@@ -28,9 +28,10 @@ nav:
       - Premier Lancement du jeu: PREMIER_LANCEMENT.md
   - Architecture:
       - Vue d'ensemble: ARCHITECTURE.md
-      - Projet: project/index.md
       - Scripts: scripts/index.md
       - Scènes: scenes/index.md
+      - Assets: assets/index.md
+      - Projet: project/index.md
   - Gameplay:
       - Mécaniques: GAMEPLAY.md
       - Niveaux: levels/level_generation.md
